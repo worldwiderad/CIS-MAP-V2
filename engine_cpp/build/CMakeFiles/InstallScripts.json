@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/rg/CIS-MAP/engine_cpp/build/cmake_install.cmake",
+		"/Users/rg/CIS-MAP/engine_cpp/build/_deps/json-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,216 @@
+/* ============================================================================
+   CIS Indoor Navigation — Mobile-First Viewport-Locked Styles
+   ============================================================================
+   Uses 100dvh to dodge iOS Safari's dynamic toolbar resizing.
+   Flexbox column layout: canvas stretches, controls pin to bottom.
+   No media queries — this is a phone-only app.
+   ============================================================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100dvh;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+               "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  touch-action: none;           /* we handle all gestures ourselves */
+}
+
+/* ── App Shell ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* ── Top Bar ── */
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+  min-height: 40px;
+  /* safe area for notched phones */
+  padding-top: max(6px, env(safe-area-inset-top));
+}
+
+#topbar h1 {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#btn-lang {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #21262d;
+  color: #e6edf3;
+  font-size: 13px;
+  cursor: pointer;
+}
+#btn-lang:active { background: #30363d; }
+
+/* ── Canvas Area ── */
+#canvas-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #0d1117;
+}
+
+#mapcanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Loading overlay */
+#loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 17, 23, 0.92);
+  z-index: 10;
+  gap: 12px;
+  transition: opacity 0.3s ease;
+}
+#loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+#loading .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #30363d;
+  border-top-color: #58a6ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading span { font-size: 13px; color: #8b949e; }
+
+/* ── Bottom Control Panel ── */
+#controls {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  background: #161b22;
+  border-top: 1px solid #30363d;
+}
+
+/* Input rows */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-row label {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 48px;
+  color: #8b949e;
+}
+
+.input-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #0d1117;
+  color: #e6edf3;
+  font-size: 14px;
+  outline: none;
+  min-width: 0;              /* prevent flex overflow */
+}
+.input-row input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.25);
+}
+
+/* Swap button between the two inputs */
+#btn-swap {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #21262d;
+  color: #e6edf3;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+#btn-swap:active { background: #30363d; }
+
+/* Button row */
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+#btn-navigate {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #238636;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#btn-navigate:active { background: #2ea043; }
+#btn-navigate:disabled {
+  background: #21262d;
+  color: #484f58;
+  cursor: not-allowed;
+}
+
+#btn-clear {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #21262d;
+  color: #e6edf3;
+  font-size: 14px;
+  cursor: pointer;
+}
+#btn-clear:active { background: #30363d; }
+
+/* Status message */
+#status {
+  font-size: 12px;
+  color: #8b949e;
+  text-align: center;
+  min-height: 16px;
+}
+#status.error { color: #f85149; }
+#status.success { color: #3fb950; }
