@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#161b22">
+  <title>CIS Navigator</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Top Bar -->
+    <header id="topbar">
+      <h1 id="app-title">CIS Navigator</h1>
+      <button id="btn-lang" aria-label="Toggle language">中文</button>
+    </header>
+
+    <!-- Canvas Area -->
+    <div id="canvas-wrap">
+      <canvas id="mapcanvas"></canvas>
+      <div id="loading">
+        <div class="spinner"></div>
+        <span id="loading-text">Loading map...</span>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div id="controls">
+      <div class="input-row">
+        <label for="input-start" id="label-start">From</label>
+        <input id="input-start" type="text" list="portal-list" autocomplete="off" placeholder="">
+        <button id="btn-swap" title="Swap">⇅</button>
+      </div>
+      <div class="input-row">
+        <label for="input-dest" id="label-dest">To</label>
+        <input id="input-dest" type="text" list="portal-list" autocomplete="off" placeholder="">
+      </div>
+      <div class="btn-row">
+        <button id="btn-navigate" disabled>Navigate</button>
+        <button id="btn-clear">Clear</button>
+      </div>
+      <div id="status"></div>
+      <datalist id="portal-list"></datalist>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

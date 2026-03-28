@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS Navmesh Mapper</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.18/paper-full.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-family: system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #16213e;
+    border-bottom: 1px solid #0f3460;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  #toolbar button {
+    padding: 6px 14px;
+    border: 1px solid #0f3460;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  #toolbar button:hover { background: #0f3460; }
+  #toolbar button.active { background: #e94560; border-color: #e94560; color: #fff; }
+  #toolbar button.action { background: #0f3460; }
+  #toolbar button.action:hover { background: #533483; }
+  #toolbar button.export { background: #2d6a4f; border-color: #2d6a4f; }
+  #toolbar button.export:hover { background: #40916c; }
+  #toolbar button.danger { background: #7f2020; border-color: #7f2020; }
+  #toolbar button.danger:hover { background: #a33; }
+
+  .sep { width: 1px; height: 24px; background: #0f3460; flex-shrink: 0; }
+
+  #status {
+    margin-left: auto;
+    font-size: 12px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  #canvas-wrap {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    cursor: crosshair;
+  }
+
+  canvas { display: block; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button id="btn-polygon" class="active">Draw Polygon</button>
+  <button id="btn-portals">Place Portals</button>
+  <div class="sep"></div>
+  <button id="btn-close" class="action">Close Polygon</button>
+  <button id="btn-undo" class="action">Undo</button>
+  <div class="sep"></div>
+  <button id="btn-export" class="export">Export JSON</button>
+  <button id="btn-import" class="action">Import JSON</button>
+  <div class="sep"></div>
+  <button id="btn-clear" class="danger">Clear All</button>
+  <input type="file" id="file-import" accept=".json" style="display:none">
+  <span id="status">Loading map...</span>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="navcanvas"></canvas>
+</div>
+
+<script>
+paper.install(window);
+
+window.onload = function () {
+  const canvas = document.getElementById('navcanvas');
+  paper.setup(canvas);
+
+  // ── State ──
+  let mode = 'polygon';       // 'polygon' | 'portals'
+  let polygonClosed = false;
+  let vertices = [];           // raw Point array for the polygon
+  let portals = [];            // { id, x, y }
+  let polygonPath = null;      // the Paper.js Path once closed
+  let previewPath = null;      // open polyline while drawing
+  let vertexDots = [];         // circles at each vertex
+  let portalGroups = [];       // paper groups for portal markers
+  let bgRaster = null;
+
+  const VERTEX_RADIUS = 4;
+  const PORTAL_RADIUS = 6;
+  const SNAP_THRESHOLD = 12;   // px — vertex snap while drawing
+
+  const status = document.getElementById('status');
+  const setStatus = (msg) => { status.textContent = msg; };
+
+  // ── Load background image ──
+  bgRaster = new Raster({
+    source: '../assets/img/lvl4map.jpg',
+    position: view.center
+  });
+
+  bgRaster.onLoad = function () {
+    // Resize canvas to image dimensions
+    view.viewSize = new Size(this.width, this.height);
+    this.position = new Point(this.width / 2, this.height / 2);
+    setStatus('Polygon mode — click to add vertices');
+  };
+
+  bgRaster.onError = function () {
+    setStatus('Failed to load map image');
+  };
+
+  // ── Drawing helpers ──
+
+  function drawVertexDot(pt) {
+    const dot = new Path.Circle({
+      center: pt,
+      radius: VERTEX_RADIUS,
+      fillColor: '#00e5ff',
+      strokeColor: '#fff',
+      strokeWidth: 1
+    });
+    vertexDots.push(dot);
+    return dot;
+  }
+
+  function rebuildPreview() {
+    if (previewPath) previewPath.remove();
+    if (vertices.length < 2) {
+      previewPath = null;
+      return;
+    }
+    previewPath = new Path({
+      segments: vertices,
+      strokeColor: '#00e5ff',
+      strokeWidth: 2,
+      dashArray: [6, 4]
+    });
+  }
+
+  function closePolygon() {
+    if (vertices.length < 3) {
+      setStatus('Need at least 3 vertices to close');
+      return;
+    }
+    if (polygonClosed) return;
+    polygonClosed = true;
+
+    if (previewPath) previewPath.remove();
+    previewPath = null;
+
+    polygonPath = new Path({
+      segments: vertices,
+      closed: true,
+      fillColor: new Color(0, 0.9, 1, 0.15),
+      strokeColor: '#00e5ff',
+      strokeWidth: 2
+    });
+
+    setStatus('Polygon closed — switch to Place Portals mode');
+  }
+
+  function addPortalMarker(pt, id) {
+    const circle = new Path.Circle({
+      center: pt,
+      radius: PORTAL_RADIUS,
+      fillColor: '#e94560',
+      strokeColor: '#fff',
+      strokeWidth: 1.5
+    });
+
+    const label = new PointText({
+      point: pt + new Point(10, -10),
+      content: id,
+      fillColor: '#fff',
+      strokeColor: '#000',
+      strokeWidth: 0.3,
+      fontFamily: 'system-ui',
+      fontSize: 12,
+      fontWeight: 'bold'
+    });
+
+    const group = new Group([circle, label]);
+    portalGroups.push(group);
+  }
+
+  // ── Canvas click handler ──
+
+  const tool = new Tool();
+  tool.onMouseDown = function (event) {
+    const pt = event.point;
+
+    if (mode === 'polygon' && !polygonClosed) {
+      // Snap to first vertex to close
+      if (vertices.length >= 3) {
+        const first = vertices[0];
+        if (pt.getDistance(first) < SNAP_THRESHOLD) {
+          closePolygon();
+          return;
+        }
+      }
+      vertices.push(pt.clone());
+      drawVertexDot(pt);
+      rebuildPreview();
+      setStatus(`Vertex ${vertices.length} placed — ${vertices.length < 3 ? 'add more' : 'click first vertex or Close to finish'}`);
+    }
+
+    else if (mode === 'portals') {
+      if (!polygonClosed || !polygonPath) {
+        setStatus('Close the polygon first');
+        return;
+      }
+      // Snap to nearest point on polygon perimeter
+      const nearest = polygonPath.getNearestPoint(pt);
+      const id = prompt('Portal ID (e.g. Room_412):');
+      if (!id || !id.trim()) {
+        setStatus('Portal cancelled');
+        return;
+      }
+      const trimmed = id.trim();
+      portals.push({ id: trimmed, x: Math.round(nearest.x * 100) / 100, y: Math.round(nearest.y * 100) / 100 });
+      addPortalMarker(nearest, trimmed);
+      setStatus(`Portal "${trimmed}" placed — ${portals.length} total`);
+    }
+  };
+
+  // ── Undo ──
+
+  function undo() {
+    if (mode === 'polygon' && !polygonClosed) {
+      if (vertices.length === 0) return;
+      vertices.pop();
+      const dot = vertexDots.pop();
+      if (dot) dot.remove();
+      rebuildPreview();
+      setStatus(`Vertex removed — ${vertices.length} remaining`);
+    } else if (mode === 'portals') {
+      if (portals.length === 0) return;
+      const removed = portals.pop();
+      const g = portalGroups.pop();
+      if (g) g.remove();
+      setStatus(`Portal "${removed.id}" removed — ${portals.length} remaining`);
+    }
+  }
+
+  // ── Export ──
+
+  function exportJSON() {
+    if (!polygonClosed) {
+      alert('Close the polygon before exporting.');
+      return;
+    }
+    const data = {
+      image: 'lvl4map.jpg',
+      imageWidth: bgRaster ? bgRaster.width : 0,
+      imageHeight: bgRaster ? bgRaster.height : 0,
+      polygon: vertices.map(v => ({ x: Math.round(v.x * 100) / 100, y: Math.round(v.y * 100) / 100 })),
+      portals: portals
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'navmesh_data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Exported navmesh_data.json');
+  }
+
+  // ── Import ──
+
+  function importJSON(json) {
+    clearAll();
+    try {
+      const data = JSON.parse(json);
+
+      if (data.polygon && data.polygon.length >= 3) {
+        data.polygon.forEach(v => {
+          const pt = new Point(v.x, v.y);
+          vertices.push(pt);
+          drawVertexDot(pt);
+        });
+        closePolygon();
+      }
+
+      if (data.portals) {
+        data.portals.forEach(p => {
+          portals.push({ id: p.id, x: p.x, y: p.y });
+          addPortalMarker(new Point(p.x, p.y), p.id);
+        });
+      }
+
+      setStatus(`Imported: ${vertices.length} vertices, ${portals.length} portals`);
+    } catch (e) {
+      alert('Invalid JSON: ' + e.message);
+      setStatus('Import failed');
+    }
+  }
+
+  // ── Clear ──
+
+  function clearAll() {
+    vertices = [];
+    portals = [];
+    polygonClosed = false;
+    if (polygonPath) { polygonPath.remove(); polygonPath = null; }
+    if (previewPath) { previewPath.remove(); previewPath = null; }
+    vertexDots.forEach(d => d.remove());
+    vertexDots = [];
+    portalGroups.forEach(g => g.remove());
+    portalGroups = [];
+    setStatus('Cleared — ready to draw');
+  }
+
+  // ── Toolbar wiring ──
+
+  const btnPolygon = document.getElementById('btn-polygon');
+  const btnPortals = document.getElementById('btn-portals');
+
+  function setMode(m) {
+    mode = m;
+    btnPolygon.classList.toggle('active', m === 'polygon');
+    btnPortals.classList.toggle('active', m === 'portals');
+    setStatus(m === 'polygon'
+      ? (polygonClosed ? 'Polygon is locked' : 'Click to add vertices')
+      : 'Click near polygon edge to place a portal');
+  }
+
+  btnPolygon.addEventListener('click', () => setMode('polygon'));
+  btnPortals.addEventListener('click', () => setMode('portals'));
+  document.getElementById('btn-close').addEventListener('click', closePolygon);
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-export').addEventListener('click', exportJSON);
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (confirm('Clear everything?')) clearAll();
+  });
+
+  const fileInput = document.getElementById('file-import');
+  document.getElementById('btn-import').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => importJSON(ev.target.result);
+    reader.readAsText(file);
+    fileInput.value = '';
+  });
+
+  // ── Keyboard shortcuts ──
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'z' && (e.ctrlKey || e.metaKey)) { undo(); e.preventDefault(); }
+    if (e.key === '1') setMode('polygon');
+    if (e.key === '2') setMode('portals');
+    if (e.key === 'e' || e.key === 'E') exportJSON();
+  });
+};
+</script>
+</body>
+</html>
