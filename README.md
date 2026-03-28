@@ -1,4 +1,4 @@
-# AGENTS.md
+# README.md
 
 ## Project Overview
 This repository contains a two-part system for an indoor navigation tool designed for English Language Learner (ELL) students at the Canadian International School (CIS).
@@ -29,7 +29,6 @@ The project is strictly divided into three distinct operational domains:
 
 ## File Structure Conventions
 * `AGENTS.md`: This file.
-* `CLAUDE.md`: Agent coding guidelines and conventions.
 * `/tools/navmesh_mapper.html`: The developer tool for digitizing the map (Paper.js).
 * `/engine_cpp/main.cpp`: The C++ baking engine (visibility graph + Dijkstra + Catmull-Rom smoothing).
 * `/engine_cpp/CMakeLists.txt`: CMake build instructions (auto-fetches nlohmann/json).
