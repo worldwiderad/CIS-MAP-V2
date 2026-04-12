@@ -1,50 +1,109 @@
-# README.md
+# CIS-MAP
 
 ## Project Overview
-This repository contains a two-part system for an indoor navigation tool designed for English Language Learner (ELL) students at the Canadian International School (CIS).
 
-The system relies on an **Offline Baking Architecture**. Complex routing mathematics (Visibility Graphs, Dijkstra shortest paths, Catmull-Rom spline smoothing) are computed locally in C++ to generate perfectly smooth paths. These paths are exported as a static JSON package. A lightweight, bilingual, mobile-web frontend then reads this package to provide instant, offline-capable routing for students scanning QR codes in the hallways.
+CIS-MAP is a bilingual indoor navigation system for the Canadian International School (CIS) campus. It gives anyone — new students, ELL intake, parents, event delegates, visitors — instant walking directions between any two points in the building. No app store download, no login, no cost to the school.
+
+The system relies on an **Offline Baking Architecture**. All pathfinding is pre-computed by a custom C++ program using A* search, Laplacian relaxation smoothing, and Ramer-Douglas-Peucker simplification. The results are exported as a static JSON lookup table. A lightweight, bilingual, mobile-web frontend reads this table to provide instant, offline-capable routing for students scanning QR codes in the hallways.
+
+A supplementary **3D navigator** built with Three.js provides an immersive flythrough visualisation of the campus corridors for demonstration and presentation purposes.
+
+### Current State
+
+A fully functional prototype covering Level 4 of the campus. Includes all 53 locations (classrooms, staircases, elevators, pods, offices) with over 2,700 pre-computed routes covering every origin-to-destination pair. The mobile interface supports pan, zoom, bilingual toggle (English / Simplified Chinese), and QR deep-linking. The 3D demo generates a procedural corridor environment from the same polygon data and supports cinematic flythrough + interactive route display.
+
+### What Is Needed Next
+
+Floor plan images or architectural drawings for the remaining floors. The system is floor-agnostic — adding a new floor takes 1–2 hours of mapping work and ~30 seconds of computation.
+
+### Broader Vision
+
+- **Parents and visitors** — QR codes in the lobby for PTA meetings, open days, parent-teacher conferences.
+- **CISMUN and events** — Delegates find committee rooms via QR codes on lanyards.
+- **Multilingual expansion** — Architecture supports additional language packs (Korean, Japanese, Tamil). Content task, not a technical rebuild.
+- **Cross-floor routing** — Link floors at shared staircases and elevators for directions like "take Stair 2 down to Level 3, then walk to Room 302."
+- **End goal: map.cis.edu.sg** — A school-maintained resource with documentation, admin tooling, and a handoff that doesn't depend on any individual student.
 
 ## System Architecture
 
-The project is strictly divided into three distinct operational domains:
+The project is divided into four operational domains:
 
 ### 1. The Mapping Tools (`/tools`)
-* **Purpose:** Web-based utilities for the developer to digitize physical floor plans into mathematical data.
-* **Tech Stack:** HTML5 Canvas via Paper.js (CDN), JavaScript, CSS. External frameworks and libraries are **fully permitted and encouraged** to speed up development.
-* **Current Output:** A single continuous polygon representing walkable hallway space, and edge-snapped "portals" representing classroom doors, exported as `navmesh_data.json`.
+* **Purpose:** Web-based developer tool to digitize physical floor plans into mathematical geometry data.
+* **Tech Stack:** HTML5 Canvas via Paper.js (CDN), vanilla JavaScript.
+* **Capabilities:** Trace walkable corridor boundary (polygon mode), place named portals snapped to polygon edges (portal mode), undo/redo, import/export.
+* **Output:** `navmesh_data.json` — a single continuous polygon (76 vertices for Level 4) representing walkable hallway space, plus 53 edge-snapped portals with IDs and positions, all in image-pixel coordinates.
 
 ### 2. The Offline Baker (`/engine_cpp`)
-* **Purpose:** A local C++ executable that reads the `navmesh_data.json`, builds a visibility graph of all portals and polygon vertices, runs Dijkstra's algorithm for the shortest interior path between every portal pair, and applies Catmull-Rom spline smoothing.
-* **Tech Stack:** C++17. `nlohmann/json` for JSON parsing (fetched automatically via CMake `FetchContent`).
+* **Purpose:** A C++ executable that reads `navmesh_data.json` and computes the optimal path between every pair of portals.
+* **Tech Stack:** C++17. `nlohmann/json` for JSON I/O (auto-fetched via CMake `FetchContent`).
+* **Algorithm pipeline:**
+  1. Build a distance-field grid (18px cells) over the polygon interior
+  2. A* pathfinding with wall-distance cost weighting (`K_CENTERING = 25.0`) — naturally centres routes in corridors
+  3. Laplacian relaxation smoothing (30 iterations, constrained to polygon interior)
+  4. Ramer-Douglas-Peucker simplification (epsilon = 8px)
+  5. Perpendicular re-centering pass (nudge waypoints toward corridor midline)
+  6. Backtrack removal (negative dot product detection)
 * **Build:** `cd engine_cpp && cmake -B build && cmake --build build --config Release`
-* **Run:** `cd engine_cpp/build && ./baker` (reads `../../data/navmesh_data.json`, writes `../../data/baked_paths.json`)
-* **Output:** Generates a comprehensive `baked_paths.json` file containing pre-calculated coordinate arrays for all portal-to-portal routes.
+* **Run:** `cd engine_cpp/build && ./baker ../../data/`
+* **Output:** `baked_paths.json` (~944 KB) — pre-computed coordinate arrays for all portal-to-portal routes.
 
-### 3. The Mobile Viewer (`/public` or root)
-* **Purpose:** The production web app deployed via GitHub Pages for end-users. It must be blisteringly fast and execute instantly when triggered by a QR code.
-* **Tech Stack:** HTML, CSS, JavaScript. External UI/Utility frameworks are permitted, provided they do not severely bloat the mobile load time.
-* **Behavior:** This app is "dumb." It does absolutely no pathfinding math. It simply provides a bilingual (English/Simplified Chinese) UI, takes the user's Start/End inputs, looks up the corresponding coordinate array in `baked_paths.json`, and draws it on the scaled map canvas.
-* **Constraints:** Must use dynamic viewport height (`dvh`) and strict flexbox layouts to prevent iOS/Safari virtual keyboards from breaking the layout.
+### 3. The 2D Mobile Viewer (`index.html` + `js/app.js`)
+* **Purpose:** The production web app for end-users. Deployed via GitHub Pages, triggered by QR codes.
+* **Tech Stack:** Vanilla HTML, CSS, JavaScript. No frameworks, no build tools.
+* **Behaviour:** Zero runtime pathfinding. Takes the user's start/destination inputs, looks up the corresponding route in `baked_paths.json`, and draws it on a pan-zoomable canvas with smooth corner rounding (`ctx.arcTo`).
+* **Features:** Bilingual UI (EN / 中文), QR deep-linking via query params (`?start=NW-412`), native autocomplete for portal names, glow + core line route rendering, start/end markers.
+* **Constraints:** Mobile-first. Uses `dvh` units, `safe-area-inset`, pointer events. No desktop media queries. Designed for iOS Safari.
 
-## File Structure Conventions
-* `AGENTS.md`: This file.
-* `/tools/navmesh_mapper.html`: The developer tool for digitizing the map (Paper.js).
-* `/engine_cpp/main.cpp`: The C++ baking engine (visibility graph + Dijkstra + Catmull-Rom smoothing).
-* `/engine_cpp/CMakeLists.txt`: CMake build instructions (auto-fetches nlohmann/json).
-* `/data/navmesh_data.json`: Raw geometry data (Input for C++).
-* `/data/baked_paths.json`: The compiled route package (Output from C++, Input for Web App).
-* `/assets/img/lvl4map.jpg`: The floor plan background image.
-* `index.html`: The main Mobile Viewer UI.
-* `css/style.css`: Viewport-locked, mobile-first styling.
-* `js/app.js`: Main application logic for the Viewer (handles inputs, language toggling, and canvas rendering).
+### 4. The 3D Navigator (`/3d`)
+* **Purpose:** Supplementary immersive visualisation for demonstrations and presentations. Not for daily navigation use.
+* **Tech Stack:** Three.js r128 (non-module, vendored in `/3d/lib/`), vanilla JavaScript.
+* **Geometry:** Procedurally generated from the same `navmesh_data.json` — floor, walls, ceiling, portal markers, edge glow. No 3D models or external textures.
+* **Camera modes:** Cinematic flythrough (auto-plays on load), smooth transition, interactive orbit.
+* **Route display:** Flat ribbon mesh with straight line segments (no curve overshoot), runner dot, start/end markers. All rendered with `depthTest: false` to avoid clipping through transparent walls.
+* **Post-processing:** UnrealBloomPass at half resolution for emissive glow effects.
+* **Performance:** Optimised from 3fps → 60fps by removing 53 dynamic point lights, disabling shadows, downgrading materials, culling labels, reducing particles, and capping pixel ratio.
 
-## Data Flow
+## File Structure
+
 ```
-lvl4map.jpg
-  → /tools/navmesh_mapper.html   (developer traces hallway polygon + places door portals)
-  → /data/navmesh_data.json      (polygon vertices + portal IDs & positions)
-  → /engine_cpp/baker             (visibility graph → Dijkstra → Catmull-Rom smooth)
-  → /data/baked_paths.json        ({"Start_ID": {"Dest_ID": [{x,y},...]}})
-  → index.html + js/app.js       (viewer looks up route by IDs, draws on canvas)
+README.md                     — This file (project overview and architecture)
+CLAUDE.md                     — Coding conventions and constraints
+index.html                    — 2D Mobile Viewer entry point
+css/style.css                 — Viewport-locked, mobile-first styling
+js/app.js                     — 2D viewer logic (inputs, language, canvas rendering)
+3d/index.html                 — 3D Navigator entry point
+3d/main.js                    — 3D scene generation, cameras, animation, route display
+3d/lib/                       — Vendored Three.js r128 (three.min.js, OrbitControls, bloom, CSS2D)
+tools/navmesh_mapper.html     — Developer tool for digitizing floor plans (Paper.js)
+engine_cpp/main.cpp           — C++ offline path baker
+engine_cpp/CMakeLists.txt     — CMake build config (auto-fetches nlohmann/json)
+data/navmesh_data.json        — Raw geometry: polygon vertices + portal positions (input)
+data/baked_paths.json         — Pre-computed routes for all portal pairs (output)
+assets/img/lvl4map.jpg        — Floor plan background image
 ```
+
+## Data Pipeline
+
+```
+Floor plan image
+  → /tools/navmesh_mapper.html    (developer traces corridor polygon + places portals)
+  → /data/navmesh_data.json       (76 polygon vertices + 53 portal IDs & positions)
+  → /engine_cpp/baker              (grid → A* → Laplacian → RDP → centering)
+  → /data/baked_paths.json         (2,756 pre-computed routes, 944 KB)
+  → index.html + js/app.js        (2D viewer: instant lookup, draws on canvas)
+  → 3d/index.html + 3d/main.js    (3D viewer: procedural geometry + flythrough)
+```
+
+## Privacy
+
+The app collects nothing. No user accounts, no cookies, no analytics, no server logs, no network requests after initial load.
+
+## Adding New Floors
+
+Each floor is independent. Adding one requires:
+1. A floor plan image or architectural drawing
+2. Running the mapping tool to trace corridors and mark locations (~1–2 hours)
+3. Running the C++ baker to compute all routes (~30 seconds)
+
+Cross-floor routing (linking floors at shared staircases/elevators) is a planned future expansion.
