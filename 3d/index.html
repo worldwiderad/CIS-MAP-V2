@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIS Level 4 — 3D Navigator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    #canvas-container { position: fixed; inset: 0; }
+    canvas { display: block; }
+
+    /* UI Overlay */
+    #ui-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+    #ui-overlay > * { pointer-events: auto; }
+
+    #title-bar {
+      position: absolute; top: 20px; left: 24px;
+      color: #e6edf3; text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    }
+    #title-bar h1 { font-size: 22px; font-weight: 600; letter-spacing: 0.5px; }
+    #title-bar p { font-size: 12px; color: #8b949e; margin-top: 2px; }
+
+    #btn-skip {
+      position: absolute; top: 20px; right: 24px;
+      background: rgba(22, 27, 34, 0.8); color: #e6edf3;
+      border: 1px solid #30363d; border-radius: 8px;
+      padding: 8px 18px; font-size: 14px; cursor: pointer;
+      backdrop-filter: blur(8px); transition: opacity 0.4s;
+    }
+    #btn-skip:hover { background: rgba(48, 54, 61, 0.9); }
+
+    #btn-fullscreen {
+      position: absolute; top: 20px; right: 140px;
+      background: rgba(22, 27, 34, 0.8); color: #e6edf3;
+      border: 1px solid #30363d; border-radius: 8px;
+      padding: 8px 14px; font-size: 14px; cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    #btn-fullscreen:hover { background: rgba(48, 54, 61, 0.9); }
+
+    #route-panel {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: rgba(13, 17, 21, 0.9); border: 1px solid #30363d;
+      border-radius: 12px; padding: 16px 20px;
+      backdrop-filter: blur(12px); display: flex; gap: 12px; align-items: center;
+      opacity: 0; transition: opacity 0.6s; pointer-events: none;
+    }
+    #route-panel.visible { opacity: 1; pointer-events: auto; }
+
+    #route-panel select {
+      background: #161b22; color: #e6edf3; border: 1px solid #30363d;
+      border-radius: 6px; padding: 8px 12px; font-size: 14px; min-width: 140px;
+    }
+    #route-panel label { color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .select-group { display: flex; flex-direction: column; gap: 4px; }
+
+    #btn-go {
+      background: #238636; color: #fff; border: none; border-radius: 8px;
+      padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    #btn-go:hover { background: #2ea043; }
+
+    #loading-screen {
+      position: fixed; inset: 0; z-index: 100;
+      background: #0d1117; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.8s;
+    }
+    #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+    #loading-screen h2 { color: #e6edf3; font-size: 20px; margin-bottom: 12px; }
+    .spinner {
+      width: 40px; height: 40px; border: 3px solid #30363d;
+      border-top-color: #58a6ff; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Label styling for CSS2DRenderer */
+    .portal-label {
+      color: #c9d1d9; font-size: 10px; font-family: inherit;
+      background: rgba(13, 17, 21, 0.7); padding: 2px 6px;
+      border-radius: 3px; white-space: nowrap; pointer-events: none;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <h2>Building 3D Campus…</h2>
+</div>
+
+<div id="canvas-container"></div>
+
+<div id="ui-overlay">
+  <div id="title-bar">
+    <h1>CIS Level 4 — 3D Navigator</h1>
+    <p>Canadian International School · Lakeside Campus</p>
+  </div>
+
+  <button id="btn-fullscreen" title="Fullscreen">⛶</button>
+  <button id="btn-skip">Skip Intro ›</button>
+
+  <div id="route-panel">
+    <div class="select-group">
+      <label>From</label>
+      <select id="sel-from"></select>
+    </div>
+    <div class="select-group">
+      <label>To</label>
+      <select id="sel-to"></select>
+    </div>
+    <button id="btn-go">Go</button>
+  </div>
+</div>
+
+<!-- Three.js r128 (non-module examples, served locally) -->
+<script src="lib/three.min.js"></script>
+<script src="lib/OrbitControls.js"></script>
+<script src="lib/EffectComposer.js"></script>
+<script src="lib/RenderPass.js"></script>
+<script src="lib/UnrealBloomPass.js"></script>
+<script src="lib/ShaderPass.js"></script>
+<script src="lib/LuminosityHighPassShader.js"></script>
+<script src="lib/CopyShader.js"></script>
+<script src="lib/CSS2DRenderer.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>
