@@ -570,6 +570,66 @@
     draw();
   }
 
+  // ── Pinch Zoom ──
+  let pointers = new Map();
+  let lastPinchDist = 0;
+
+  function getPointerXY(e) {
+    var rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  function zoomAt(screenX, screenY, factor) {
+    var fitScale = Math.min(canvas.clientWidth / mapImg.width, canvas.clientHeight / mapImg.height) * 0.95;
+    var newScale = Math.max(fitScale, Math.min(fitScale * 12, camScale * factor));
+    var ratio = newScale / camScale;
+    camX = screenX - (screenX - camX) * ratio;
+    camY = screenY - (screenY - camY) * ratio;
+    camScale = newScale;
+    draw();
+  }
+
+  canvas.addEventListener('pointerdown', function(e) {
+    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, getPointerXY(e));
+    if (pointers.size === 2) {
+      var pts = [...pointers.values()];
+      lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+    }
+  });
+
+  canvas.addEventListener('pointermove', function(e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, getPointerXY(e));
+    if (pointers.size === 2) {
+      var pts = [...pointers.values()];
+      var dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      if (lastPinchDist > 0) {
+        var midX = (pts[0].x + pts[1].x) / 2;
+        var midY = (pts[0].y + pts[1].y) / 2;
+        zoomAt(midX, midY, dist / lastPinchDist);
+      }
+      lastPinchDist = dist;
+    }
+  });
+
+  canvas.addEventListener('pointerup', function(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) lastPinchDist = 0;
+  });
+
+  canvas.addEventListener('pointercancel', function(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) lastPinchDist = 0;
+  });
+
+  canvas.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (!mapImg) return;
+    var pt = getPointerXY(e);
+    zoomAt(pt.x, pt.y, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+  }, { passive: false });
+
   // ── Event wiring ──
   btnNav.addEventListener('click', navigate);
   btnClear.addEventListener('click', clearRoute);
