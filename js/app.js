@@ -3,87 +3,10 @@
 (function () {
   'use strict';
 
-  const STRINGS = {
-    en: {
-      title:        'MAP',
-      floorBadge:   'Level 4 Demo',
-      from:         'From',
-      to:           'To',
-      loading:      'Loading map\u2026',
-      noRoute:      'No route found between these locations',
-      invalidStart: 'Unknown start location',
-      invalidDest:  'Unknown destination',
-      same:         'Start and destination are the same',
-      swap:         'Swap',
-      tapToSelect:  'Tap to select',
-      searchPh:     'Search locations\u2026',
-      routeInfo:    '~{dist}m \u00B7 about {time} min',
-      selectStart:  'Select starting point',
-      selectDest:   'Select destination',
-    },
-    zh: {
-      title:        '\u5730\u56FE',
-      from:         '\u8D77\u70B9',
-      to:           '\u7EC8\u70B9',
-      loading:      '\u52A0\u8F7D\u5730\u56FE\u4E2D\u2026',
-      noRoute:      '\u672A\u627E\u5230\u8FD9\u4E24\u4E2A\u4F4D\u7F6E\u4E4B\u95F4\u7684\u8DEF\u7EBF',
-      invalidStart: '\u672A\u77E5\u7684\u8D77\u70B9\u4F4D\u7F6E',
-      invalidDest:  '\u672A\u77E5\u7684\u7EC8\u70B9\u4F4D\u7F6E',
-      same:         '\u8D77\u70B9\u548C\u7EC8\u70B9\u76F8\u540C',
-      floorBadge:   '4\u697C \u6F14\u793A',
-      swap:         '\u4EA4\u6362',
-      tapToSelect:  '\u70B9\u51FB\u9009\u62E9',
-      searchPh:     '\u641C\u7D22\u4F4D\u7F6E\u2026',
-      routeInfo:    '~{dist} \u7C73 \u00B7 \u7EA6 {time} \u5206\u949F',
-      selectStart:  '\u9009\u62E9\u8D77\u70B9',
-      selectDest:   '\u9009\u62E9\u7EC8\u70B9',
-    }
-  };
-
+  var S = window.CISShared;
+  var STRINGS = S.STRINGS;
   let lang = 'en';
-
-  const CATEGORIES = [
-    { key: 'ew',    label: { en: 'East Wing',   zh: '\u4E1C\u7FFC' },      match: function(id) { return id.startsWith('EW') && !id.includes('Elevator'); } },
-    { key: 'nw',    label: { en: 'North Wing',  zh: '\u5317\u7FFC' },      match: function(id) { return id.startsWith('NW') && !id.includes('Elevator'); } },
-    { key: 'ww',    label: { en: 'West Wing',   zh: '\u897F\u7FFC' },      match: function(id) { return id.startsWith('WW') && !id.includes('Elevator'); } },
-    { key: 'stair', label: { en: 'Stairs',      zh: '\u697C\u68AF' },      match: function(id) { return id.startsWith('Stair'); } },
-    { key: 'elev',  label: { en: 'Elevators',   zh: '\u7535\u68AF' },      match: function(id) { return id.includes('Elevator'); } },
-    { key: 'other', label: { en: 'Facilities',  zh: '\u8BBE\u65BD' },      match: function() { return true; } },
-  ];
-
-  const DISPLAY_NAMES = {
-    en: {
-      'Pod_A_WC_Girls':  'Girls WC (Pod A)',
-      'Pod_A_WC_Boys':   'Boys WC (Pod A)',
-      'Pod_C_WC_boys':   'Boys WC (Pod C)',
-      'Pod_C_WC_Girls':  'Girls WC (Pod C)',
-      'SW_Elevator':     'SW Elevator',
-      'NW_Elevator':     'NW Elevator',
-      'Secondary_Office': 'Secondary Office',
-    },
-    zh: {
-      'Pod_A_WC_Girls':  '\u5973\u6D17\u624B\u95F4 (A\u533A)',
-      'Pod_A_WC_Boys':   '\u7537\u6D17\u624B\u95F4 (A\u533A)',
-      'Pod_C_WC_boys':   '\u7537\u6D17\u624B\u95F4 (C\u533A)',
-      'Pod_C_WC_Girls':  '\u5973\u6D17\u624B\u95F4 (C\u533A)',
-      'SW_Elevator':     '\u897F\u5357\u7535\u68AF',
-      'NW_Elevator':     '\u897F\u5317\u7535\u68AF',
-      'Secondary_Office': '\u4E2D\u5B66\u529E\u516C\u5BA4',
-    }
-  };
-
-  function displayName(id) {
-    if (DISPLAY_NAMES[lang] && DISPLAY_NAMES[lang][id]) return DISPLAY_NAMES[lang][id];
-    var name = id.replace(/_/g, '-');
-    if (lang === 'zh') {
-      name = name.replace(/^Stair/, '\u697C\u68AF');
-    }
-    return name;
-  }
-
-  function sortKey(id) {
-    return id.replace(/[-_]/g, '-').toLowerCase();
-  }
+  function displayName(id) { return S.displayName(id, lang); }
 
   const canvas       = document.getElementById('mapcanvas');
   const ctx          = canvas.getContext('2d');
@@ -197,9 +120,7 @@
           idSet.add(dst);
         }
       }
-      portalIDs = [...idSet].sort(function(a, b) {
-        return sortKey(a).localeCompare(sortKey(b), undefined, { numeric: true });
-      });
+      portalIDs = S.sortPortalIDs([...idSet]);
 
       buildLocationList();
       fitToView();
@@ -225,39 +146,7 @@
   }
 
   function buildLocationList() {
-    panelList.innerHTML = '';
-    if (!portalIDs.length) return;
-
-    var assigned = new Set();
-    for (var i = 0; i < CATEGORIES.length; i++) {
-      var cat = CATEGORIES[i];
-      var ids = portalIDs.filter(function(id) {
-        return !assigned.has(id) && cat.match(id);
-      });
-      if (!ids.length) continue;
-      ids.forEach(function(id) { assigned.add(id); });
-
-      var header = document.createElement('div');
-      header.className = 'loc-group-header';
-      header.setAttribute('data-cat', cat.key);
-      header.textContent = cat.label[lang] || cat.label.en;
-      panelList.appendChild(header);
-
-      for (var j = 0; j < ids.length; j++) {
-        var btn = document.createElement('button');
-        btn.className = 'loc-item';
-        btn.setAttribute('data-id', ids[j]);
-        btn.textContent = displayName(ids[j]);
-        btn.addEventListener('click', onLocationClick);
-        panelList.appendChild(btn);
-      }
-    }
-  }
-
-  function onLocationClick(e) {
-    var btn = e.currentTarget;
-    var id = btn.getAttribute('data-id');
-    selectLocation(id);
+    S.buildLocationList({ listEl: panelList, ids: portalIDs, lang: lang, onPick: selectLocation });
   }
 
   function selectLocation(id) {
@@ -278,7 +167,7 @@
     panelSearch.value = '';
     panelTitle.textContent = target === 'start' ? t('selectStart') : t('selectDest');
     filterList('');
-    highlightCurrentValue(currentVal);
+    S.highlightCurrentValue(panelList, currentVal);
     locationPanel.classList.remove('panel-hidden');
     setTimeout(function() { panelSearch.focus(); }, 320);
   }
@@ -290,46 +179,11 @@
     clearTimeout(exactMatchTimer);
   }
 
-  function highlightCurrentValue(currentVal) {
-    var items = panelList.querySelectorAll('.loc-item');
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].getAttribute('data-id') === currentVal) {
-        items[i].classList.add('current-value');
-      } else {
-        items[i].classList.remove('current-value');
-      }
-    }
-  }
-
   function filterList(query) {
-    var q = query.trim().toLowerCase();
-    var visibleCount = 0;
-    var lastVisibleId = null;
-
-    var items = panelList.querySelectorAll('.loc-item');
-    for (var i = 0; i < items.length; i++) {
-      var id = items[i].getAttribute('data-id');
-      var name = displayName(id).toLowerCase();
-      var match = !q || id.toLowerCase().includes(q) || name.includes(q);
-      items[i].style.display = match ? '' : 'none';
-      if (match) { visibleCount++; lastVisibleId = id; }
-    }
-
-    var headers = panelList.querySelectorAll('.loc-group-header');
-    for (var h = 0; h < headers.length; h++) {
-      var next = headers[h].nextElementSibling;
-      var hasVisible = false;
-      while (next && !next.classList.contains('loc-group-header')) {
-        if (next.style.display !== 'none') { hasVisible = true; break; }
-        next = next.nextElementSibling;
-      }
-      headers[h].style.display = hasVisible ? '' : 'none';
-    }
-
     clearTimeout(exactMatchTimer);
-    if (q && visibleCount === 1 && lastVisibleId && lastVisibleId.toLowerCase() === q) {
-      exactMatchTimer = setTimeout(function() { selectLocation(lastVisibleId); }, 400);
-    }
+    S.filterLocationList(panelList, query, lang, function(id) {
+      exactMatchTimer = setTimeout(function() { selectLocation(id); }, 400);
+    });
   }
 
   function clampPan() {

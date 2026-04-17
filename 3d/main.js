@@ -417,21 +417,92 @@
   const _tempVec = new THREE.Vector3();
   const _lookTarget = new THREE.Vector3();
 
-  // ── UI Wiring ──
-  const selFrom = document.getElementById('sel-from');
-  const selTo = document.getElementById('sel-to');
+  // ── UI wiring: shared pill + full-screen panel pattern ──
+  const S = window.CISShared;
+  const LANG = 'en';
 
-  for (const id of portalIDs) {
-    selFrom.add(new Option(id.replace(/_/g, ' '), id));
-    selTo.add(new Option(id.replace(/_/g, ' '), id));
+  const pillStart     = document.getElementById('pill-start');
+  const pillDest      = document.getElementById('pill-dest');
+  const pillStartVal  = document.getElementById('pill-start-value');
+  const pillDestVal   = document.getElementById('pill-dest-value');
+  const btnSwap       = document.getElementById('btn-swap');
+  const locationPanel = document.getElementById('location-panel');
+  const panelSearch   = document.getElementById('panel-search');
+  const panelList     = document.getElementById('panel-list');
+  const panelBack     = document.getElementById('panel-back');
+  const panelClear    = document.getElementById('panel-clear-search');
+  const panelTitle    = document.getElementById('panel-title');
+
+  const sortedIDs = S.sortPortalIDs(portalIDs);
+  let startValue = '';
+  let destValue  = '';
+  let panelTarget = null;
+  let exactMatchTimer = null;
+
+  function rebuildList() {
+    S.buildLocationList({
+      listEl: panelList, ids: sortedIDs, lang: LANG,
+      onPick: selectLocation,
+    });
   }
-  if (portalIDs.length > 1) selTo.selectedIndex = 1;
 
-  document.getElementById('btn-go').addEventListener('click', () => {
-    showRoute(selFrom.value, selTo.value);
+  function updatePills() {
+    pillStartVal.textContent = startValue ? S.displayName(startValue, LANG) : 'Tap to select';
+    pillStartVal.classList.toggle('placeholder', !startValue);
+    pillDestVal.textContent  = destValue  ? S.displayName(destValue,  LANG) : 'Tap to select';
+    pillDestVal.classList.toggle('placeholder', !destValue);
+  }
+
+  function selectLocation(id) {
+    clearTimeout(exactMatchTimer);
+    if (panelTarget === 'start') startValue = id;
+    else destValue = id;
+    updatePills();
+    closePanel();
+    if (startValue && destValue) showRoute(startValue, destValue);
+  }
+
+  function openPanel(target) {
+    panelTarget = target;
+    const currentVal = target === 'start' ? startValue : destValue;
+    panelSearch.value = '';
+    panelTitle.textContent = target === 'start' ? 'Select starting point' : 'Select destination';
+    S.filterLocationList(panelList, '', LANG);
+    S.highlightCurrentValue(panelList, currentVal);
+    locationPanel.classList.remove('panel-hidden');
+    setTimeout(() => panelSearch.focus(), 320);
+  }
+
+  function closePanel() {
+    locationPanel.classList.add('panel-hidden');
+    panelTarget = null;
+    panelSearch.blur();
+    clearTimeout(exactMatchTimer);
+  }
+
+  rebuildList();
+  updatePills();
+
+  pillStart.addEventListener('click', () => openPanel('start'));
+  pillDest.addEventListener('click',  () => openPanel('dest'));
+  panelBack.addEventListener('click', closePanel);
+  panelClear.addEventListener('click', () => {
+    panelSearch.value = '';
+    S.filterLocationList(panelList, '', LANG);
+    panelSearch.focus();
+  });
+  panelSearch.addEventListener('input', () => {
+    clearTimeout(exactMatchTimer);
+    S.filterLocationList(panelList, panelSearch.value, LANG, (id) => {
+      exactMatchTimer = setTimeout(() => selectLocation(id), 400);
+    });
   });
 
-  document.getElementById('route-panel').classList.add('visible');
+  btnSwap.addEventListener('click', () => {
+    const tmp = startValue; startValue = destValue; destValue = tmp;
+    updatePills();
+    if (startValue && destValue) showRoute(startValue, destValue);
+  });
 
   document.getElementById('btn-fullscreen').addEventListener('click', () => {
     if (!document.fullscreenElement) {
