@@ -3,7 +3,7 @@
 // ============================================================================
 //  This app does ZERO pathfinding. It simply:
 //    1. Loads the pre-baked route dictionary (baked_paths.json)
-//    2. Populates autocomplete lists from the portal IDs
+//    2. Populates a grouped location list from the portal IDs
 //    3. Looks up routes[start][dest] and draws the coordinate array
 //    4. Provides pan/zoom so the user can explore the map
 // ============================================================================
@@ -19,73 +19,124 @@
       to:           'To',
       navigate:     'Navigate',
       clear:        'Clear',
-      loading:      'Loading map…',
+      loading:      'Loading map\u2026',
       ready:        'Select start and destination',
       noRoute:      'No route found between these locations',
       routeFound:   'Route displayed',
       invalidStart: 'Unknown start location',
       invalidDest:  'Unknown destination',
       same:         'Start and destination are the same',
-      lang:         '中文',
-      startPh:      'e.g. Stair_1',
-      destPh:       'e.g. NW-412',
+      lang:         '\u4E2D\u6587',
       swap:         'Swap',
+      tapToSelect:  'Tap to select',
+      searchPh:     'Search locations\u2026',
+      routeInfo:    '~{dist}m \u00B7 about {time} min',
+      selectStart:  'Select starting point',
+      selectDest:   'Select destination',
     },
     zh: {
-      title:        'CIS 校园导航',
-      from:         '起点',
-      to:           '终点',
-      navigate:     '导航',
-      clear:        '清除',
-      loading:      '加载地图中…',
-      ready:        '请选择起点和终点',
-      noRoute:      '未找到这两个位置之间的路线',
-      routeFound:   '路线已显示',
-      invalidStart: '未知的起点位置',
-      invalidDest:  '未知的终点位置',
-      same:         '起点和终点相同',
+      title:        'CIS \u6821\u56ED\u5BFC\u822A',
+      from:         '\u8D77\u70B9',
+      to:           '\u7EC8\u70B9',
+      navigate:     '\u5BFC\u822A',
+      clear:        '\u6E05\u9664',
+      loading:      '\u52A0\u8F7D\u5730\u56FE\u4E2D\u2026',
+      ready:        '\u8BF7\u9009\u62E9\u8D77\u70B9\u548C\u7EC8\u70B9',
+      noRoute:      '\u672A\u627E\u5230\u8FD9\u4E24\u4E2A\u4F4D\u7F6E\u4E4B\u95F4\u7684\u8DEF\u7EBF',
+      routeFound:   '\u8DEF\u7EBF\u5DF2\u663E\u793A',
+      invalidStart: '\u672A\u77E5\u7684\u8D77\u70B9\u4F4D\u7F6E',
+      invalidDest:  '\u672A\u77E5\u7684\u7EC8\u70B9\u4F4D\u7F6E',
+      same:         '\u8D77\u70B9\u548C\u7EC8\u70B9\u76F8\u540C',
       lang:         'EN',
-      startPh:      '例如 Stair_1',
-      destPh:       '例如 NW-412',
-      swap:         '交换',
+      swap:         '\u4EA4\u6362',
+      tapToSelect:  '\u70B9\u51FB\u9009\u62E9',
+      searchPh:     '\u641C\u7D22\u4F4D\u7F6E\u2026',
+      routeInfo:    '~{dist} \u7C73 \u00B7 \u7EA6 {time} \u5206\u949F',
+      selectStart:  '\u9009\u62E9\u8D77\u70B9',
+      selectDest:   '\u9009\u62E9\u7EC8\u70B9',
     }
   };
 
   let lang = 'en';
 
+  // ── Location categories ──
+  const CATEGORIES = [
+    { key: 'nw',    label: { en: 'NW Wing',     zh: 'NW \u6559\u5BA4' },   match: function(id) { return id.startsWith('NW'); } },
+    { key: 'ew',    label: { en: 'EW Wing',     zh: 'EW \u6559\u5BA4' },   match: function(id) { return id.startsWith('EW'); } },
+    { key: 'ww',    label: { en: 'WW Wing',     zh: 'WW \u6559\u5BA4' },   match: function(id) { return id.startsWith('WW'); } },
+    { key: 'stair', label: { en: 'Stairs',      zh: '\u697C\u68AF' },       match: function(id) { return id.startsWith('Stair'); } },
+    { key: 'elev',  label: { en: 'Elevators',   zh: '\u7535\u68AF' },       match: function(id) { return id.includes('Elevator'); } },
+    { key: 'other', label: { en: 'Facilities',  zh: '\u8BBE\u65BD' },       match: function() { return true; } },
+  ];
+
+  // ── Display names for non-obvious portal IDs ──
+  const DISPLAY_NAMES = {
+    en: {
+      'Pod_A_WC_Girls':  'Girls WC (Pod A)',
+      'Pod_A_WC_Boys':   'Boys WC (Pod A)',
+      'Pod_C_WC_boys':   'Boys WC (Pod C)',
+      'Pod_C_WC_Girls':  'Girls WC (Pod C)',
+      'SW_Elevator':     'SW Elevator',
+      'NW_Elevator':     'NW Elevator',
+      'Secondary_Office': 'Secondary Office',
+    },
+    zh: {
+      'Pod_A_WC_Girls':  '\u5973\u6D17\u624B\u95F4 (A\u533A)',
+      'Pod_A_WC_Boys':   '\u7537\u6D17\u624B\u95F4 (A\u533A)',
+      'Pod_C_WC_boys':   '\u7537\u6D17\u624B\u95F4 (C\u533A)',
+      'Pod_C_WC_Girls':  '\u5973\u6D17\u624B\u95F4 (C\u533A)',
+      'SW_Elevator':     '\u897F\u5357\u7535\u68AF',
+      'NW_Elevator':     '\u897F\u5317\u7535\u68AF',
+      'Secondary_Office': '\u4E2D\u5B66\u529E\u516C\u5BA4',
+    }
+  };
+
+  function displayName(id) {
+    if (DISPLAY_NAMES[lang] && DISPLAY_NAMES[lang][id]) return DISPLAY_NAMES[lang][id];
+    return id.replace(/_/g, ' ').replace(/-/g, '\u2011');
+  }
+
   // ── DOM refs ──
-  const canvas      = document.getElementById('mapcanvas');
-  const ctx         = canvas.getContext('2d');
-  const loadingEl   = document.getElementById('loading');
-  const loadingText = document.getElementById('loading-text');
-  const statusEl    = document.getElementById('status');
-  const inputStart  = document.getElementById('input-start');
-  const inputDest   = document.getElementById('input-dest');
-  const datalist    = document.getElementById('portal-list');
-  const btnNav      = document.getElementById('btn-navigate');
-  const btnClear    = document.getElementById('btn-clear');
-  const btnSwap     = document.getElementById('btn-swap');
-  const btnLang     = document.getElementById('btn-lang');
-  const appTitle    = document.getElementById('app-title');
-  const labelStart  = document.getElementById('label-start');
-  const labelDest   = document.getElementById('label-dest');
+  const canvas       = document.getElementById('mapcanvas');
+  const ctx          = canvas.getContext('2d');
+  const loadingEl    = document.getElementById('loading');
+  const loadingText  = document.getElementById('loading-text');
+  const statusEl     = document.getElementById('status');
+  const btnNav       = document.getElementById('btn-navigate');
+  const btnClear     = document.getElementById('btn-clear');
+  const btnSwap      = document.getElementById('btn-swap');
+  const btnLang      = document.getElementById('btn-lang');
+  const appTitle     = document.getElementById('app-title');
+  const labelStart   = document.getElementById('label-start');
+  const labelDest    = document.getElementById('label-dest');
+  const pillStart    = document.getElementById('pill-start');
+  const pillDest     = document.getElementById('pill-dest');
+  const pillStartVal = document.getElementById('pill-start-value');
+  const pillDestVal  = document.getElementById('pill-dest-value');
+  const locationPanel = document.getElementById('location-panel');
+  const panelSearch  = document.getElementById('panel-search');
+  const panelList    = document.getElementById('panel-list');
+  const panelBack    = document.getElementById('panel-back');
+  const panelClearSearch = document.getElementById('panel-clear-search');
+  const panelTitle   = document.getElementById('panel-title');
 
   // ── State ──
-  let bakedPaths = null;           // the full route dictionary
-  let portalIDs  = [];             // sorted list of portal ID strings
-  let mapImg     = null;           // HTMLImageElement for the floor plan
-  let currentRoute = null;         // array of {x,y} for the active path
+  let bakedPaths = null;
+  let portalIDs  = [];
+  let mapImg     = null;
+  let currentRoute = null;
+
+  let startValue = '';
+  let destValue  = '';
 
   // Camera (pan & zoom in image-pixel space)
-  let camX = 0, camY = 0;         // translation offset (screen pixels)
-  let camScale = 1;                // zoom factor
+  let camX = 0, camY = 0;
+  let camScale = 1;
   let minScale = 0.1, maxScale = 5;
 
-  // Touch tracking
-  let pointers = new Map();        // pointerId → {x, y}
-  let lastPinchDist = 0;
-  let lastPanX = 0, lastPanY = 0;
-  let isDragging = false;
+  // Panel state
+  let panelTarget = null;
+  let exactMatchTimer = null;
 
   // ── Helpers ──
   function setStatus(msg, cls) {
@@ -95,33 +146,50 @@
 
   function t(key) { return STRINGS[lang][key] || key; }
 
+  function updatePills() {
+    if (startValue) {
+      pillStartVal.textContent = displayName(startValue);
+      pillStartVal.classList.remove('placeholder');
+    } else {
+      pillStartVal.textContent = t('tapToSelect');
+      pillStartVal.classList.add('placeholder');
+    }
+    if (destValue) {
+      pillDestVal.textContent = displayName(destValue);
+      pillDestVal.classList.remove('placeholder');
+    } else {
+      pillDestVal.textContent = t('tapToSelect');
+      pillDestVal.classList.add('placeholder');
+    }
+    btnNav.disabled = !(startValue && destValue);
+  }
+
   function applyLanguage() {
     appTitle.textContent   = t('title');
     labelStart.textContent = t('from');
     labelDest.textContent  = t('to');
     btnNav.textContent     = t('navigate');
     btnClear.textContent   = t('clear');
-    btnLang.textContent    = t('lang');
     btnSwap.title          = t('swap');
-    inputStart.placeholder = t('startPh');
-    inputDest.placeholder  = t('destPh');
     loadingText.textContent = t('loading');
+    panelSearch.placeholder = t('searchPh');
+    updatePills();
     if (!currentRoute) setStatus(t('ready'));
+    buildLocationList();
   }
 
   // ── Data loading ──
   async function init() {
     try {
-      // Load paths and image concurrently
       const [pathsResp, img] = await Promise.all([
-        fetch('data/baked_paths.json').then(r => {
+        fetch('data/baked_paths.json').then(function(r) {
           if (!r.ok) throw new Error('Failed to load route data');
           return r.json();
         }),
-        new Promise((resolve, reject) => {
-          const image = new Image();
-          image.onload = () => resolve(image);
-          image.onerror = () => reject(new Error('Failed to load map image'));
+        new Promise(function(resolve, reject) {
+          var image = new Image();
+          image.onload = function() { resolve(image); };
+          image.onerror = function() { reject(new Error('Failed to load map image')); };
           image.src = 'assets/img/lvl4map.jpg';
         })
       ]);
@@ -130,40 +198,34 @@
       mapImg = img;
 
       // Extract and sort portal IDs
-      const idSet = new Set();
-      for (const src of Object.keys(bakedPaths)) {
+      var idSet = new Set();
+      for (var src of Object.keys(bakedPaths)) {
         idSet.add(src);
-        for (const dst of Object.keys(bakedPaths[src])) {
+        for (var dst of Object.keys(bakedPaths[src])) {
           idSet.add(dst);
         }
       }
-      portalIDs = [...idSet].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      portalIDs = [...idSet].sort(function(a, b) { return a.localeCompare(b, undefined, { numeric: true }); });
 
-      // Populate datalist
-      const frag = document.createDocumentFragment();
-      for (const id of portalIDs) {
-        const opt = document.createElement('option');
-        opt.value = id;
-        frag.appendChild(opt);
-      }
-      datalist.appendChild(frag);
-
-      // Set initial camera to fit the image in the viewport
+      buildLocationList();
       fitToView();
 
-      // Parse QR-code query params (e.g. ?start=Stair_1)
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('start')) inputStart.value = params.get('start');
-      if (params.has('dest'))  inputDest.value  = params.get('dest');
+      // Parse QR-code query params
+      var params = new URLSearchParams(window.location.search);
+      if (params.has('start')) {
+        startValue = params.get('start');
+      }
+      if (params.has('dest')) {
+        destValue = params.get('dest');
+      }
 
-      // Enable UI
-      btnNav.disabled = false;
+      updatePills();
+      btnNav.disabled = !(startValue && destValue);
       loadingEl.classList.add('hidden');
       setStatus(t('ready'));
       draw();
 
-      // Auto-navigate if both params provided
-      if (inputStart.value && inputDest.value) {
+      if (startValue && destValue) {
         navigate();
       }
     } catch (err) {
@@ -172,15 +234,129 @@
     }
   }
 
-  // ── Camera ──
+  // ── Location list ──
+  function buildLocationList() {
+    panelList.innerHTML = '';
+    if (!portalIDs.length) return;
 
+    var assigned = new Set();
+    for (var i = 0; i < CATEGORIES.length; i++) {
+      var cat = CATEGORIES[i];
+      var ids = portalIDs.filter(function(id) {
+        return !assigned.has(id) && cat.match(id);
+      });
+      if (!ids.length) continue;
+      ids.forEach(function(id) { assigned.add(id); });
+
+      var header = document.createElement('div');
+      header.className = 'loc-group-header';
+      header.setAttribute('data-cat', cat.key);
+      header.textContent = cat.label[lang] || cat.label.en;
+      panelList.appendChild(header);
+
+      for (var j = 0; j < ids.length; j++) {
+        var btn = document.createElement('button');
+        btn.className = 'loc-item';
+        btn.setAttribute('data-id', ids[j]);
+        btn.textContent = displayName(ids[j]);
+        if (ids[j] !== displayName(ids[j]).replace(/\u2011/g, '-')) {
+          var span = document.createElement('span');
+          span.className = 'loc-id';
+          span.textContent = ids[j];
+          btn.appendChild(span);
+        }
+        btn.addEventListener('click', onLocationClick);
+        panelList.appendChild(btn);
+      }
+    }
+  }
+
+  function onLocationClick(e) {
+    var btn = e.currentTarget;
+    var id = btn.getAttribute('data-id');
+    selectLocation(id);
+  }
+
+  function selectLocation(id) {
+    clearTimeout(exactMatchTimer);
+    if (panelTarget === 'start') {
+      startValue = id;
+    } else {
+      destValue = id;
+    }
+    updatePills();
+    closePanel();
+  }
+
+  // ── Panel open/close ──
+  function openPanel(target) {
+    panelTarget = target;
+    var currentVal = target === 'start' ? startValue : destValue;
+    panelSearch.value = '';
+    panelTitle.textContent = target === 'start' ? t('selectStart') : t('selectDest');
+    filterList('');
+    highlightCurrentValue(currentVal);
+    locationPanel.classList.remove('panel-hidden');
+    setTimeout(function() { panelSearch.focus(); }, 320);
+  }
+
+  function closePanel() {
+    locationPanel.classList.add('panel-hidden');
+    panelTarget = null;
+    panelSearch.blur();
+    clearTimeout(exactMatchTimer);
+  }
+
+  function highlightCurrentValue(currentVal) {
+    var items = panelList.querySelectorAll('.loc-item');
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].getAttribute('data-id') === currentVal) {
+        items[i].classList.add('current-value');
+      } else {
+        items[i].classList.remove('current-value');
+      }
+    }
+  }
+
+  function filterList(query) {
+    var q = query.trim().toLowerCase();
+    var visibleCount = 0;
+    var lastVisibleId = null;
+
+    var items = panelList.querySelectorAll('.loc-item');
+    for (var i = 0; i < items.length; i++) {
+      var id = items[i].getAttribute('data-id');
+      var name = displayName(id).toLowerCase();
+      var match = !q || id.toLowerCase().includes(q) || name.includes(q);
+      items[i].style.display = match ? '' : 'none';
+      if (match) { visibleCount++; lastVisibleId = id; }
+    }
+
+    // Hide empty group headers
+    var headers = panelList.querySelectorAll('.loc-group-header');
+    for (var h = 0; h < headers.length; h++) {
+      var next = headers[h].nextElementSibling;
+      var hasVisible = false;
+      while (next && !next.classList.contains('loc-group-header')) {
+        if (next.style.display !== 'none') { hasVisible = true; break; }
+        next = next.nextElementSibling;
+      }
+      headers[h].style.display = hasVisible ? '' : 'none';
+    }
+
+    // Exact match auto-select
+    clearTimeout(exactMatchTimer);
+    if (q && visibleCount === 1 && lastVisibleId && lastVisibleId.toLowerCase() === q) {
+      exactMatchTimer = setTimeout(function() { selectLocation(lastVisibleId); }, 400);
+    }
+  }
+
+  // ── Camera ──
   function fitToView() {
     if (!mapImg) return;
-    const cw = canvas.clientWidth;
-    const ch = canvas.clientHeight;
-    // Fit image into viewport with some padding
+    var cw = canvas.clientWidth;
+    var ch = canvas.clientHeight;
     camScale = Math.min(cw / mapImg.width, ch / mapImg.height) * 0.95;
-    // Center the image
     camX = (cw - mapImg.width * camScale) / 2;
     camY = (ch - mapImg.height * camScale) / 2;
     minScale = camScale * 0.5;
@@ -188,10 +364,6 @@
   }
 
   // ── Corner-rounding with arcTo ──
-  // Canvas arcTo draws a true circular arc tangent to both line
-  // segments meeting at the corner — it stays tight to the corner
-  // instead of cutting inside like a quadratic bezier.
-
   function drawSmoothRoute(points) {
     if (points.length < 2) return;
     ctx.beginPath();
@@ -202,72 +374,73 @@
       return;
     }
 
-    // arcTo needs a radius smaller than both adjacent segments,
-    // otherwise it produces spikes on short segments.
-    const MAX_RADIUS = 30;
-
-    for (let i = 1; i < points.length - 1; i++) {
-      const prev = points[i - 1], cur = points[i], next = points[i + 1];
-      const lenIn = Math.sqrt((cur.x - prev.x) ** 2 + (cur.y - prev.y) ** 2);
-      const lenOut = Math.sqrt((next.x - cur.x) ** 2 + (next.y - cur.y) ** 2);
-      const r = Math.min(MAX_RADIUS, lenIn * 0.4, lenOut * 0.4);
+    var MAX_RADIUS = 30;
+    for (var i = 1; i < points.length - 1; i++) {
+      var prev = points[i - 1], cur = points[i], next = points[i + 1];
+      var lenIn = Math.sqrt((cur.x - prev.x) ** 2 + (cur.y - prev.y) ** 2);
+      var lenOut = Math.sqrt((next.x - cur.x) ** 2 + (next.y - cur.y) ** 2);
+      var r = Math.min(MAX_RADIUS, lenIn * 0.4, lenOut * 0.4);
       ctx.arcTo(cur.x, cur.y, next.x, next.y, r);
     }
     ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
   }
 
   // ── Drawing ──
-
   function draw() {
-    // clearRect in CSS-pixel space (DPR transform is active)
-    const cw = canvas.clientWidth;
-    const ch = canvas.clientHeight;
+    var cw = canvas.clientWidth;
+    var ch = canvas.clientHeight;
     ctx.clearRect(0, 0, cw, ch);
     ctx.save();
 
-    // Apply camera transform (in CSS-pixel space, on top of DPR)
     ctx.translate(camX, camY);
     ctx.scale(camScale, camScale);
 
-    // Draw the floor plan
     if (mapImg) {
       ctx.drawImage(mapImg, 0, 0);
     }
 
     // Draw active route
     if (currentRoute && currentRoute.length > 1) {
-      // Glow layer (wider, semi-transparent)
+      // White halo for contrast on varied backgrounds
       drawSmoothRoute(currentRoute);
-      ctx.strokeStyle = 'rgba(56, 182, 255, 0.35)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 22 / camScale;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Red glow layer
+      drawSmoothRoute(currentRoute);
+      ctx.strokeStyle = 'rgba(196, 30, 58, 0.20)';
       ctx.lineWidth = 18 / camScale;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.stroke();
 
-      // Core path line
+      // Core path line (CIS red)
       drawSmoothRoute(currentRoute);
-      ctx.strokeStyle = '#38b6ff';
+      ctx.strokeStyle = '#C41E3A';
       ctx.lineWidth = 7 / camScale;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.stroke();
 
       // Start marker (green dot)
-      const start = currentRoute[0];
-      const dotR = 10 / camScale;
+      var start = currentRoute[0];
+      var dotR = 10 / camScale;
       ctx.beginPath();
       ctx.arc(start.x, start.y, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = '#3fb950';
+      ctx.fillStyle = '#16A34A';
       ctx.fill();
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2 / camScale;
       ctx.stroke();
 
       // End marker (red dot)
-      const end = currentRoute[currentRoute.length - 1];
+      var end = currentRoute[currentRoute.length - 1];
       ctx.beginPath();
       ctx.arc(end.x, end.y, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = '#f85149';
+      ctx.fillStyle = '#C41E3A';
       ctx.fill();
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2 / camScale;
@@ -278,10 +451,9 @@
   }
 
   // ── Resize handling ──
-
   function resizeCanvas() {
-    const wrap = canvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
+    var wrap = canvas.parentElement;
+    var dpr = window.devicePixelRatio || 1;
     canvas.width  = wrap.clientWidth * dpr;
     canvas.height = wrap.clientHeight * dpr;
     canvas.style.width  = wrap.clientWidth + 'px';
@@ -290,18 +462,29 @@
     draw();
   }
 
-  // Debounced resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
+  var resizeTimer;
+  window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(resizeCanvas, 100);
   });
 
-  // ── Navigation logic ──
+  // ── Route info ──
+  function computeRouteInfo(route) {
+    var totalDist = 0;
+    for (var i = 1; i < route.length; i++) {
+      var dx = route[i].x - route[i - 1].x;
+      var dy = route[i].y - route[i - 1].y;
+      totalDist += Math.sqrt(dx * dx + dy * dy);
+    }
+    var meters = Math.round(totalDist * 0.05);
+    var minutes = Math.max(1, Math.ceil((meters / 1.2) / 60));
+    return { meters: meters, minutes: minutes };
+  }
 
+  // ── Navigation logic ──
   function navigate() {
-    const src = inputStart.value.trim();
-    const dst = inputDest.value.trim();
+    var src = startValue.trim();
+    var dst = destValue.trim();
 
     if (!src || !dst) {
       setStatus(t('ready'));
@@ -316,10 +499,10 @@
       return;
     }
     if (!bakedPaths[src][dst]) {
-      // Try reverse lookup — paths might be stored one-directional
       if (bakedPaths[dst] && bakedPaths[dst][src] && bakedPaths[dst][src].length > 0) {
         currentRoute = [...bakedPaths[dst][src]].reverse();
-        setStatus(t('routeFound'), 'success');
+        var info1 = computeRouteInfo(currentRoute);
+        setStatus(displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' + t('routeInfo').replace('{dist}', info1.meters).replace('{time}', info1.minutes), 'success');
         panToRoute();
         draw();
         return;
@@ -330,7 +513,7 @@
       return;
     }
 
-    const route = bakedPaths[src][dst];
+    var route = bakedPaths[src][dst];
     if (!route || route.length === 0) {
       setStatus(t('noRoute'), 'error');
       currentRoute = null;
@@ -339,157 +522,85 @@
     }
 
     currentRoute = route;
-    setStatus(t('routeFound'), 'success');
+    var info = computeRouteInfo(currentRoute);
+    setStatus(displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' + t('routeInfo').replace('{dist}', info.meters).replace('{time}', info.minutes), 'success');
     panToRoute();
     draw();
   }
 
-  // Center the camera on the current route
   function panToRoute() {
     if (!currentRoute || currentRoute.length === 0) return;
 
-    // Compute bounding box of the route in image coords
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const pt of currentRoute) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (var i = 0; i < currentRoute.length; i++) {
+      var pt = currentRoute[i];
       if (pt.x < minX) minX = pt.x;
       if (pt.y < minY) minY = pt.y;
       if (pt.x > maxX) maxX = pt.x;
       if (pt.y > maxY) maxY = pt.y;
     }
 
-    const routeW = maxX - minX;
-    const routeH = maxY - minY;
-    const cx = (minX + maxX) / 2;
-    const cy = (minY + maxY) / 2;
+    var routeW = maxX - minX;
+    var routeH = maxY - minY;
+    var cx = (minX + maxX) / 2;
+    var cy = (minY + maxY) / 2;
 
-    // Fit the route bbox into the viewport with padding
-    const viewW = canvas.clientWidth;
-    const viewH = canvas.clientHeight;
-    const pad = 0.7; // use 70% of viewport for the route
-    const scale = Math.min(
+    var viewW = canvas.clientWidth;
+    var viewH = canvas.clientHeight;
+    var pad = 0.7;
+    var scale = Math.min(
       (viewW * pad) / Math.max(routeW, 50),
       (viewH * pad) / Math.max(routeH, 50),
       maxScale
     );
-    // Don't zoom in too far on short routes
     camScale = Math.min(scale, camScale * 3, maxScale);
     camScale = Math.max(camScale, minScale);
 
-    // Center on route midpoint
     camX = viewW / 2 - cx * camScale;
     camY = viewH / 2 - cy * camScale;
   }
 
   function clearRoute() {
     currentRoute = null;
-    inputStart.value = '';
-    inputDest.value = '';
+    startValue = '';
+    destValue = '';
+    updatePills();
     setStatus(t('ready'));
     fitToView();
     draw();
   }
 
-  // ── Touch / Mouse Pan & Zoom ──
-
-  function getPointerXY(e) {
-    const rect = canvas.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-  }
-
-  canvas.addEventListener('pointerdown', (e) => {
-    canvas.setPointerCapture(e.pointerId);
-    const pt = getPointerXY(e);
-    pointers.set(e.pointerId, pt);
-
-    if (pointers.size === 1) {
-      isDragging = true;
-      lastPanX = pt.x;
-      lastPanY = pt.y;
-    } else if (pointers.size === 2) {
-      isDragging = false;
-      const pts = [...pointers.values()];
-      lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
-    }
-  });
-
-  canvas.addEventListener('pointermove', (e) => {
-    if (!pointers.has(e.pointerId)) return;
-    const pt = getPointerXY(e);
-    pointers.set(e.pointerId, pt);
-
-    if (pointers.size === 1 && isDragging) {
-      // Pan
-      camX += pt.x - lastPanX;
-      camY += pt.y - lastPanY;
-      lastPanX = pt.x;
-      lastPanY = pt.y;
-      draw();
-    } else if (pointers.size === 2) {
-      // Pinch zoom
-      const pts = [...pointers.values()];
-      const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
-      if (lastPinchDist > 0) {
-        const midX = (pts[0].x + pts[1].x) / 2;
-        const midY = (pts[0].y + pts[1].y) / 2;
-        const factor = dist / lastPinchDist;
-        zoomAt(midX, midY, factor);
-      }
-      lastPinchDist = dist;
-    }
-  });
-
-  canvas.addEventListener('pointerup', (e) => {
-    pointers.delete(e.pointerId);
-    if (pointers.size < 2) lastPinchDist = 0;
-    if (pointers.size === 0) isDragging = false;
-  });
-
-  canvas.addEventListener('pointercancel', (e) => {
-    pointers.delete(e.pointerId);
-    if (pointers.size === 0) isDragging = false;
-  });
-
-  // Mouse wheel zoom
-  canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const pt = getPointerXY(e);
-    const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-    zoomAt(pt.x, pt.y, factor);
-  }, { passive: false });
-
-  function zoomAt(screenX, screenY, factor) {
-    const newScale = Math.max(minScale, Math.min(maxScale, camScale * factor));
-    const ratio = newScale / camScale;
-    // Zoom towards the pointer position
-    camX = screenX - (screenX - camX) * ratio;
-    camY = screenY - (screenY - camY) * ratio;
-    camScale = newScale;
-    draw();
-  }
-
   // ── Event wiring ──
-
   btnNav.addEventListener('click', navigate);
   btnClear.addEventListener('click', clearRoute);
 
-  btnSwap.addEventListener('click', () => {
-    const tmp = inputStart.value;
-    inputStart.value = inputDest.value;
-    inputDest.value = tmp;
+  btnSwap.addEventListener('click', function() {
+    var tmp = startValue;
+    startValue = destValue;
+    destValue = tmp;
+    updatePills();
   });
 
-  btnLang.addEventListener('click', () => {
+  btnLang.addEventListener('click', function() {
     lang = lang === 'en' ? 'zh' : 'en';
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     applyLanguage();
   });
 
-  // Allow Enter key to trigger navigation
-  inputStart.addEventListener('keydown', (e) => { if (e.key === 'Enter') inputDest.focus(); });
-  inputDest.addEventListener('keydown',  (e) => { if (e.key === 'Enter') { e.target.blur(); navigate(); } });
+  // Panel wiring
+  pillStart.addEventListener('click', function() { openPanel('start'); });
+  pillDest.addEventListener('click', function() { openPanel('dest'); });
+  panelBack.addEventListener('click', closePanel);
+  panelClearSearch.addEventListener('click', function() {
+    panelSearch.value = '';
+    filterList('');
+    panelSearch.focus();
+  });
+  panelSearch.addEventListener('input', function() {
+    filterList(panelSearch.value);
+  });
 
   // ── Boot ──
-
   applyLanguage();
   resizeCanvas();
   init();

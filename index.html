@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#161b22">
+  <meta name="theme-color" content="#C41E3A">
   <title>CIS Navigator</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,7 +14,10 @@
 
     <!-- Top Bar -->
     <header id="topbar">
-      <h1 id="app-title">CIS Navigator</h1>
+      <div id="title-group">
+        <h1 id="app-title">CIS Navigator</h1>
+        <span id="floor-badge">Level 4 Demo</span>
+      </div>
       <button id="btn-lang" aria-label="Toggle language">中文</button>
     </header>
 
@@ -29,22 +32,36 @@
 
     <!-- Bottom Controls -->
     <div id="controls">
-      <div class="input-row">
-        <label for="input-start" id="label-start">From</label>
-        <input id="input-start" type="text" list="portal-list" autocomplete="off" placeholder="">
+      <div id="route-summary">
+        <div class="summary-pill" id="pill-start" data-target="start">
+          <span class="pill-icon">●</span>
+          <span class="pill-label" id="label-start">From</span>
+          <span class="pill-value placeholder" id="pill-start-value">Tap to select</span>
+        </div>
         <button id="btn-swap" title="Swap">⇅</button>
-      </div>
-      <div class="input-row">
-        <label for="input-dest" id="label-dest">To</label>
-        <input id="input-dest" type="text" list="portal-list" autocomplete="off" placeholder="">
+        <div class="summary-pill" id="pill-dest" data-target="dest">
+          <span class="pill-icon">●</span>
+          <span class="pill-label" id="label-dest">To</span>
+          <span class="pill-value placeholder" id="pill-dest-value">Tap to select</span>
+        </div>
       </div>
       <div class="btn-row">
         <button id="btn-navigate" disabled>Navigate</button>
         <button id="btn-clear">Clear</button>
       </div>
       <div id="status"></div>
-      <datalist id="portal-list"></datalist>
     </div>
+  </div>
+
+  <!-- Full-screen location picker -->
+  <div id="location-panel" class="panel-hidden">
+    <div id="panel-header">
+      <button id="panel-back" aria-label="Back">←</button>
+      <input id="panel-search" type="text" placeholder="Search locations..." autocomplete="off">
+      <button id="panel-clear-search" aria-label="Clear">✕</button>
+    </div>
+    <div id="panel-title">Select starting point</div>
+    <div id="panel-list"></div>
   </div>
 
   <script src="js/app.js"></script>

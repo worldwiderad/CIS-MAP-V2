@@ -29,10 +29,16 @@ Floor plan images or architectural drawings for the remaining floors. The system
 The project is divided into four operational domains:
 
 ### 1. The Mapping Tools (`/tools`)
-* **Purpose:** Web-based developer tool to digitize physical floor plans into mathematical geometry data.
+* **Purpose:** Web-based authoring tool to digitize physical floor plans into the vector-map geometry the whole pipeline consumes.
 * **Tech Stack:** HTML5 Canvas via Paper.js (CDN), vanilla JavaScript.
-* **Capabilities:** Trace walkable corridor boundary (polygon mode), place named portals snapped to polygon edges (portal mode), undo/redo, import/export.
-* **Output:** `navmesh_data.json` — a single continuous polygon (76 vertices for Level 4) representing walkable hallway space, plus 53 edge-snapped portals with IDs and positions, all in image-pixel coordinates.
+* **Layers & modes (v2):**
+  * `walkable` — the single CCW corridor polygon (baker routes inside this)
+  * `blocked` — visible-but-non-routable regions (e.g. the gym; rendered on the map but the baker must not path through)
+  * `rooms` — room footprints (rendered dimmed in the viewer; each may cross-reference a portal ID as its entry point)
+  * `portals` — named POIs snapped to the walkable boundary, with type, bilingual label, and optional cross-floor link metadata
+* **Editing:** vertex drag to move, click-on-edge to insert, Alt-click to delete; undo/redo stack (50 deep); pan (middle-mouse or Space-drag) and wheel-zoom with zoom-compensated handle sizes; validation panel flags CCW, self-intersection, duplicate portal IDs, orphan room→portal references; localStorage auto-save survives refresh.
+* **Custom-map authoring:** background image has an opacity slider and a hide toggle. When hidden, the mapper previews what the viewer will render without the raw floor-plan photo — walkable fill, blocked fills, dimmed rooms, portal markers.
+* **Output:** `navmesh_data.json` — schema v2, backward-compatible with v1. Top-level keys: `schemaVersion`, `metadata` (floor, building, timestamps), `image`/`imageWidth`/`imageHeight`, `style`, `polygon` (walkable CCW, unchanged from v1), `portals` (now with `type`, bilingual `label`, optional cross-floor `link`), plus new `blocked` and `rooms` arrays. The baker and 3D navigator read only `polygon` + `portals.{id,x,y}` — extra fields are ignored, so schema expansion is invisible to them.
 
 ### 2. The Offline Baker (`/engine_cpp`)
 * **Purpose:** A C++ executable that reads `navmesh_data.json` and computes the optimal path between every pair of portals.

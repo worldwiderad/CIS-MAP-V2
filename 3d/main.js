@@ -277,7 +277,7 @@
   controls.maxDistance = 5000;
   controls.maxPolarAngle = Math.PI / 2.1;
   controls.target.set(cx, 0, cz);
-  controls.enabled = false; // disabled during flythrough
+  controls.enabled = true;
 
   // ── Route Rendering ──
   let activeRouteMesh = null;
@@ -408,60 +408,14 @@
     scene.add(endMarker);
   }
 
-  // ── Flythrough State ──
-  let mode = 'flythrough'; // 'flythrough' | 'transition' | 'interactive'
-  let flyT = 0;
-  let transT = 0;
-  let flyCurve = null;
+  // ── Interactive mode (no flythrough) ──
+  let mode = 'interactive';
+  camera.position.set(cx + 1200, 2000, cz + 1200);
+  controls.target.set(cx, 0, cz);
+  controls.update();
 
-  function buildFlyCurve() {
-    let route = bakedPaths['Stair_2'] && bakedPaths['Stair_2']['NW_Elevator'];
-    if (!route || route.length < 5) {
-      let best = null, bestLen = 0;
-      for (const src of Object.keys(bakedPaths)) {
-        for (const dst of Object.keys(bakedPaths[src])) {
-          const r = bakedPaths[src][dst];
-          if (r.length > bestLen) { bestLen = r.length; best = r; }
-        }
-      }
-      route = best;
-    }
-    if (!route) return null;
-    const pts = route.map(p => toWorld3(p.x, p.y, EYE_HEIGHT));
-    return new THREE.CatmullRomCurve3(pts);
-  }
-  flyCurve = buildFlyCurve();
-
-  // Flythrough start/end camera states
-  const flyStartPos = new THREE.Vector3(cx, 2500, cz + 1500);
-  const flyStartTarget = new THREE.Vector3(cx, 0, cz);
-
-  // Interactive camera defaults
-  const interactivePos = new THREE.Vector3(cx + 1200, 2000, cz + 1200);
-  const interactiveTarget = new THREE.Vector3(cx, 0, cz);
-
-  // For smooth transition
-  let transStartPos = new THREE.Vector3();
-  let transStartTarget = new THREE.Vector3();
-
-  // Pre-allocated vectors — avoids GC pressure from per-frame allocations
   const _tempVec = new THREE.Vector3();
   const _lookTarget = new THREE.Vector3();
-
-  function skipToInteractive() {
-    if (mode === 'interactive') return;
-    if (mode === 'flythrough') {
-      transStartPos.copy(camera.position);
-      transStartTarget.set(cx, 0, cz);
-    }
-    mode = 'transition';
-    transT = 0;
-    document.getElementById('btn-skip').style.opacity = '0';
-    setTimeout(() => {
-      document.getElementById('btn-skip').style.display = 'none';
-    }, 400);
-    document.getElementById('route-panel').classList.add('visible');
-  }
 
   // ── UI Wiring ──
   const selFrom = document.getElementById('sel-from');
@@ -477,7 +431,7 @@
     showRoute(selFrom.value, selTo.value);
   });
 
-  document.getElementById('btn-skip').addEventListener('click', skipToInteractive);
+  document.getElementById('route-panel').classList.add('visible');
 
   document.getElementById('btn-fullscreen').addEventListener('click', () => {
     if (!document.fullscreenElement) {
@@ -512,57 +466,8 @@
     const dt = clock.getDelta();
     const elapsed = clock.getElapsedTime();
 
-    // ── Flythrough mode ──
-    if (mode === 'flythrough' && flyCurve) {
-      flyT += dt * 0.04;
-      if (flyT > 1) {
-        flyT = 1;
-        skipToInteractive();
-      }
-
-      if (flyT < 0.12) {
-        // Aerial swoop phase
-        const swoopT = flyT / 0.12;
-        const eased = swoopT * swoopT * (3 - 2 * swoopT);
-        flyCurve.getPointAt(0, _tempVec);
-        camera.position.lerpVectors(flyStartPos, _tempVec, eased);
-        camera.position.y = 2500 - (2500 - EYE_HEIGHT) * eased;
-        flyCurve.getPointAt(0.02, _tempVec);
-        _lookTarget.lerpVectors(flyStartTarget, _tempVec, eased);
-        camera.lookAt(_lookTarget);
-      } else {
-        // Corridor flythrough phase
-        const pathT = (flyT - 0.12) / 0.88;
-        flyCurve.getPointAt(Math.min(pathT, 0.999), _tempVec);
-        _tempVec.y += Math.sin(elapsed * 1.5) * 3; // subtle vertical bob
-        camera.position.copy(_tempVec);
-        flyCurve.getPointAt(Math.min(pathT + 0.015, 0.999), _lookTarget);
-        camera.lookAt(_lookTarget);
-      }
-    }
-
-    // ── Transition to interactive ──
-    if (mode === 'transition') {
-      transT += dt * 0.7;
-      if (transT >= 1) {
-        transT = 1;
-        mode = 'interactive';
-        controls.enabled = true;
-        controls.target.copy(interactiveTarget);
-        camera.position.copy(interactivePos);
-        controls.update();
-      } else {
-        const eased = transT * transT * (3 - 2 * transT);
-        camera.position.lerpVectors(transStartPos, interactivePos, eased);
-        _lookTarget.lerpVectors(transStartTarget, interactiveTarget, eased);
-        camera.lookAt(_lookTarget);
-      }
-    }
-
     // ── Interactive mode ──
-    if (mode === 'interactive') {
-      controls.update();
-    }
+    controls.update();
 
     // ── Animate particles ──
     const pPos = particles.geometry.attributes.position.array;
@@ -589,20 +494,15 @@
     }
 
     // ── Cull distant labels to reduce DOM layout thrashing ──
-    if (mode === 'interactive') {
-      for (let i = 0; i < portalLabels.length; i++) {
-        const label = portalLabels[i];
-        const dist = camera.position.distanceTo(label.position);
-        label.element.style.display = dist < LABEL_CULL_DIST ? '' : 'none';
-      }
+    for (let i = 0; i < portalLabels.length; i++) {
+      const label = portalLabels[i];
+      const dist = camera.position.distanceTo(label.position);
+      label.element.style.display = dist < LABEL_CULL_DIST ? '' : 'none';
     }
 
     // ── Render ──
     composer.render();
-    // skip label rendering during flythrough — labels not useful and saves DOM work
-    if (mode !== 'flythrough') {
-      labelRenderer.render(scene, camera);
-    }
+    labelRenderer.render(scene, camera);
   }
 
   animate();

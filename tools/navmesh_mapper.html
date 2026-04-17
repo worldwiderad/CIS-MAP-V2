@@ -3,379 +3,1839 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CIS Navmesh Mapper</title>
+<title>CIS Navmesh Mapper v2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.18/paper-full.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  html, body { height: 100%; }
   body {
-    background: #1a1a2e;
-    color: #e0e0e0;
-    font-family: system-ui, -apple-system, sans-serif;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    display: flex; flex-direction: column;
     overflow: hidden;
+    user-select: none;
   }
 
-  #toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #16213e;
-    border-bottom: 1px solid #0f3460;
+  /* Bottom bar (consolidated tooling) */
+  #bottom-bar {
+    display: flex; flex-direction: column;
+    background: #161b22;
+    border-top: 1px solid #30363d;
     flex-shrink: 0;
-    flex-wrap: wrap;
   }
 
-  #toolbar button {
-    padding: 6px 14px;
-    border: 1px solid #0f3460;
-    border-radius: 4px;
-    background: #1a1a2e;
-    color: #e0e0e0;
+  /* Toolbar */
+  #toolbar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    justify-content: flex-start;
+  }
+  #toolbar button, #toolbar select, #toolbar label.check {
+    padding: 6px 12px;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    background: #21262d;
+    color: #e6edf3;
     cursor: pointer;
     font-size: 13px;
     white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
   }
+  #toolbar button:hover { background: #30363d; }
+  #toolbar button.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+  #toolbar button.danger { background: #da3633; border-color: #da3633; color: #fff; }
+  #toolbar button.danger:hover { background: #f85149; }
+  #toolbar button.primary { background: #238636; border-color: #238636; color: #fff; }
+  #toolbar button.primary:hover { background: #2ea043; }
+  #toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
+  #toolbar .sep { width: 1px; height: 24px; background: #30363d; margin: 0 4px; }
+  #toolbar .group { display: flex; align-items: center; gap: 4px; }
+  #toolbar .label { font-size: 11px; color: #8b949e; margin-right: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  #toolbar button:hover { background: #0f3460; }
-  #toolbar button.active { background: #e94560; border-color: #e94560; color: #fff; }
-  #toolbar button.action { background: #0f3460; }
-  #toolbar button.action:hover { background: #533483; }
-  #toolbar button.export { background: #2d6a4f; border-color: #2d6a4f; }
-  #toolbar button.export:hover { background: #40916c; }
-  #toolbar button.danger { background: #7f2020; border-color: #7f2020; }
-  #toolbar button.danger:hover { background: #a33; }
+  #bg-opacity { width: 80px; }
+  input[type="range"] { accent-color: #1f6feb; }
 
-  .sep { width: 1px; height: 24px; background: #0f3460; flex-shrink: 0; }
+  #undo-count, #redo-count { color: #8b949e; font-size: 11px; margin-left: 2px; }
 
-  #status {
-    margin-left: auto;
-    font-size: 12px;
-    color: #888;
-    white-space: nowrap;
+  /* Main layout */
+  #main {
+    flex: 1; display: flex;
+    position: relative;
+    min-height: 0;
   }
 
   #canvas-wrap {
     flex: 1;
-    overflow: auto;
     position: relative;
-    cursor: crosshair;
+    background: #010409;
+    overflow: hidden;
   }
+  canvas { display: block; width: 100%; height: 100%; }
+  canvas.pan-ready { cursor: grab; }
+  canvas.panning { cursor: grabbing; }
 
-  canvas { display: block; }
+  /* Side panel */
+  #side-panel {
+    width: 320px;
+    background: #161b22;
+    border-left: 1px solid #30363d;
+    overflow-y: auto;
+    padding: 14px;
+    font-size: 13px;
+    display: none;
+  }
+  #side-panel.visible { display: block; }
+  #side-panel h3 {
+    font-size: 14px; margin-bottom: 10px; color: #58a6ff;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding-bottom: 6px; border-bottom: 1px solid #30363d;
+  }
+  #side-panel .field { margin-bottom: 10px; }
+  #side-panel label { display: block; color: #8b949e; font-size: 11px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #side-panel input, #side-panel select {
+    width: 100%; padding: 6px 8px;
+    background: #0d1117; color: #e6edf3;
+    border: 1px solid #30363d; border-radius: 5px;
+    font-size: 13px;
+  }
+  #side-panel input:focus, #side-panel select:focus {
+    outline: none; border-color: #1f6feb;
+  }
+  #side-panel .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  #side-panel button {
+    flex: 1; padding: 7px;
+    border: 1px solid #30363d; border-radius: 5px;
+    background: #21262d; color: #e6edf3;
+    font-size: 13px; cursor: pointer;
+  }
+  #side-panel button:hover { background: #30363d; }
+  #side-panel button.danger { background: #da3633; border-color: #da3633; color: #fff; }
+  #side-panel button.primary { background: #238636; border-color: #238636; color: #fff; }
+  #side-panel .hint { font-size: 11px; color: #8b949e; margin-top: 4px; }
+
+  /* Status bar */
+  #status-bar {
+    display: flex; align-items: center;
+    padding: 6px 12px;
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    font-size: 12px;
+    color: #8b949e;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  #status-bar .status-item { white-space: nowrap; }
+  #status-bar .status-mode { color: #58a6ff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  #status-bar .status-message { flex: 1; color: #e6edf3; }
+  #status-bar .status-warn { color: #d29922; cursor: pointer; }
+  #status-bar .status-warn:hover { color: #e3b341; }
+
+  /* Keybind cheat sheet */
+  #keybind-bar {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 14px;
+    padding: 5px 12px;
+    background: #0d1117;
+    border-top: 1px solid #21262d;
+    font-size: 11px;
+    color: #8b949e;
+    flex-shrink: 0;
+  }
+  #keybind-bar kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 10px;
+    margin: 0 1px;
+  }
+  #keybind-bar .kb-group { white-space: nowrap; }
+
+  /* Validation panel */
+  #validation-panel {
+    position: absolute;
+    bottom: 30px; right: 16px;
+    width: 360px;
+    max-height: 50vh;
+    background: rgba(13, 17, 23, 0.96);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    display: none;
+    overflow: hidden;
+    flex-direction: column;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  #validation-panel.visible { display: flex; }
+  #validation-panel header {
+    padding: 10px 12px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 600;
+  }
+  #validation-panel header .close { cursor: pointer; color: #8b949e; padding: 2px 6px; border-radius: 4px; }
+  #validation-panel header .close:hover { background: #30363d; color: #e6edf3; }
+  #validation-list { padding: 8px 0; overflow-y: auto; flex: 1; }
+  #validation-list .item {
+    padding: 8px 12px; font-size: 12px;
+    border-bottom: 1px solid #21262d;
+  }
+  #validation-list .item:last-child { border-bottom: none; }
+  #validation-list .item.warn { color: #d29922; }
+  #validation-list .item.error { color: #f85149; }
+  #validation-list .item.ok { color: #3fb950; }
+  #validation-list .empty { padding: 14px; text-align: center; color: #8b949e; font-size: 12px; }
+
+  /* Modal */
+  #modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  #modal-overlay.visible { display: flex; }
+  #modal {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 20px;
+    width: 380px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+  #modal h3 { margin-bottom: 14px; font-size: 16px; color: #58a6ff; }
+  #modal .field { margin-bottom: 12px; }
+  #modal label { display: block; color: #8b949e; font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #modal input, #modal select {
+    width: 100%; padding: 8px 10px;
+    background: #0d1117; color: #e6edf3;
+    border: 1px solid #30363d; border-radius: 6px;
+    font-size: 14px;
+  }
+  #modal input:focus, #modal select:focus { outline: none; border-color: #1f6feb; }
+  #modal .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+  #modal button {
+    padding: 8px 18px;
+    border: 1px solid #30363d; border-radius: 6px;
+    background: #21262d; color: #e6edf3;
+    font-size: 14px; cursor: pointer;
+  }
+  #modal button.primary { background: #238636; border-color: #238636; color: #fff; }
+  #modal button.primary:hover { background: #2ea043; }
+  #modal button:hover { background: #30363d; }
+
+  /* Toasts */
+  #toast-container {
+    position: absolute;
+    top: 16px; right: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .toast {
+    background: rgba(13, 17, 23, 0.95);
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: #e6edf3;
+    font-size: 13px;
+    backdrop-filter: blur(8px);
+    animation: toast-in 0.2s ease-out;
+    pointer-events: auto;
+    max-width: 320px;
+  }
+  .toast.warn { border-color: #d29922; }
+  .toast.error { border-color: #f85149; color: #f85149; }
+  .toast.ok { border-color: #3fb950; }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
 
-<div id="toolbar">
-  <button id="btn-polygon" class="active">Draw Polygon</button>
-  <button id="btn-portals">Place Portals</button>
-  <div class="sep"></div>
-  <button id="btn-close" class="action">Close Polygon</button>
-  <button id="btn-undo" class="action">Undo</button>
-  <div class="sep"></div>
-  <button id="btn-export" class="export">Export JSON</button>
-  <button id="btn-import" class="action">Import JSON</button>
-  <div class="sep"></div>
-  <button id="btn-clear" class="danger">Clear All</button>
-  <input type="file" id="file-import" accept=".json" style="display:none">
-  <span id="status">Loading map...</span>
+<div id="main">
+  <div id="canvas-wrap">
+    <canvas id="navcanvas" resize="true"></canvas>
+    <div id="toast-container"></div>
+    <div id="validation-panel">
+      <header>
+        <span>Validation</span>
+        <span class="close" id="validation-close">✕</span>
+      </header>
+      <div id="validation-list"></div>
+    </div>
+  </div>
+  <aside id="side-panel"></aside>
 </div>
 
-<div id="canvas-wrap">
-  <canvas id="navcanvas"></canvas>
+<div id="bottom-bar">
+  <div id="status-bar">
+    <span class="status-item status-mode" id="status-mode">Walkable</span>
+    <span class="status-item" id="status-zoom">100%</span>
+    <span class="status-item" id="status-coords">0, 0</span>
+    <span class="status-item status-message" id="status-message">Ready</span>
+    <span class="status-item status-warn" id="status-warn" style="display:none"></span>
+  </div>
+
+  <div id="toolbar">
+    <div class="group">
+      <span class="label">Mode</span>
+      <button id="btn-mode-walkable" class="active" data-mode="walkable">Walkable</button>
+      <button id="btn-mode-blocked" data-mode="blocked">Blocked</button>
+      <button id="btn-mode-rooms" data-mode="rooms">Rooms</button>
+      <button id="btn-mode-portals" data-mode="portals">Portals</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group">
+      <span class="label">View</span>
+      <button id="btn-fit" title="Fit to canvas (V)">Fit</button>
+      <button id="btn-reset-view" title="Reset view">Reset</button>
+      <button id="btn-zoom-out" title="Zoom out">−</button>
+      <button id="btn-zoom-in" title="Zoom in">+</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group">
+      <span class="label">BG</span>
+      <input type="range" id="bg-opacity" min="0" max="100" value="100">
+      <button id="btn-bg-toggle" title="Hide/show background (B)">Hide</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group">
+      <button id="btn-undo" title="Undo (⌘Z)">Undo<span id="undo-count"></span></button>
+      <button id="btn-redo" title="Redo (⌘⇧Z)">Redo<span id="redo-count"></span></button>
+    </div>
+    <div class="sep"></div>
+    <div class="group">
+      <button id="btn-import">Import</button>
+      <button id="btn-export" class="primary">Export</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group">
+      <button id="btn-validate">Validate</button>
+      <button id="btn-clear" class="danger">Clear</button>
+    </div>
+    <input type="file" id="file-import" accept=".json" style="display:none">
+  </div>
+
+  <div id="keybind-bar">
+    <span class="kb-group"><kbd>1</kbd>–<kbd>4</kbd> mode</span>
+    <span class="kb-group"><kbd>V</kbd> fit view</span>
+    <span class="kb-group"><kbd>B</kbd> toggle background</span>
+    <span class="kb-group">Two-finger drag / <kbd>Space</kbd>+drag / middle-drag — pan</span>
+    <span class="kb-group"><kbd>⌘</kbd>+wheel / pinch — zoom</span>
+    <span class="kb-group"><kbd>⌥</kbd>+click vertex or portal — delete</span>
+    <span class="kb-group">Click edge — insert vertex</span>
+    <span class="kb-group"><kbd>Enter</kbd> close polygon</span>
+    <span class="kb-group"><kbd>Esc</kbd> cancel / deselect</span>
+    <span class="kb-group"><kbd>⌘Z</kbd> undo · <kbd>⌘⇧Z</kbd> redo</span>
+    <span class="kb-group"><kbd>Del</kbd> delete selection</span>
+  </div>
+</div>
+
+<div id="modal-overlay">
+  <div id="modal">
+    <h3 id="modal-title">New Portal</h3>
+    <div class="field">
+      <label for="modal-id">ID</label>
+      <input type="text" id="modal-id" placeholder="e.g. NW-412" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="modal-type">Type</label>
+      <select id="modal-type">
+        <option value="room">Room / Classroom</option>
+        <option value="stair">Stair</option>
+        <option value="elevator">Elevator</option>
+        <option value="exit">Exit</option>
+        <option value="restroom">Restroom</option>
+        <option value="pod">Pod</option>
+        <option value="office">Office</option>
+        <option value="service">Service / Utility</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="modal-label-en">Label (English)</label>
+      <input type="text" id="modal-label-en" placeholder="e.g. Room 412" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="modal-label-zh">Label (中文)</label>
+      <input type="text" id="modal-label-zh" placeholder="e.g. 412 室" autocomplete="off">
+    </div>
+    <div class="btn-row">
+      <button id="modal-cancel">Cancel</button>
+      <button id="modal-ok" class="primary">Place</button>
+    </div>
+  </div>
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   CIS NAVMESH MAPPER v2
+   State-driven vector-map authoring tool.
+   All data lives in `state`; Paper.js layers are pure render targets.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 paper.install(window);
 
-window.onload = function () {
+window.addEventListener('load', () => {
   const canvas = document.getElementById('navcanvas');
   paper.setup(canvas);
 
-  // ── State ──
-  let mode = 'polygon';       // 'polygon' | 'portals'
-  let polygonClosed = false;
-  let vertices = [];           // raw Point array for the polygon
-  let portals = [];            // { id, x, y }
-  let polygonPath = null;      // the Paper.js Path once closed
-  let previewPath = null;      // open polyline while drawing
-  let vertexDots = [];         // circles at each vertex
-  let portalGroups = [];       // paper groups for portal markers
+  /* ─── Constants ───────────────────────────────────────────────── */
+
+  const SCHEMA_VERSION = 2;
+  const HANDLE_RADIUS_PX = 5;
+  const SNAP_CLOSE_PX = 12;
+  const HIT_VERTEX_PX = 10;
+  const HIT_EDGE_PX = 6;
+  const HISTORY_CAP = 50;
+  const AUTOSAVE_KEY = 'cis_navmesh_mapper_v2_autosave';
+
+  const PORTAL_TYPES = [
+    { value: 'room',     color: '#58a6ff' },
+    { value: 'stair',    color: '#ff8844' },
+    { value: 'elevator', color: '#44ff88' },
+    { value: 'exit',     color: '#d29922' },
+    { value: 'restroom', color: '#aa44ff' },
+    { value: 'pod',      color: '#bf91f3' },
+    { value: 'office',   color: '#79c0ff' },
+    { value: 'service',  color: '#8b949e' },
+  ];
+  const typeColor = (t) => (PORTAL_TYPES.find(x => x.value === t) || PORTAL_TYPES[0]).color;
+
+  const DEFAULT_STYLE = {
+    background:    '#f5f1e8',
+    walkableFill:  '#ffffff',
+    walkableStroke:'#58a6ff',
+    roomFill:      '#eeeeee',
+    roomStroke:    '#8b949e',
+    blockedFill:   '#d9d4c8',
+    blockedStroke: '#d29922',
+  };
+
+  /* ─── State factory & global state ────────────────────────────── */
+
+  function freshState() {
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      metadata: {
+        floor: 'L4',
+        building: 'CIS',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        editor: 'navmesh_mapper v2',
+      },
+      image: { src: null, width: 0, height: 0, opacity: 1, visible: true },
+      style: { ...DEFAULT_STYLE },
+      walkable: { vertices: [], closed: false },
+      blocked: [],
+      rooms: [],
+      portals: [],
+    };
+  }
+
+  // `state` is the serializable source of truth.
+  // `ui` is transient (never exported, never in history).
+  let state = freshState();
+  const ui = {
+    mode: 'walkable',
+    inProgress: null,       // null | { layer, index }
+    selection: null,        // null | { layer, index } | { kind:'vertex', layer, polyIdx, vertIdx } | { kind:'portal', index }
+    drag: null,             // null | { kind, ... }
+    spaceDown: false,
+    panning: false,
+    lastMouseScreen: null,  // screen-space {x,y}
+    didAutoLoad: false,
+  };
+
+  const history = { past: [], future: [] };
+
+  /* ─── History ─────────────────────────────────────────────────── */
+
+  function snapshot() {
+    return structuredClone(state);
+  }
+
+  function commit(mutator) {
+    const before = snapshot();
+    mutator(state);
+    history.past.push(before);
+    if (history.past.length > HISTORY_CAP) history.past.shift();
+    history.future.length = 0;
+    state.metadata.updatedAt = new Date().toISOString();
+    afterCommit();
+  }
+
+  function undo() {
+    if (history.past.length === 0) return;
+    history.future.push(snapshot());
+    state = history.past.pop();
+    afterCommit();
+  }
+  function redo() {
+    if (history.future.length === 0) return;
+    history.past.push(snapshot());
+    state = history.future.pop();
+    afterCommit();
+  }
+
+  function afterCommit() {
+    ui.inProgress = null;
+    ui.selection = null;
+    ui.drag = null;
+    renderAll();
+    updateToolbar();
+    renderSidePanel();
+    autosave();
+  }
+
+  /* ─── Schema import / export / upgrade ────────────────────────── */
+
+  function round2(n) { return Math.round(n * 100) / 100; }
+
+  function emptyLabel() { return { en: '', zh: '' }; }
+  function normalizeLabel(l) {
+    if (!l) return emptyLabel();
+    if (typeof l === 'string') return { en: l, zh: '' };
+    return { en: l.en || '', zh: l.zh || '' };
+  }
+
+  function exportState() {
+    const s = state;
+    // Shoelace CCW check on walkable; auto-reverse if needed.
+    const walkable = s.walkable.vertices.map(v => ({ x: round2(v.x), y: round2(v.y) }));
+    if (walkable.length >= 3) {
+      let sum = 0;
+      for (let i = 0; i < walkable.length; i++) {
+        const a = walkable[i];
+        const b = walkable[(i + 1) % walkable.length];
+        sum += (b.x - a.x) * (b.y + a.y);
+      }
+      // In image-pixel (y-down) coords, baker expects the shoelace to be negative for CCW-as-drawn.
+      // If positive, reverse the array.
+      if (sum > 0) {
+        walkable.reverse();
+        toast('Walkable was CW; auto-reversed on export.', 'warn');
+      }
+    }
+
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      metadata: { ...s.metadata, updatedAt: new Date().toISOString() },
+      image: s.image.src || null,
+      imageWidth: s.image.width || 0,
+      imageHeight: s.image.height || 0,
+      style: { ...s.style },
+      polygon: walkable,
+      portals: s.portals.map(p => ({
+        id: p.id,
+        x: round2(p.x),
+        y: round2(p.y),
+        type: p.type || 'room',
+        label: normalizeLabel(p.label),
+        link: p.link && p.link.portalId ? { floor: p.link.floor || '', portalId: p.link.portalId } : null,
+      })),
+      blocked: s.blocked.map(b => ({
+        id: b.id || '',
+        label: normalizeLabel(b.label),
+        vertices: b.vertices.map(v => ({ x: round2(v.x), y: round2(v.y) })),
+      })),
+      rooms: s.rooms.map(r => ({
+        id: r.id || '',
+        label: normalizeLabel(r.label),
+        portalId: r.portalId || null,
+        vertices: r.vertices.map(v => ({ x: round2(v.x), y: round2(v.y) })),
+      })),
+    };
+  }
+
+  function importData(data) {
+    const next = freshState();
+
+    // Image
+    if (data.image) {
+      next.image.src = data.image;
+      next.image.width = data.imageWidth || 0;
+      next.image.height = data.imageHeight || 0;
+    }
+
+    // Metadata (preserve if present)
+    if (data.metadata) {
+      next.metadata = { ...next.metadata, ...data.metadata };
+    }
+
+    // Style
+    if (data.style) next.style = { ...next.style, ...data.style };
+
+    // Walkable (v1 & v2 share `polygon` key)
+    if (Array.isArray(data.polygon) && data.polygon.length >= 3) {
+      next.walkable.vertices = data.polygon.map(v => ({ x: +v.x, y: +v.y }));
+      next.walkable.closed = true;
+    }
+
+    // Portals
+    if (Array.isArray(data.portals)) {
+      next.portals = data.portals.map(p => ({
+        id: String(p.id),
+        x: +p.x,
+        y: +p.y,
+        type: p.type || 'room',
+        label: normalizeLabel(p.label),
+        link: p.link && p.link.portalId ? { floor: p.link.floor || '', portalId: p.link.portalId } : null,
+      }));
+    }
+
+    // Blocked (v2 only)
+    if (Array.isArray(data.blocked)) {
+      next.blocked = data.blocked.map(b => ({
+        id: b.id || '',
+        label: normalizeLabel(b.label),
+        vertices: (b.vertices || []).map(v => ({ x: +v.x, y: +v.y })),
+        closed: true,
+      }));
+    }
+
+    // Rooms (v2 only)
+    if (Array.isArray(data.rooms)) {
+      next.rooms = data.rooms.map(r => ({
+        id: r.id || '',
+        label: normalizeLabel(r.label),
+        portalId: r.portalId || null,
+        vertices: (r.vertices || []).map(v => ({ x: +v.x, y: +v.y })),
+        closed: true,
+      }));
+    }
+
+    state = next;
+    history.past.length = 0;
+    history.future.length = 0;
+    afterCommit();
+    loadBackgroundImage();
+    fitToCanvas();
+  }
+
+  /* ─── Paper.js layers ─────────────────────────────────────────── */
+
+  const layers = {
+    bg:        new Layer({ name: 'bg' }),
+    rooms:     new Layer({ name: 'rooms' }),
+    blocked:   new Layer({ name: 'blocked' }),
+    walkable:  new Layer({ name: 'walkable' }),
+    portals:   new Layer({ name: 'portals' }),
+    edit:      new Layer({ name: 'edit' }),
+  };
+
   let bgRaster = null;
 
-  const VERTEX_RADIUS = 4;
-  const PORTAL_RADIUS = 6;
-  const SNAP_THRESHOLD = 12;   // px — vertex snap while drawing
-
-  const status = document.getElementById('status');
-  const setStatus = (msg) => { status.textContent = msg; };
-
-  // ── Load background image ──
-  bgRaster = new Raster({
-    source: '../assets/img/lvl4map.jpg',
-    position: view.center
-  });
-
-  bgRaster.onLoad = function () {
-    // Resize canvas to image dimensions
-    view.viewSize = new Size(this.width, this.height);
-    this.position = new Point(this.width / 2, this.height / 2);
-    setStatus('Polygon mode — click to add vertices');
-  };
-
-  bgRaster.onError = function () {
-    setStatus('Failed to load map image');
-  };
-
-  // ── Drawing helpers ──
-
-  function drawVertexDot(pt) {
-    const dot = new Path.Circle({
-      center: pt,
-      radius: VERTEX_RADIUS,
-      fillColor: '#00e5ff',
-      strokeColor: '#fff',
-      strokeWidth: 1
-    });
-    vertexDots.push(dot);
-    return dot;
+  function loadBackgroundImage() {
+    layers.bg.removeChildren();
+    bgRaster = null;
+    if (!state.image.src) return;
+    const src = state.image.src.startsWith('http') || state.image.src.startsWith('/') || state.image.src.includes('/')
+      ? state.image.src
+      : `../assets/img/${state.image.src}`;
+    layers.bg.activate();
+    const raster = new Raster({ source: src });
+    bgRaster = raster;
+    raster.onLoad = function () {
+      // Guard against stale loads (a newer import could have replaced bgRaster).
+      if (bgRaster !== raster) return;
+      this.position = new Point(this.width / 2, this.height / 2);
+      if (!state.image.width) state.image.width = this.width;
+      if (!state.image.height) state.image.height = this.height;
+      this.opacity = state.image.visible ? state.image.opacity : 0;
+      renderAll();
+      fitToCanvas();
+    };
+    raster.onError = () => {
+      if (bgRaster !== raster) return;
+      toast(`Failed to load image: ${src}`, 'error');
+    };
   }
 
-  function rebuildPreview() {
-    if (previewPath) previewPath.remove();
-    if (vertices.length < 2) {
-      previewPath = null;
-      return;
+  function renderBackground() {
+    if (!bgRaster) return;
+    bgRaster.opacity = state.image.visible ? state.image.opacity : 0;
+  }
+
+  /* ─── Rendering helpers (polygons, portals, edit layer) ───────── */
+
+  function screenPx(px) {
+    return px / view.zoom;
+  }
+
+  function clearLayer(l) { l.removeChildren(); }
+
+  function renderPolygonLayer(layerObj, items, style) {
+    layerObj.activate();
+    clearLayer(layerObj);
+    items.forEach(poly => {
+      if (!poly.vertices || poly.vertices.length === 0) return;
+      const segs = poly.vertices.map(v => new Point(v.x, v.y));
+      if (poly.closed && segs.length >= 3) {
+        const path = new Path({
+          segments: segs,
+          closed: true,
+          fillColor: style.fill,
+          strokeColor: style.stroke,
+          strokeWidth: screenPx(2),
+        });
+        if (poly.label && poly.label.en) {
+          // centroid label
+          const c = path.bounds.center;
+          new PointText({
+            point: c,
+            content: poly.label.en,
+            fillColor: '#0d1117',
+            fontFamily: 'system-ui',
+            fontSize: screenPx(13),
+            justification: 'center',
+            strokeColor: null,
+          });
+        }
+      } else {
+        // open polyline (should not normally happen for blocked/rooms; in-progress is rendered on edit layer)
+        new Path({
+          segments: segs,
+          strokeColor: style.stroke,
+          strokeWidth: screenPx(2),
+          dashArray: [screenPx(6), screenPx(4)],
+        });
+      }
+    });
+  }
+
+  function renderWalkable() {
+    layers.walkable.activate();
+    clearLayer(layers.walkable);
+    const w = state.walkable;
+    if (w.vertices.length === 0) return;
+    const segs = w.vertices.map(v => new Point(v.x, v.y));
+    if (w.closed && segs.length >= 3) {
+      new Path({
+        segments: segs,
+        closed: true,
+        fillColor: new Color(88/255, 166/255, 255/255, 0.08),
+        strokeColor: '#58a6ff',
+        strokeWidth: screenPx(2.5),
+      });
+    } else {
+      new Path({
+        segments: segs,
+        strokeColor: '#58a6ff',
+        strokeWidth: screenPx(2.5),
+        dashArray: [screenPx(6), screenPx(4)],
+      });
     }
-    previewPath = new Path({
-      segments: vertices,
-      strokeColor: '#00e5ff',
-      strokeWidth: 2,
-      dashArray: [6, 4]
+  }
+
+  function renderPortals() {
+    layers.portals.activate();
+    clearLayer(layers.portals);
+    const r = screenPx(7);
+    state.portals.forEach(p => {
+      const pt = new Point(p.x, p.y);
+      new Path.Circle({
+        center: pt,
+        radius: r,
+        fillColor: typeColor(p.type),
+        strokeColor: '#ffffff',
+        strokeWidth: screenPx(1.5),
+      });
+      new PointText({
+        point: pt.add(new Point(r * 1.6, -r * 0.8)),
+        content: p.id,
+        fillColor: '#e6edf3',
+        strokeColor: '#000',
+        strokeWidth: screenPx(0.3),
+        fontFamily: 'system-ui',
+        fontSize: screenPx(11),
+        fontWeight: '600',
+      });
     });
   }
 
-  function closePolygon() {
-    if (vertices.length < 3) {
-      setStatus('Need at least 3 vertices to close');
-      return;
+  function renderEdit() {
+    layers.edit.activate();
+    clearLayer(layers.edit);
+
+    // In-progress polygon preview
+    if (ui.inProgress) {
+      const poly = getPolygonByRef(ui.inProgress);
+      if (poly && poly.vertices.length > 0) {
+        const segs = poly.vertices.map(v => new Point(v.x, v.y));
+        // Preview line (dashed) from last vertex to cursor if available
+        if (ui.lastMouseScreen) {
+          const cursor = view.viewToProject(new Point(ui.lastMouseScreen.x, ui.lastMouseScreen.y));
+          new Path({
+            segments: [segs[segs.length - 1], cursor],
+            strokeColor: '#58a6ff',
+            strokeWidth: screenPx(1.5),
+            dashArray: [screenPx(4), screenPx(3)],
+          });
+        }
+        if (segs.length >= 2) {
+          new Path({
+            segments: segs,
+            strokeColor: '#58a6ff',
+            strokeWidth: screenPx(2),
+            dashArray: [screenPx(6), screenPx(4)],
+          });
+        }
+        // Vertex dots (first vertex highlighted as close target)
+        segs.forEach((s, i) => {
+          new Path.Circle({
+            center: s,
+            radius: screenPx(i === 0 && segs.length >= 3 ? HANDLE_RADIUS_PX + 2 : HANDLE_RADIUS_PX),
+            fillColor: i === 0 && segs.length >= 3 ? '#3fb950' : '#58a6ff',
+            strokeColor: '#ffffff',
+            strokeWidth: screenPx(1.2),
+          });
+        });
+      }
     }
-    if (polygonClosed) return;
-    polygonClosed = true;
 
-    if (previewPath) previewPath.remove();
-    previewPath = null;
+    // Vertex handles on editable polygons (walkable + blocked + rooms)
+    if (!ui.inProgress) {
+      drawHandlesForLayer('walkable');
+      drawHandlesForLayer('blocked');
+      drawHandlesForLayer('rooms');
+    }
 
-    polygonPath = new Path({
-      segments: vertices,
-      closed: true,
-      fillColor: new Color(0, 0.9, 1, 0.15),
-      strokeColor: '#00e5ff',
-      strokeWidth: 2
-    });
-
-    setStatus('Polygon closed — switch to Place Portals mode');
+    // Selection highlight
+    if (ui.selection) drawSelection(ui.selection);
   }
 
-  function addPortalMarker(pt, id) {
-    const circle = new Path.Circle({
-      center: pt,
-      radius: PORTAL_RADIUS,
-      fillColor: '#e94560',
-      strokeColor: '#fff',
-      strokeWidth: 1.5
+  function drawHandlesForLayer(layerName) {
+    // Only show handles for the active layer to keep canvas clean.
+    if (ui.mode !== layerName) return;
+    const polys = polygonsForLayer(layerName);
+    polys.forEach((poly, pi) => {
+      if (!poly.closed) return;
+      poly.vertices.forEach((v, vi) => {
+        new Path.Circle({
+          center: new Point(v.x, v.y),
+          radius: screenPx(HANDLE_RADIUS_PX - 1),
+          fillColor: '#e6edf3',
+          strokeColor: '#1f6feb',
+          strokeWidth: screenPx(1.2),
+        });
+      });
     });
-
-    const label = new PointText({
-      point: pt + new Point(10, -10),
-      content: id,
-      fillColor: '#fff',
-      strokeColor: '#000',
-      strokeWidth: 0.3,
-      fontFamily: 'system-ui',
-      fontSize: 12,
-      fontWeight: 'bold'
-    });
-
-    const group = new Group([circle, label]);
-    portalGroups.push(group);
   }
 
-  // ── Canvas click handler ──
+  function drawSelection(sel) {
+    if (sel.kind === 'vertex') {
+      const poly = getPolygonByRef({ layer: sel.layer, index: sel.polyIdx });
+      if (!poly) return;
+      const v = poly.vertices[sel.vertIdx];
+      if (!v) return;
+      new Path.Circle({
+        center: new Point(v.x, v.y),
+        radius: screenPx(HANDLE_RADIUS_PX + 3),
+        strokeColor: '#f85149',
+        strokeWidth: screenPx(2),
+        fillColor: null,
+      });
+    } else if (sel.kind === 'polygon') {
+      const poly = getPolygonByRef({ layer: sel.layer, index: sel.index });
+      if (!poly || !poly.vertices.length) return;
+      const segs = poly.vertices.map(v => new Point(v.x, v.y));
+      new Path({
+        segments: segs,
+        closed: poly.closed,
+        strokeColor: '#f85149',
+        strokeWidth: screenPx(2.5),
+        fillColor: null,
+        dashArray: [screenPx(5), screenPx(3)],
+      });
+    } else if (sel.kind === 'portal') {
+      const p = state.portals[sel.index];
+      if (!p) return;
+      new Path.Circle({
+        center: new Point(p.x, p.y),
+        radius: screenPx(10),
+        strokeColor: '#f85149',
+        strokeWidth: screenPx(2),
+        fillColor: null,
+      });
+    }
+  }
+
+  function renderAll() {
+    renderBackground();
+    renderPolygonLayer(layers.rooms, state.rooms, { fill: new Color(0.7, 0.7, 0.75, 0.25), stroke: '#8b949e' });
+    renderPolygonLayer(layers.blocked, state.blocked, { fill: new Color(0.82, 0.58, 0.13, 0.2), stroke: '#d29922' });
+    renderWalkable();
+    renderPortals();
+    renderEdit();
+    updateStatus();
+  }
+
+  /* ─── Polygon reference helpers ───────────────────────────────── */
+
+  function polygonsForLayer(layerName) {
+    if (layerName === 'walkable') return [state.walkable];
+    if (layerName === 'blocked') return state.blocked;
+    if (layerName === 'rooms') return state.rooms;
+    return [];
+  }
+
+  function getPolygonByRef(ref) {
+    if (!ref) return null;
+    if (ref.layer === 'walkable') return state.walkable;
+    if (ref.layer === 'blocked') return state.blocked[ref.index];
+    if (ref.layer === 'rooms') return state.rooms[ref.index];
+    return null;
+  }
+
+  /* ─── Hit testing ─────────────────────────────────────────────── */
+
+  function distSq(ax, ay, bx, by) { const dx = ax - bx, dy = ay - by; return dx * dx + dy * dy; }
+
+  function closestOnSegment(px, py, ax, ay, bx, by) {
+    const dx = bx - ax, dy = by - ay;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq === 0) return { x: ax, y: ay, t: 0 };
+    let t = ((px - ax) * dx + (py - ay) * dy) / lenSq;
+    t = Math.max(0, Math.min(1, t));
+    return { x: ax + t * dx, y: ay + t * dy, t };
+  }
+
+  function pointInPolygon(px, py, verts) {
+    let inside = false;
+    for (let i = 0, j = verts.length - 1; i < verts.length; j = i++) {
+      const xi = verts[i].x, yi = verts[i].y;
+      const xj = verts[j].x, yj = verts[j].y;
+      const intersect = ((yi > py) !== (yj > py)) &&
+        (px < ((xj - xi) * (py - yi)) / (yj - yi + 1e-12) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  // Returns first hit by priority for the given layer.
+  function hitTestLayer(pt, layerName) {
+    const vertThr = screenPx(HIT_VERTEX_PX);
+    const edgeThr = screenPx(HIT_EDGE_PX);
+    const polys = polygonsForLayer(layerName);
+
+    // 1. vertex hits
+    for (let pi = 0; pi < polys.length; pi++) {
+      const poly = polys[pi];
+      for (let vi = 0; vi < poly.vertices.length; vi++) {
+        const v = poly.vertices[vi];
+        if (distSq(pt.x, pt.y, v.x, v.y) <= vertThr * vertThr) {
+          return { kind: 'vertex', layer: layerName, polyIdx: pi, vertIdx: vi };
+        }
+      }
+    }
+    // 2. edge hits (only closed polygons)
+    for (let pi = 0; pi < polys.length; pi++) {
+      const poly = polys[pi];
+      if (!poly.closed) continue;
+      const n = poly.vertices.length;
+      for (let i = 0; i < n; i++) {
+        const a = poly.vertices[i];
+        const b = poly.vertices[(i + 1) % n];
+        const c = closestOnSegment(pt.x, pt.y, a.x, a.y, b.x, b.y);
+        if (distSq(pt.x, pt.y, c.x, c.y) <= edgeThr * edgeThr) {
+          return { kind: 'edge', layer: layerName, polyIdx: pi, segIdx: i, point: c };
+        }
+      }
+    }
+    // 3. interior hits
+    for (let pi = 0; pi < polys.length; pi++) {
+      const poly = polys[pi];
+      if (!poly.closed) continue;
+      if (pointInPolygon(pt.x, pt.y, poly.vertices)) {
+        return { kind: 'interior', layer: layerName, polyIdx: pi };
+      }
+    }
+    return { kind: 'empty' };
+  }
+
+  function hitTestPortals(pt) {
+    const thr = screenPx(HIT_VERTEX_PX + 2);
+    for (let i = 0; i < state.portals.length; i++) {
+      const p = state.portals[i];
+      if (distSq(pt.x, pt.y, p.x, p.y) <= thr * thr) {
+        return { kind: 'portal', index: i };
+      }
+    }
+    return { kind: 'empty' };
+  }
+
+  /* ─── Viewport (pan / zoom / fit) ─────────────────────────────── */
+
+  function setZoom(newZoom, centerProjectPt) {
+    const clamped = Math.max(0.02, Math.min(30, newZoom));
+    view.zoom = clamped;
+    if (centerProjectPt) view.center = centerProjectPt;
+    renderAll();
+    updateZoomStatus();
+  }
+
+  function zoomAt(screenPt, factor) {
+    const pre = view.viewToProject(new Point(screenPt.x, screenPt.y));
+    setZoom(view.zoom * factor);
+    const post = view.viewToProject(new Point(screenPt.x, screenPt.y));
+    view.center = view.center.add(pre.subtract(post));
+    renderAll();
+    updateZoomStatus();
+  }
+
+  function fitToCanvas() {
+    const w = state.image.width || 5712;
+    const h = state.image.height || 4284;
+    const canvasW = view.size.width;
+    const canvasH = view.size.height;
+    const pad = 40;
+    const zx = (canvasW - pad) / w;
+    const zy = (canvasH - pad) / h;
+    setZoom(Math.min(zx, zy), new Point(w / 2, h / 2));
+  }
+
+  function resetView() {
+    setZoom(1, new Point(state.image.width / 2 || 2856, state.image.height / 2 || 2142));
+  }
+
+  /* ─── Tool & event handling ───────────────────────────────────── */
 
   const tool = new Tool();
-  tool.onMouseDown = function (event) {
-    const pt = event.point;
 
-    if (mode === 'polygon' && !polygonClosed) {
-      // Snap to first vertex to close
-      if (vertices.length >= 3) {
-        const first = vertices[0];
-        if (pt.getDistance(first) < SNAP_THRESHOLD) {
-          closePolygon();
+  tool.onMouseMove = function (event) {
+    ui.lastMouseScreen = view.projectToView(event.point);
+    updateCoords(event.point);
+    if (ui.inProgress) renderEdit();
+  };
+
+  tool.onMouseDown = function (event) {
+    // Pan is handled by a separate canvas listener (captures middle-mouse + space+left).
+    if (ui.panning) return;
+    if (ui.spaceDown) return;
+
+    const pt = event.point;
+    const mode = ui.mode;
+
+    if (mode === 'portals') {
+      handlePortalsDown(event, pt);
+      return;
+    }
+
+    // Polygon modes: walkable | blocked | rooms
+    if (ui.inProgress) {
+      // Building a polygon — append vertices or close
+      const poly = getPolygonByRef(ui.inProgress);
+      if (!poly) { ui.inProgress = null; return; }
+      if (poly.vertices.length >= 3) {
+        const first = poly.vertices[0];
+        if (distSq(pt.x, pt.y, first.x, first.y) <= screenPx(SNAP_CLOSE_PX) ** 2) {
+          commit((s) => {
+            const p = getPolygonByRefFromState(s, ui.inProgress);
+            if (p) p.closed = true;
+          });
+          toast(`${modeLabel(mode)} polygon closed`, 'ok');
           return;
         }
       }
-      vertices.push(pt.clone());
-      drawVertexDot(pt);
-      rebuildPreview();
-      setStatus(`Vertex ${vertices.length} placed — ${vertices.length < 3 ? 'add more' : 'click first vertex or Close to finish'}`);
+      commit((s) => {
+        const p = getPolygonByRefFromState(s, ui.inProgress);
+        if (p) p.vertices.push({ x: pt.x, y: pt.y });
+      });
+      // Keep same inProgress ref (commit clears it — re-set)
+      ui.inProgress = findInProgress(mode);
+      renderAll();
+      return;
     }
 
-    else if (mode === 'portals') {
-      if (!polygonClosed || !polygonPath) {
-        setStatus('Close the polygon first');
+    // Not drawing: hit test
+    const hit = hitTestLayer(pt, mode);
+    if (hit.kind === 'vertex') {
+      const alt = event.modifiers.option || event.modifiers.alt;
+      if (alt) {
+        // Delete vertex
+        commit((s) => {
+          const p = mode === 'walkable' ? s.walkable : (mode === 'blocked' ? s.blocked[hit.polyIdx] : s.rooms[hit.polyIdx]);
+          if (!p) return;
+          if (p.vertices.length <= 3) {
+            // Deleting would collapse polygon
+            if (mode === 'walkable') { p.vertices.splice(hit.vertIdx, 1); p.closed = false; }
+            else { (mode === 'blocked' ? s.blocked : s.rooms).splice(hit.polyIdx, 1); }
+          } else {
+            p.vertices.splice(hit.vertIdx, 1);
+          }
+        });
         return;
       }
-      // Snap to nearest point on polygon perimeter
-      const nearest = polygonPath.getNearestPoint(pt);
-      const id = prompt('Portal ID (e.g. Room_412):');
-      if (!id || !id.trim()) {
-        setStatus('Portal cancelled');
+      // Begin drag
+      ui.selection = { kind: 'vertex', layer: mode, polyIdx: hit.polyIdx, vertIdx: hit.vertIdx };
+      ui.drag = { kind: 'vertex', layer: mode, polyIdx: hit.polyIdx, vertIdx: hit.vertIdx };
+      renderEdit();
+      return;
+    }
+    if (hit.kind === 'edge') {
+      // Insert vertex on edge
+      commit((s) => {
+        const p = mode === 'walkable' ? s.walkable : (mode === 'blocked' ? s.blocked[hit.polyIdx] : s.rooms[hit.polyIdx]);
+        if (!p) return;
+        p.vertices.splice(hit.segIdx + 1, 0, { x: hit.point.x, y: hit.point.y });
+      });
+      ui.selection = { kind: 'vertex', layer: mode, polyIdx: hit.polyIdx, vertIdx: hit.segIdx + 1 };
+      ui.drag = { kind: 'vertex', layer: mode, polyIdx: hit.polyIdx, vertIdx: hit.segIdx + 1 };
+      renderEdit();
+      return;
+    }
+    if (hit.kind === 'interior') {
+      ui.selection = { kind: 'polygon', layer: mode, index: hit.polyIdx };
+      renderEdit();
+      renderSidePanel();
+      return;
+    }
+
+    // Empty space — start a new polygon
+    if (mode === 'walkable') {
+      if (state.walkable.closed) {
+        ui.selection = null;
+        renderEdit();
+        renderSidePanel();
+        toast('Walkable is closed. Click vertices / edges to edit.', 'warn');
         return;
       }
-      const trimmed = id.trim();
-      portals.push({ id: trimmed, x: Math.round(nearest.x * 100) / 100, y: Math.round(nearest.y * 100) / 100 });
-      addPortalMarker(nearest, trimmed);
-      setStatus(`Portal "${trimmed}" placed — ${portals.length} total`);
+      commit((s) => { s.walkable.vertices.push({ x: pt.x, y: pt.y }); });
+      ui.inProgress = { layer: 'walkable' };
+      renderAll();
+    } else {
+      // blocked or rooms — start new polygon
+      commit((s) => {
+        const arr = mode === 'blocked' ? s.blocked : s.rooms;
+        arr.push({
+          id: '',
+          label: emptyLabel(),
+          vertices: [{ x: pt.x, y: pt.y }],
+          closed: false,
+          ...(mode === 'rooms' ? { portalId: null } : {}),
+        });
+      });
+      const arr = mode === 'blocked' ? state.blocked : state.rooms;
+      ui.inProgress = { layer: mode, index: arr.length - 1 };
+      renderAll();
     }
   };
 
-  // ── Undo ──
+  tool.onMouseDrag = function (event) {
+    if (ui.panning) return;
+    if (ui.drag && ui.drag.kind === 'vertex') {
+      const p = ui.drag.layer === 'walkable' ? state.walkable
+              : ui.drag.layer === 'blocked' ? state.blocked[ui.drag.polyIdx]
+              : state.rooms[ui.drag.polyIdx];
+      if (p && p.vertices[ui.drag.vertIdx]) {
+        // Draft update (no commit) — coalesce into single snapshot on mouseUp
+        if (!ui.drag.originalPos) {
+          ui.drag.originalPos = { ...p.vertices[ui.drag.vertIdx] };
+          ui.drag.beforeSnapshot = snapshot();
+        }
+        p.vertices[ui.drag.vertIdx].x = event.point.x;
+        p.vertices[ui.drag.vertIdx].y = event.point.y;
+        renderAll();
+      }
+    } else if (ui.drag && ui.drag.kind === 'portal') {
+      const p = state.portals[ui.drag.index];
+      if (p && state.walkable.closed && state.walkable.vertices.length >= 3) {
+        // Snap to walkable perimeter
+        const nearest = nearestOnPolygon(event.point, state.walkable.vertices);
+        if (!ui.drag.beforeSnapshot) {
+          ui.drag.beforeSnapshot = snapshot();
+        }
+        p.x = nearest.x;
+        p.y = nearest.y;
+        renderAll();
+      }
+    }
+  };
 
-  function undo() {
-    if (mode === 'polygon' && !polygonClosed) {
-      if (vertices.length === 0) return;
-      vertices.pop();
-      const dot = vertexDots.pop();
-      if (dot) dot.remove();
-      rebuildPreview();
-      setStatus(`Vertex removed — ${vertices.length} remaining`);
-    } else if (mode === 'portals') {
-      if (portals.length === 0) return;
-      const removed = portals.pop();
-      const g = portalGroups.pop();
-      if (g) g.remove();
-      setStatus(`Portal "${removed.id}" removed — ${portals.length} remaining`);
+  tool.onMouseUp = function (event) {
+    if (ui.panning) return;
+    if (ui.drag && ui.drag.beforeSnapshot) {
+      // Finalize: the current state already has the new position applied directly.
+      // We need to insert the "before" snapshot into history and re-apply the "after" as a commit.
+      history.past.push(ui.drag.beforeSnapshot);
+      if (history.past.length > HISTORY_CAP) history.past.shift();
+      history.future.length = 0;
+      state.metadata.updatedAt = new Date().toISOString();
+      autosave();
+      updateToolbar();
+    }
+    ui.drag = null;
+  };
+
+  /* ─── Polygon tool helpers ────────────────────────────────────── */
+
+  function getPolygonByRefFromState(s, ref) {
+    if (!ref) return null;
+    if (ref.layer === 'walkable') return s.walkable;
+    if (ref.layer === 'blocked') return s.blocked[ref.index];
+    if (ref.layer === 'rooms') return s.rooms[ref.index];
+    return null;
+  }
+
+  function findInProgress(mode) {
+    if (mode === 'walkable') {
+      return state.walkable.closed ? null : { layer: 'walkable' };
+    }
+    const arr = mode === 'blocked' ? state.blocked : state.rooms;
+    for (let i = 0; i < arr.length; i++) {
+      if (!arr[i].closed) return { layer: mode, index: i };
+    }
+    return null;
+  }
+
+  function nearestOnPolygon(pt, verts) {
+    let best = null;
+    for (let i = 0; i < verts.length; i++) {
+      const a = verts[i];
+      const b = verts[(i + 1) % verts.length];
+      const c = closestOnSegment(pt.x, pt.y, a.x, a.y, b.x, b.y);
+      const d = distSq(pt.x, pt.y, c.x, c.y);
+      if (!best || d < best.d) best = { x: c.x, y: c.y, d };
+    }
+    return best || { x: pt.x, y: pt.y };
+  }
+
+  function modeLabel(m) {
+    return m.charAt(0).toUpperCase() + m.slice(1);
+  }
+
+  /* ─── Portals mode ────────────────────────────────────────────── */
+
+  function handlePortalsDown(event, pt) {
+    const hit = hitTestPortals(pt);
+    if (hit.kind === 'portal') {
+      const alt = event.modifiers.option || event.modifiers.alt;
+      if (alt) {
+        const p = state.portals[hit.index];
+        if (confirm(`Delete portal "${p.id}"?`)) {
+          commit((s) => { s.portals.splice(hit.index, 1); });
+        }
+        return;
+      }
+      ui.selection = { kind: 'portal', index: hit.index };
+      ui.drag = { kind: 'portal', index: hit.index };
+      renderAll();
+      renderSidePanel();
+      return;
+    }
+
+    // Empty: place new portal
+    if (!state.walkable.closed || state.walkable.vertices.length < 3) {
+      toast('Close the walkable polygon before placing portals.', 'error');
+      return;
+    }
+    const nearest = nearestOnPolygon(pt, state.walkable.vertices);
+
+    openPortalModal({
+      title: 'New Portal',
+      values: { id: '', type: 'room', labelEn: '', labelZh: '' },
+      onOk: (vals) => {
+        if (!vals.id.trim()) { toast('Portal ID is required.', 'error'); return false; }
+        if (state.portals.some(p => p.id === vals.id.trim())) {
+          toast('Portal ID already exists.', 'error'); return false;
+        }
+        commit((s) => {
+          s.portals.push({
+            id: vals.id.trim(),
+            x: nearest.x,
+            y: nearest.y,
+            type: vals.type,
+            label: { en: vals.labelEn.trim(), zh: vals.labelZh.trim() },
+            link: null,
+          });
+        });
+        return true;
+      },
+    });
+  }
+
+  /* ─── Side panel (selection editing) ──────────────────────────── */
+
+  const sidePanel = document.getElementById('side-panel');
+
+  function renderSidePanel() {
+    const sel = ui.selection;
+    if (!sel) { sidePanel.classList.remove('visible'); sidePanel.innerHTML = ''; return; }
+
+    if (sel.kind === 'portal') {
+      const p = state.portals[sel.index];
+      if (!p) { ui.selection = null; sidePanel.classList.remove('visible'); return; }
+      const portalIds = state.portals.map(x => x.id);
+      sidePanel.innerHTML = `
+        <h3>Portal</h3>
+        <div class="field"><label>ID</label><input id="sp-id" value="${escHtml(p.id)}"></div>
+        <div class="field"><label>Type</label><select id="sp-type">${PORTAL_TYPES.map(t => `<option value="${t.value}"${t.value===p.type?' selected':''}>${t.value}</option>`).join('')}</select></div>
+        <div class="field"><label>Label (EN)</label><input id="sp-en" value="${escHtml((p.label && p.label.en) || '')}"></div>
+        <div class="field"><label>Label (ZH)</label><input id="sp-zh" value="${escHtml((p.label && p.label.zh) || '')}"></div>
+        <div class="field"><label>Cross-floor link floor</label><input id="sp-link-floor" value="${escHtml((p.link && p.link.floor) || '')}" placeholder="e.g. L5"></div>
+        <div class="field"><label>Cross-floor link portal ID</label><input id="sp-link-id" value="${escHtml((p.link && p.link.portalId) || '')}" placeholder="e.g. NW-512"></div>
+        <div class="btn-row">
+          <button id="sp-save" class="primary">Save</button>
+          <button id="sp-delete" class="danger">Delete</button>
+        </div>
+        <div class="hint">Drag the portal on canvas to move it along the walkable perimeter.</div>
+      `;
+      sidePanel.classList.add('visible');
+      document.getElementById('sp-save').onclick = () => {
+        const newId = document.getElementById('sp-id').value.trim();
+        if (!newId) { toast('ID required.', 'error'); return; }
+        if (newId !== p.id && state.portals.some(x => x.id === newId)) { toast('ID already used.', 'error'); return; }
+        const type = document.getElementById('sp-type').value;
+        const en = document.getElementById('sp-en').value.trim();
+        const zh = document.getElementById('sp-zh').value.trim();
+        const linkFloor = document.getElementById('sp-link-floor').value.trim();
+        const linkId = document.getElementById('sp-link-id').value.trim();
+        commit((s) => {
+          const pp = s.portals[sel.index];
+          if (!pp) return;
+          pp.id = newId;
+          pp.type = type;
+          pp.label = { en, zh };
+          pp.link = linkId ? { floor: linkFloor, portalId: linkId } : null;
+        });
+        toast('Portal saved.', 'ok');
+      };
+      document.getElementById('sp-delete').onclick = () => {
+        if (!confirm(`Delete portal "${p.id}"?`)) return;
+        commit((s) => { s.portals.splice(sel.index, 1); });
+      };
+      return;
+    }
+
+    if (sel.kind === 'polygon') {
+      const poly = getPolygonByRef({ layer: sel.layer, index: sel.index });
+      if (!poly) { ui.selection = null; sidePanel.classList.remove('visible'); return; }
+      const title = sel.layer === 'walkable' ? 'Walkable'
+                  : sel.layer === 'blocked' ? 'Blocked Area'
+                  : 'Room';
+      const portalOpts = sel.layer === 'rooms'
+        ? `<option value="">(none)</option>` + state.portals.map(p => `<option value="${escAttr(p.id)}"${p.id===poly.portalId?' selected':''}>${escHtml(p.id)}</option>`).join('')
+        : '';
+      const portalField = sel.layer === 'rooms'
+        ? `<div class="field"><label>Linked portal (entry)</label><select id="sp-portal-id">${portalOpts}</select></div>`
+        : '';
+      const idField = sel.layer !== 'walkable'
+        ? `<div class="field"><label>ID</label><input id="sp-id" value="${escHtml(poly.id || '')}"></div>`
+        : '';
+      const deleteBtn = sel.layer !== 'walkable'
+        ? `<button id="sp-delete" class="danger">Delete</button>`
+        : '';
+      sidePanel.innerHTML = `
+        <h3>${title}</h3>
+        ${idField}
+        <div class="field"><label>Label (EN)</label><input id="sp-en" value="${escHtml((poly.label && poly.label.en) || '')}"></div>
+        <div class="field"><label>Label (ZH)</label><input id="sp-zh" value="${escHtml((poly.label && poly.label.zh) || '')}"></div>
+        ${portalField}
+        <div class="btn-row">
+          <button id="sp-save" class="primary">Save</button>
+          ${deleteBtn}
+        </div>
+        <div class="hint">${poly.vertices.length} vertices · click vertices to drag · click edges to insert · Alt-click vertex to delete</div>
+      `;
+      sidePanel.classList.add('visible');
+      document.getElementById('sp-save').onclick = () => {
+        const en = document.getElementById('sp-en').value.trim();
+        const zh = document.getElementById('sp-zh').value.trim();
+        const newId = sel.layer !== 'walkable' ? document.getElementById('sp-id').value.trim() : null;
+        const portalId = sel.layer === 'rooms' ? (document.getElementById('sp-portal-id').value || null) : null;
+        commit((s) => {
+          const p = sel.layer === 'walkable' ? s.walkable
+                  : sel.layer === 'blocked' ? s.blocked[sel.index]
+                  : s.rooms[sel.index];
+          if (!p) return;
+          p.label = { en, zh };
+          if (newId !== null) p.id = newId;
+          if (sel.layer === 'rooms') p.portalId = portalId;
+        });
+        toast('Saved.', 'ok');
+      };
+      if (deleteBtn) {
+        document.getElementById('sp-delete').onclick = () => {
+          if (!confirm(`Delete this ${title.toLowerCase()}?`)) return;
+          commit((s) => {
+            if (sel.layer === 'blocked') s.blocked.splice(sel.index, 1);
+            if (sel.layer === 'rooms') s.rooms.splice(sel.index, 1);
+          });
+        };
+      }
     }
   }
 
-  // ── Export ──
+  function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escAttr(s) { return escHtml(s); }
 
-  function exportJSON() {
-    if (!polygonClosed) {
-      alert('Close the polygon before exporting.');
-      return;
+  /* ─── Modal ───────────────────────────────────────────────────── */
+
+  const modalOverlay = document.getElementById('modal-overlay');
+  const modalIdEl = document.getElementById('modal-id');
+  const modalTypeEl = document.getElementById('modal-type');
+  const modalEnEl = document.getElementById('modal-label-en');
+  const modalZhEl = document.getElementById('modal-label-zh');
+  let currentModalHandler = null;
+
+  function openPortalModal({ title, values, onOk }) {
+    document.getElementById('modal-title').textContent = title || 'New Portal';
+    modalIdEl.value = values.id || '';
+    modalTypeEl.value = values.type || 'room';
+    modalEnEl.value = values.labelEn || '';
+    modalZhEl.value = values.labelZh || '';
+    modalOverlay.classList.add('visible');
+    setTimeout(() => modalIdEl.focus(), 50);
+    currentModalHandler = onOk;
+  }
+  function closeModal() {
+    modalOverlay.classList.remove('visible');
+    currentModalHandler = null;
+  }
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  document.getElementById('modal-ok').addEventListener('click', () => {
+    if (!currentModalHandler) { closeModal(); return; }
+    const ok = currentModalHandler({
+      id: modalIdEl.value,
+      type: modalTypeEl.value,
+      labelEn: modalEnEl.value,
+      labelZh: modalZhEl.value,
+    });
+    if (ok !== false) closeModal();
+  });
+  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+  [modalIdEl, modalEnEl, modalZhEl].forEach(el => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('modal-ok').click();
+      if (e.key === 'Escape') closeModal();
+    });
+  });
+
+  /* ─── Validation ──────────────────────────────────────────────── */
+
+  const validationPanel = document.getElementById('validation-panel');
+  const validationList = document.getElementById('validation-list');
+  document.getElementById('validation-close').addEventListener('click', () => validationPanel.classList.remove('visible'));
+
+  function validate() {
+    const issues = [];
+    const s = state;
+
+    if (s.walkable.vertices.length < 3) {
+      issues.push({ level: 'error', msg: 'Walkable polygon has fewer than 3 vertices.' });
+    } else if (!s.walkable.closed) {
+      issues.push({ level: 'error', msg: 'Walkable polygon is not closed.' });
+    } else {
+      // CCW check (shoelace; y-down coords → baker wants sum < 0)
+      let sum = 0;
+      const vs = s.walkable.vertices;
+      for (let i = 0; i < vs.length; i++) {
+        const a = vs[i], b = vs[(i + 1) % vs.length];
+        sum += (b.x - a.x) * (b.y + a.y);
+      }
+      if (sum > 0) issues.push({ level: 'warn', msg: 'Walkable winding is CW; will auto-reverse on export.' });
+
+      if (hasSelfIntersection(vs)) {
+        issues.push({ level: 'warn', msg: 'Walkable polygon appears to self-intersect.' });
+      }
     }
-    const data = {
-      image: 'lvl4map.jpg',
-      imageWidth: bgRaster ? bgRaster.width : 0,
-      imageHeight: bgRaster ? bgRaster.height : 0,
-      polygon: vertices.map(v => ({ x: Math.round(v.x * 100) / 100, y: Math.round(v.y * 100) / 100 })),
-      portals: portals
+
+    // Portal checks
+    const seenPortalIds = new Map();
+    s.portals.forEach((p, i) => {
+      if (!p.id) issues.push({ level: 'error', msg: `Portal #${i + 1} has no ID.` });
+      if (p.id) {
+        if (seenPortalIds.has(p.id)) issues.push({ level: 'error', msg: `Duplicate portal ID: "${p.id}".` });
+        seenPortalIds.set(p.id, true);
+      }
+      if (s.walkable.closed && s.walkable.vertices.length >= 3) {
+        // Portal should be on the walkable boundary; tolerate 2 px
+        const n = nearestOnPolygon({ x: p.x, y: p.y }, s.walkable.vertices);
+        if (Math.hypot(n.x - p.x, n.y - p.y) > 3) {
+          issues.push({ level: 'warn', msg: `Portal "${p.id}" is not on the walkable boundary.` });
+        }
+      }
+    });
+
+    // Blocked / rooms self-intersection
+    s.blocked.forEach((b, i) => {
+      if (!b.closed || b.vertices.length < 3) issues.push({ level: 'warn', msg: `Blocked #${i + 1}${b.id?' ('+b.id+')':''} is not a valid closed polygon.` });
+      else if (hasSelfIntersection(b.vertices)) issues.push({ level: 'warn', msg: `Blocked "${b.id || '#' + (i+1)}" self-intersects.` });
+    });
+    s.rooms.forEach((r, i) => {
+      if (!r.closed || r.vertices.length < 3) issues.push({ level: 'warn', msg: `Room #${i + 1}${r.id?' ('+r.id+')':''} is not a valid closed polygon.` });
+      else if (hasSelfIntersection(r.vertices)) issues.push({ level: 'warn', msg: `Room "${r.id || '#' + (i+1)}" self-intersects.` });
+      if (r.portalId && !seenPortalIds.has(r.portalId)) {
+        issues.push({ level: 'warn', msg: `Room "${r.id || '#' + (i+1)}" references unknown portalId "${r.portalId}".` });
+      }
+    });
+
+    return issues;
+  }
+
+  function hasSelfIntersection(verts) {
+    const n = verts.length;
+    if (n < 4) return false;
+    for (let i = 0; i < n; i++) {
+      const a1 = verts[i], a2 = verts[(i + 1) % n];
+      for (let j = i + 2; j < n; j++) {
+        if (i === 0 && j === n - 1) continue;
+        const b1 = verts[j], b2 = verts[(j + 1) % n];
+        if (segmentsIntersect(a1, a2, b1, b2)) return true;
+      }
+    }
+    return false;
+  }
+  function segmentsIntersect(p, p2, q, q2) {
+    function ccw(a, b, c) { return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x); }
+    return ccw(p, q, q2) !== ccw(p2, q, q2) && ccw(p, p2, q) !== ccw(p, p2, q2);
+  }
+
+  function showValidation() {
+    const issues = validate();
+    validationList.innerHTML = '';
+    if (issues.length === 0) {
+      validationList.innerHTML = `<div class="item ok">✓ No issues found.</div>`;
+    } else {
+      issues.forEach(iss => {
+        const div = document.createElement('div');
+        div.className = `item ${iss.level}`;
+        div.textContent = (iss.level === 'error' ? '✗ ' : '⚠ ') + iss.msg;
+        validationList.appendChild(div);
+      });
+    }
+    validationPanel.classList.add('visible');
+  }
+
+  /* ─── Toast ───────────────────────────────────────────────────── */
+
+  const toastContainer = document.getElementById('toast-container');
+  function toast(msg, level) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + (level || '');
+    t.textContent = msg;
+    toastContainer.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; }, 2400);
+    setTimeout(() => t.remove(), 2900);
+  }
+
+  /* ─── UI: toolbar, status, keyboard ───────────────────────────── */
+
+  function setMode(m) {
+    if (!['walkable', 'blocked', 'rooms', 'portals'].includes(m)) return;
+    // Don't destroy in-progress work on mode change — just drop the reference.
+    // On return to that mode, findInProgress() will re-discover any open polygon.
+    if (ui.inProgress && ui.inProgress.layer !== m) ui.inProgress = null;
+    ui.mode = m;
+    ui.selection = null;
+    // Re-discover in-progress for the new mode if any
+    if (!ui.inProgress) {
+      const found = findInProgress(m);
+      if (found) ui.inProgress = found;
+    }
+    updateToolbar();
+    renderAll();
+    renderSidePanel();
+  }
+
+  function cancelInProgress() {
+    if (!ui.inProgress) return;
+    const ref = ui.inProgress;
+    commit((s) => {
+      if (ref.layer === 'walkable') {
+        s.walkable.vertices = [];
+        s.walkable.closed = false;
+      } else {
+        const arr = ref.layer === 'blocked' ? s.blocked : s.rooms;
+        if (arr[ref.index]) arr.splice(ref.index, 1);
+      }
+    });
+  }
+
+  function updateToolbar() {
+    ['walkable', 'blocked', 'rooms', 'portals'].forEach(m => {
+      document.getElementById('btn-mode-' + m).classList.toggle('active', ui.mode === m);
+    });
+    document.getElementById('undo-count').textContent = history.past.length ? ` (${history.past.length})` : '';
+    document.getElementById('redo-count').textContent = history.future.length ? ` (${history.future.length})` : '';
+    document.getElementById('btn-undo').disabled = history.past.length === 0;
+    document.getElementById('btn-redo').disabled = history.future.length === 0;
+    document.getElementById('btn-bg-toggle').textContent = state.image.visible ? 'Hide' : 'Show';
+    document.getElementById('bg-opacity').value = String(Math.round(state.image.opacity * 100));
+  }
+
+  function updateStatus() {
+    const msgs = {
+      walkable: state.walkable.closed
+        ? `Walkable closed (${state.walkable.vertices.length} vertices) — click vertices to drag, edges to insert, alt-click to delete`
+        : (ui.inProgress ? `Drawing walkable — ${state.walkable.vertices.length} vertices — click first vertex or Enter to close, Esc to cancel` : 'Click to start drawing the walkable corridor'),
+      blocked: ui.inProgress ? 'Drawing blocked polygon — click first vertex or Enter to close, Esc to cancel' : `${state.blocked.length} blocked area(s) — click empty space to start a new one`,
+      rooms: ui.inProgress ? 'Drawing room — click first vertex or Enter to close, Esc to cancel' : `${state.rooms.length} room(s) — click empty space to start a new one`,
+      portals: `${state.portals.length} portals — click walkable edge to place, click portal to select, alt-click to delete`,
     };
+    document.getElementById('status-mode').textContent = modeLabel(ui.mode);
+    document.getElementById('status-message').textContent = msgs[ui.mode] || '';
+  }
+
+  function updateZoomStatus() {
+    document.getElementById('status-zoom').textContent = Math.round(view.zoom * 100) + '%';
+  }
+  function updateCoords(pt) {
+    document.getElementById('status-coords').textContent = `${Math.round(pt.x)}, ${Math.round(pt.y)}`;
+  }
+
+  /* ─── Autosave ────────────────────────────────────────────────── */
+
+  let autosaveTimer = null;
+  function autosave() {
+    if (autosaveTimer) clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(exportState()));
+      } catch (e) { /* quota — ignore */ }
+    }, 400);
+  }
+  function tryLoadAutosave() {
+    try {
+      const raw = localStorage.getItem(AUTOSAVE_KEY);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      if (!data || !data.polygon) return false;
+      importData(data);
+      toast('Restored autosaved work. Use Clear to start fresh.', 'ok');
+      return true;
+    } catch (e) { /* corrupt — ignore */ }
+    return false;
+  }
+
+  /* ─── Toolbar wiring ──────────────────────────────────────────── */
+
+  document.querySelectorAll('#toolbar [data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+  document.getElementById('btn-fit').addEventListener('click', fitToCanvas);
+  document.getElementById('btn-reset-view').addEventListener('click', resetView);
+  document.getElementById('btn-zoom-in').addEventListener('click', () => zoomAt({ x: view.size.width / 2, y: view.size.height / 2 }, 1.25));
+  document.getElementById('btn-zoom-out').addEventListener('click', () => zoomAt({ x: view.size.width / 2, y: view.size.height / 2 }, 0.8));
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-redo').addEventListener('click', redo);
+  document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const issues = validate().filter(x => x.level === 'error');
+    if (issues.length > 0) {
+      if (!confirm(`There are ${issues.length} errors. Export anyway?`)) return;
+    }
+    const data = exportState();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'navmesh_data.json';
+    a.download = `navmesh_data_${state.metadata.floor || 'L4'}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    setStatus('Exported navmesh_data.json');
-  }
-
-  // ── Import ──
-
-  function importJSON(json) {
-    clearAll();
-    try {
-      const data = JSON.parse(json);
-
-      if (data.polygon && data.polygon.length >= 3) {
-        data.polygon.forEach(v => {
-          const pt = new Point(v.x, v.y);
-          vertices.push(pt);
-          drawVertexDot(pt);
-        });
-        closePolygon();
-      }
-
-      if (data.portals) {
-        data.portals.forEach(p => {
-          portals.push({ id: p.id, x: p.x, y: p.y });
-          addPortalMarker(new Point(p.x, p.y), p.id);
-        });
-      }
-
-      setStatus(`Imported: ${vertices.length} vertices, ${portals.length} portals`);
-    } catch (e) {
-      alert('Invalid JSON: ' + e.message);
-      setStatus('Import failed');
-    }
-  }
-
-  // ── Clear ──
-
-  function clearAll() {
-    vertices = [];
-    portals = [];
-    polygonClosed = false;
-    if (polygonPath) { polygonPath.remove(); polygonPath = null; }
-    if (previewPath) { previewPath.remove(); previewPath = null; }
-    vertexDots.forEach(d => d.remove());
-    vertexDots = [];
-    portalGroups.forEach(g => g.remove());
-    portalGroups = [];
-    setStatus('Cleared — ready to draw');
-  }
-
-  // ── Toolbar wiring ──
-
-  const btnPolygon = document.getElementById('btn-polygon');
-  const btnPortals = document.getElementById('btn-portals');
-
-  function setMode(m) {
-    mode = m;
-    btnPolygon.classList.toggle('active', m === 'polygon');
-    btnPortals.classList.toggle('active', m === 'portals');
-    setStatus(m === 'polygon'
-      ? (polygonClosed ? 'Polygon is locked' : 'Click to add vertices')
-      : 'Click near polygon edge to place a portal');
-  }
-
-  btnPolygon.addEventListener('click', () => setMode('polygon'));
-  btnPortals.addEventListener('click', () => setMode('portals'));
-  document.getElementById('btn-close').addEventListener('click', closePolygon);
-  document.getElementById('btn-undo').addEventListener('click', undo);
-  document.getElementById('btn-export').addEventListener('click', exportJSON);
+    toast('Exported.', 'ok');
+  });
+  document.getElementById('btn-validate').addEventListener('click', showValidation);
   document.getElementById('btn-clear').addEventListener('click', () => {
-    if (confirm('Clear everything?')) clearAll();
+    if (!confirm('Clear everything? This cannot be undone with one Undo; it consumes the stack.')) return;
+    commit((s) => {
+      const fresh = freshState();
+      // Preserve image info
+      fresh.image = s.image;
+      fresh.metadata = { ...s.metadata, updatedAt: new Date().toISOString() };
+      Object.assign(s, fresh);
+    });
+    toast('Cleared.', 'warn');
   });
 
   const fileInput = document.getElementById('file-import');
-  document.getElementById('btn-import').addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const f = e.target.files[0];
+    if (!f) return;
     const reader = new FileReader();
-    reader.onload = (ev) => importJSON(ev.target.result);
-    reader.readAsText(file);
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        importData(data);
+        toast('Imported.', 'ok');
+      } catch (err) {
+        toast('Invalid JSON: ' + err.message, 'error');
+      }
+    };
+    reader.readAsText(f);
     fileInput.value = '';
   });
 
-  // ── Keyboard shortcuts ──
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT') return;
-    if (e.key === 'z' && (e.ctrlKey || e.metaKey)) { undo(); e.preventDefault(); }
-    if (e.key === '1') setMode('polygon');
-    if (e.key === '2') setMode('portals');
-    if (e.key === 'e' || e.key === 'E') exportJSON();
+  const bgOpacityEl = document.getElementById('bg-opacity');
+  bgOpacityEl.addEventListener('input', () => {
+    state.image.opacity = parseInt(bgOpacityEl.value, 10) / 100;
+    renderBackground();
   });
-};
+  document.getElementById('btn-bg-toggle').addEventListener('click', () => {
+    state.image.visible = !state.image.visible;
+    renderBackground();
+    updateToolbar();
+  });
+
+  /* ─── Pan via middle-mouse or space-held ──────────────────────── */
+
+  canvas.addEventListener('mousedown', (e) => {
+    const isPanTrigger = e.button === 1 || (e.button === 0 && ui.spaceDown);
+    if (!isPanTrigger) return;
+    e.preventDefault(); e.stopPropagation();
+    ui.panning = true;
+    canvas.classList.add('panning');
+    const startClient = { x: e.clientX, y: e.clientY };
+    const startCenter = view.center.clone();
+    const onMove = (ev) => {
+      const dx = (ev.clientX - startClient.x) / view.zoom;
+      const dy = (ev.clientY - startClient.y) / view.zoom;
+      view.center = new Point(startCenter.x - dx, startCenter.y - dy);
+      renderAll();
+    };
+    const onUp = () => {
+      ui.panning = false;
+      canvas.classList.remove('panning');
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, true);
+
+  // Prevent the browser's middle-click autoscroll
+  canvas.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
+
+  /* ─── Wheel: trackpad pan, ctrl/pinch zoom, mouse-wheel zoom ───── */
+
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const screenPt = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+    // Pinch gesture on Mac trackpad arrives as wheel with ctrlKey=true.
+    // Cmd+wheel also zooms (explicit user intent).
+    const isPinchZoom = e.ctrlKey || e.metaKey;
+
+    // Pixel-level deltas (deltaMode 0) come from trackpads.
+    // Line/page deltas (deltaMode 1 or 2) come from traditional mouse wheels.
+    const isTrackpad = e.deltaMode === 0 && !isPinchZoom;
+
+    if (isTrackpad) {
+      // Two-finger drag → pan the view.
+      const dx = e.deltaX / view.zoom;
+      const dy = e.deltaY / view.zoom;
+      view.center = new Point(view.center.x + dx, view.center.y + dy);
+      renderAll();
+      return;
+    }
+
+    // Mouse wheel or pinch → zoom toward cursor.
+    const dy = e.deltaY;
+    const factor = dy < 0 ? 1.15 : (1 / 1.15);
+    zoomAt(screenPt, factor);
+  }, { passive: false });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+    const mod = e.ctrlKey || e.metaKey;
+
+    if (e.code === 'Space') { ui.spaceDown = true; canvas.classList.add('pan-ready'); e.preventDefault(); return; }
+
+    if (mod && e.key.toLowerCase() === 'z') {
+      if (e.shiftKey) redo(); else undo();
+      e.preventDefault(); return;
+    }
+    if (mod && e.key.toLowerCase() === 'y') { redo(); e.preventDefault(); return; }
+
+    if (e.key === '1') setMode('walkable');
+    if (e.key === '2') setMode('blocked');
+    if (e.key === '3') setMode('rooms');
+    if (e.key === '4') setMode('portals');
+
+    if (e.key === 'v' || e.key === 'V') { fitToCanvas(); }
+    if (e.key === 'b' || e.key === 'B') {
+      state.image.visible = !state.image.visible; renderBackground(); updateToolbar();
+    }
+
+    if (e.key === 'Escape') {
+      if (currentModalHandler) { closeModal(); return; }
+      if (ui.inProgress) { cancelInProgress(); toast('Cancelled.', 'warn'); }
+      else if (ui.selection) { ui.selection = null; renderAll(); renderSidePanel(); }
+    }
+    if (e.key === 'Enter') {
+      if (ui.inProgress) {
+        const poly = getPolygonByRef(ui.inProgress);
+        if (poly && poly.vertices.length >= 3) {
+          commit((s) => {
+            const p = getPolygonByRefFromState(s, ui.inProgress);
+            if (p) p.closed = true;
+          });
+          toast('Closed.', 'ok');
+        }
+      }
+    }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (ui.selection && ui.selection.kind === 'portal') {
+        commit((s) => s.portals.splice(ui.selection.index, 1));
+        e.preventDefault();
+      } else if (ui.selection && ui.selection.kind === 'polygon' && ui.selection.layer !== 'walkable') {
+        commit((s) => {
+          if (ui.selection.layer === 'blocked') s.blocked.splice(ui.selection.index, 1);
+          if (ui.selection.layer === 'rooms') s.rooms.splice(ui.selection.index, 1);
+        });
+        e.preventDefault();
+      }
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') { ui.spaceDown = false; canvas.classList.remove('pan-ready'); }
+  });
+
+  /* ─── Init ────────────────────────────────────────────────────── */
+
+  // Set default image (current Level 4 background) if no autosave
+  const hadAutosave = tryLoadAutosave();
+  if (!hadAutosave) {
+    state.image.src = 'lvl4map.jpg';
+    state.image.width = 5712;
+    state.image.height = 4284;
+    loadBackgroundImage();
+    // Try to auto-import existing /data/navmesh_data.json
+    fetch('../data/navmesh_data.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && !ui.didAutoLoad && state.walkable.vertices.length === 0) {
+          ui.didAutoLoad = true;
+          importData(data);
+          toast('Loaded existing navmesh_data.json from /data/', 'ok');
+        }
+      })
+      .catch(() => {});
+  }
+
+  updateToolbar();
+  renderAll();
+  updateZoomStatus();
+  setMode('walkable');
+
+  // Resize handling
+  window.addEventListener('resize', () => {
+    paper.view.update();
+    renderAll();
+  });
+});
 </script>
 </body>
 </html>
