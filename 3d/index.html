@@ -21,17 +21,11 @@
     #title-bar h1 { font-size: 22px; font-weight: 600; letter-spacing: 0.5px; }
     #title-bar p { font-size: 12px; color: #8b949e; margin-top: 2px; }
 
-    #btn-skip {
+    #top-actions {
       position: absolute; top: 20px; right: 24px;
-      background: rgba(22, 27, 34, 0.8); color: #e6edf3;
-      border: 1px solid #30363d; border-radius: 8px;
-      padding: 8px 18px; font-size: 14px; cursor: pointer;
-      backdrop-filter: blur(8px); transition: opacity 0.4s;
+      display: flex; gap: 8px;
     }
-    #btn-skip:hover { background: rgba(48, 54, 61, 0.9); }
-
     #btn-fullscreen {
-      position: absolute; top: 20px; right: 140px;
       background: rgba(22, 27, 34, 0.8); color: #e6edf3;
       border: 1px solid #30363d; border-radius: 8px;
       padding: 8px 14px; font-size: 14px; cursor: pointer;
@@ -44,9 +38,7 @@
       background: rgba(13, 17, 21, 0.9); border: 1px solid #30363d;
       border-radius: 12px; padding: 16px 20px;
       backdrop-filter: blur(12px); display: flex; gap: 12px; align-items: center;
-      opacity: 0; transition: opacity 0.6s; pointer-events: none;
     }
-    #route-panel.visible { opacity: 1; pointer-events: auto; }
 
     #route-panel select {
       background: #161b22; color: #e6edf3; border: 1px solid #30363d;
@@ -100,8 +92,9 @@
     <p>Canadian International School · Lakeside Campus</p>
   </div>
 
-  <button id="btn-fullscreen" title="Fullscreen">⛶</button>
-  <button id="btn-skip">Skip Intro ›</button>
+  <div id="top-actions">
+    <button id="btn-fullscreen" title="Fullscreen">⛶</button>
+  </div>
 
   <div id="route-panel">
     <div class="select-group">
