@@ -6,11 +6,11 @@ CIS-MAP is a bilingual indoor navigation system for the Canadian International S
 
 The system relies on an **Offline Baking Architecture**. All pathfinding is pre-computed by a custom C++ program using A* search, Laplacian relaxation smoothing, and Ramer-Douglas-Peucker simplification. The results are exported as a static JSON lookup table. A lightweight, bilingual, mobile-web frontend reads this table to provide instant, offline-capable routing for students scanning QR codes in the hallways.
 
-A supplementary **3D navigator** built with Three.js provides an immersive flythrough visualisation of the campus corridors for demonstration and presentation purposes.
+A supplementary **3D navigator** built with Three.js provides an immersive interactive visualisation of the campus corridors for demonstration and presentation purposes.
 
 ### Current State
 
-A fully functional prototype covering Level 4 of the campus. Includes all 53 locations (classrooms, staircases, elevators, pods, offices) with over 2,700 pre-computed routes covering every origin-to-destination pair. The mobile interface supports pan, zoom, bilingual toggle (English / Simplified Chinese), and QR deep-linking. The 3D demo generates a procedural corridor environment from the same polygon data and supports cinematic flythrough + interactive route display.
+A presentation-ready prototype covering Level 4 of the campus. Includes all 53 locations (classrooms, staircases, elevators, pods, offices) with over 2,700 pre-computed routes covering every origin-to-destination pair. The mobile interface is styled in the CIS brand system (Theinhardt, CIS red), with a full-screen grouped location picker, pan + pinch + wheel zoom, auto-navigation on both-endpoints-set, bilingual toggle (English / Simplified Chinese), and QR deep-linking. The 3D demo generates a procedural corridor environment from the same polygon data and drops the user straight into interactive orbit.
 
 ### What Is Needed Next
 
@@ -56,16 +56,17 @@ The project is divided into four operational domains:
 
 ### 3. The 2D Mobile Viewer (`index.html` + `js/app.js`)
 * **Purpose:** The production web app for end-users. Deployed via GitHub Pages, triggered by QR codes.
-* **Tech Stack:** Vanilla HTML, CSS, JavaScript. No frameworks, no build tools.
-* **Behaviour:** Zero runtime pathfinding. Takes the user's start/destination inputs, looks up the corresponding route in `baked_paths.json`, and draws it on a pan-zoomable canvas with smooth corner rounding (`ctx.arcTo`).
-* **Features:** Bilingual UI (EN / 中文), QR deep-linking via query params (`?start=NW-412`), native autocomplete for portal names, glow + core line route rendering, start/end markers.
-* **Constraints:** Mobile-first. Uses `dvh` units, `safe-area-inset`, pointer events. No desktop media queries. Designed for iOS Safari.
+* **Tech Stack:** Vanilla HTML, CSS, JavaScript. No frameworks, no build tools. CIS brand design tokens (Theinhardt font, CIS red `#DA291C`, light theme).
+* **Behaviour:** Zero runtime pathfinding. User taps a From/To pill, picks a location from a full-screen grouped list (search + auto-select on exact match), and a route is looked up in `baked_paths.json` and drawn on a pan-zoomable canvas with smooth corner rounding (`ctx.arcTo`). Selecting both endpoints auto-navigates — no separate button.
+* **Interaction:** Unified Pointer Events for one-finger pan and two-finger pinch (mouse + touch share the same code path); desktop wheel-zoom; `clampPan` keeps the map inside the viewport; selecting a route auto-pans/zooms to fit.
+* **Features:** Bilingual UI (EN / 中文) via language dropdown, QR deep-linking (`?start=NW-412&dest=Stair_2`), full-screen location picker with grouped headers (Wings / Stairs / Elevators / Facilities) and display-name prettification, animated direction-of-travel pulse on the route (dashed offset driven by `requestAnimationFrame`), Google-style teardrop end pin, route info (estimated distance + walking time).
+* **Constraints:** Mobile-first. Uses `dvh` units, `safe-area-inset`, Pointer Events. No desktop media queries. Designed for iOS Safari (search input is 16px to suppress auto-zoom).
 
 ### 4. The 3D Navigator (`/3d`)
 * **Purpose:** Supplementary immersive visualisation for demonstrations and presentations. Not for daily navigation use.
 * **Tech Stack:** Three.js r128 (non-module, vendored in `/3d/lib/`), vanilla JavaScript.
 * **Geometry:** Procedurally generated from the same `navmesh_data.json` — floor, walls, ceiling, portal markers, edge glow. No 3D models or external textures.
-* **Camera modes:** Cinematic flythrough (auto-plays on load), smooth transition, interactive orbit.
+* **Camera:** Interactive orbit (OrbitControls), starts immediately in interactive mode.
 * **Route display:** Flat ribbon mesh with straight line segments (no curve overshoot), runner dot, start/end markers. All rendered with `depthTest: false` to avoid clipping through transparent walls.
 * **Post-processing:** UnrealBloomPass at half resolution for emissive glow effects.
 * **Performance:** Optimised from 3fps → 60fps by removing 53 dynamic point lights, disabling shadows, downgrading materials, culling labels, reducing particles, and capping pixel ratio.
@@ -87,6 +88,7 @@ engine_cpp/CMakeLists.txt     — CMake build config (auto-fetches nlohmann/json
 data/navmesh_data.json        — Raw geometry: polygon vertices + portal positions (input)
 data/baked_paths.json         — Pre-computed routes for all portal pairs (output)
 assets/img/lvl4map.jpg        — Floor plan background image
+assets/img/cis-logo-white.svg — Official CIS horizontal logo (topbar)
 ```
 
 ## Data Pipeline

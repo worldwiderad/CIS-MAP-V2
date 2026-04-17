@@ -1,10 +1,4 @@
-/* ============================================================================
-   CIS Indoor Navigation — Mobile-First Light Theme with CIS Red Branding
-   ============================================================================
-   Uses 100dvh to dodge iOS Safari's dynamic toolbar resizing.
-   Flexbox column layout: canvas stretches, controls pin to bottom.
-   No media queries — this is a phone-only app.
-   ============================================================================ */
+/* CIS Indoor Navigation — mobile-first, phone-only. 100dvh dodges iOS Safari's dynamic toolbar. */
 
 *, *::before, *::after {
   margin: 0;
@@ -16,31 +10,31 @@
 html, body {
   height: 100dvh;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+  font-family: "Theinhardt", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
                "PingFang SC", "Microsoft YaHei", sans-serif;
   background: #FFFFFF;
   color: #1A1A1A;
   touch-action: none;
 }
 
-/* ── App Shell ── */
 #app {
   display: flex;
   flex-direction: column;
   height: 100dvh;
 }
 
-/* ── Top Bar (CIS Red) ── */
 #topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
-  background: #C41E3A;
+  background: #DA291C;
   flex-shrink: 0;
   min-height: 40px;
   padding-top: max(6px, env(safe-area-inset-top));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 20;
 }
 
 #topbar h1 {
@@ -59,6 +53,18 @@ html, body {
   min-width: 0;
 }
 
+#cis-logo {
+  height: 22px;
+  flex-shrink: 0;
+}
+
+#title-sep {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
 #floor-badge {
   font-size: 11px;
   font-weight: 600;
@@ -70,19 +76,62 @@ html, body {
   letter-spacing: 0.3px;
 }
 
-#btn-lang {
+#lang-wrap {
+  position: relative;
   flex-shrink: 0;
-  padding: 4px 10px;
+}
+
+#btn-lang {
+  padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.2);
   color: #FFFFFF;
-  font-size: 13px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #btn-lang:active { background: rgba(255, 255, 255, 0.3); }
 
-/* ── Canvas Area ── */
+#lang-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 50;
+  min-width: 130px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+#lang-dropdown.dropdown-hidden {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+.lang-option {
+  display: block;
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  color: #1A1A1A;
+  cursor: pointer;
+  font-family: inherit;
+  border-bottom: 1px solid #F0F0F0;
+}
+.lang-option:last-child { border-bottom: none; }
+.lang-option:active { background: rgba(218, 41, 28, 0.06); }
+.lang-option.active {
+  color: #DA291C;
+  font-weight: 600;
+}
+
 #canvas-wrap {
   flex: 1;
   overflow: hidden;
@@ -97,7 +146,6 @@ html, body {
   touch-action: none;
 }
 
-/* Loading overlay */
 #loading {
   position: absolute;
   inset: 0;
@@ -118,19 +166,17 @@ html, body {
   width: 32px;
   height: 32px;
   border: 3px solid #E0E0E0;
-  border-top-color: #C41E3A;
+  border-top-color: #DA291C;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 #loading span { font-size: 13px; color: #666666; }
 
-/* ── Bottom Control Panel ── */
 #controls {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   padding: 10px 12px;
   padding-bottom: max(10px, env(safe-area-inset-bottom));
   background: #FFFFFF;
@@ -138,7 +184,6 @@ html, body {
   box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Route summary pills */
 #route-summary {
   display: flex;
   align-items: center;
@@ -152,7 +197,7 @@ html, body {
   padding: 10px 14px;
   background: #F6F6F6;
   border: 1px solid #E0E0E0;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   flex: 1;
   min-width: 0;
@@ -163,12 +208,12 @@ html, body {
 }
 
 .pill-icon {
-  font-size: 10px;
   flex-shrink: 0;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
 }
-#pill-start .pill-icon { color: #16A34A; }
-#pill-dest .pill-icon { color: #C41E3A; }
 
 .pill-label {
   font-size: 11px;
@@ -191,13 +236,12 @@ html, body {
   color: #999999;
 }
 
-/* Swap button */
 #btn-swap {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
   border: 1px solid #E0E0E0;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #F6F6F6;
   color: #666666;
   font-size: 16px;
@@ -208,54 +252,25 @@ html, body {
 }
 #btn-swap:active { background: #E0E0E0; }
 
-/* Button row */
-.btn-row {
-  display: flex;
-  gap: 8px;
-}
-
-#btn-navigate {
-  flex: 1;
-  padding: 10px 0;
-  border: none;
-  border-radius: 10px;
-  background: #C41E3A;
-  color: #FFFFFF;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-#btn-navigate:active { background: #9E1830; }
-#btn-navigate:disabled {
-  background: #E0E0E0;
-  color: #999999;
-  cursor: not-allowed;
-}
-
-#btn-clear {
-  flex-shrink: 0;
-  padding: 10px 14px;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  background: #F6F6F6;
-  color: #1A1A1A;
-  font-size: 14px;
-  cursor: pointer;
-}
-#btn-clear:active { background: #E0E0E0; }
-
-/* Status message */
+/* Collapses to zero height when empty so controls don't reserve space. */
 #status {
   font-size: 12px;
   color: #666666;
   text-align: center;
-  min-height: 16px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+}
+#status.visible {
+  max-height: 30px;
+  opacity: 1;
+  margin-top: 6px;
 }
 #status.error { color: #DC2626; }
 #status.success { color: #16A34A; }
 
-/* ── Full-Screen Location Panel ── */
 #location-panel {
   position: fixed;
   inset: 0;
@@ -300,15 +315,15 @@ html, body {
   flex: 1;
   padding: 10px 12px;
   border: 1px solid #E0E0E0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #F6F6F6;
   font-size: 16px;
   color: #1A1A1A;
   outline: none;
 }
 #panel-search:focus {
-  border-color: #C41E3A;
-  box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.15);
+  border-color: #DA291C;
+  box-shadow: 0 0 0 2px rgba(218, 41, 28, 0.15);
   background: #FFFFFF;
 }
 #panel-search::placeholder { color: #999999; }
@@ -346,17 +361,18 @@ html, body {
 }
 
 .loc-group-header {
-  padding: 10px 16px 6px;
-  font-size: 11px;
+  padding: 10px 16px 8px 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: #999999;
+  color: #DA291C;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: sticky;
   top: 0;
-  background: #FFFFFF;
+  background: #FAF6F6;
   z-index: 1;
-  border-bottom: 1px solid #F0F0F0;
+  border-bottom: 1px solid #EDE8E8;
+  border-left: 3px solid #DA291C;
 }
 
 .loc-item {
@@ -373,10 +389,10 @@ html, body {
   font-family: inherit;
 }
 .loc-item:active {
-  background: rgba(196, 30, 58, 0.06);
+  background: rgba(218, 41, 28, 0.06);
 }
 .loc-item.current-value {
-  color: #C41E3A;
+  color: #DA291C;
   font-weight: 600;
 }
 .loc-item .loc-id {

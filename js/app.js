@@ -1,32 +1,19 @@
-// ============================================================================
-//  CIS Indoor Navigation — Mobile Viewer
-// ============================================================================
-//  This app does ZERO pathfinding. It simply:
-//    1. Loads the pre-baked route dictionary (baked_paths.json)
-//    2. Populates a grouped location list from the portal IDs
-//    3. Looks up routes[start][dest] and draws the coordinate array
-//    4. Provides pan/zoom so the user can explore the map
-// ============================================================================
+// CIS Indoor Navigation — Mobile Viewer
 
 (function () {
   'use strict';
 
-  // ── Bilingual strings ──
   const STRINGS = {
     en: {
-      title:        'CIS Navigator',
+      title:        'MAP',
+      floorBadge:   'Level 4 Demo',
       from:         'From',
       to:           'To',
-      navigate:     'Navigate',
-      clear:        'Clear',
       loading:      'Loading map\u2026',
-      ready:        'Select start and destination',
       noRoute:      'No route found between these locations',
-      routeFound:   'Route displayed',
       invalidStart: 'Unknown start location',
       invalidDest:  'Unknown destination',
       same:         'Start and destination are the same',
-      lang:         '\u4E2D\u6587',
       swap:         'Swap',
       tapToSelect:  'Tap to select',
       searchPh:     'Search locations\u2026',
@@ -35,19 +22,15 @@
       selectDest:   'Select destination',
     },
     zh: {
-      title:        'CIS \u6821\u56ED\u5BFC\u822A',
+      title:        '\u5730\u56FE',
       from:         '\u8D77\u70B9',
       to:           '\u7EC8\u70B9',
-      navigate:     '\u5BFC\u822A',
-      clear:        '\u6E05\u9664',
       loading:      '\u52A0\u8F7D\u5730\u56FE\u4E2D\u2026',
-      ready:        '\u8BF7\u9009\u62E9\u8D77\u70B9\u548C\u7EC8\u70B9',
       noRoute:      '\u672A\u627E\u5230\u8FD9\u4E24\u4E2A\u4F4D\u7F6E\u4E4B\u95F4\u7684\u8DEF\u7EBF',
-      routeFound:   '\u8DEF\u7EBF\u5DF2\u663E\u793A',
       invalidStart: '\u672A\u77E5\u7684\u8D77\u70B9\u4F4D\u7F6E',
       invalidDest:  '\u672A\u77E5\u7684\u7EC8\u70B9\u4F4D\u7F6E',
       same:         '\u8D77\u70B9\u548C\u7EC8\u70B9\u76F8\u540C',
-      lang:         'EN',
+      floorBadge:   '4\u697C \u6F14\u793A',
       swap:         '\u4EA4\u6362',
       tapToSelect:  '\u70B9\u51FB\u9009\u62E9',
       searchPh:     '\u641C\u7D22\u4F4D\u7F6E\u2026',
@@ -59,17 +42,15 @@
 
   let lang = 'en';
 
-  // ── Location categories ──
   const CATEGORIES = [
-    { key: 'nw',    label: { en: 'NW Wing',     zh: 'NW \u6559\u5BA4' },   match: function(id) { return id.startsWith('NW'); } },
-    { key: 'ew',    label: { en: 'EW Wing',     zh: 'EW \u6559\u5BA4' },   match: function(id) { return id.startsWith('EW'); } },
-    { key: 'ww',    label: { en: 'WW Wing',     zh: 'WW \u6559\u5BA4' },   match: function(id) { return id.startsWith('WW'); } },
-    { key: 'stair', label: { en: 'Stairs',      zh: '\u697C\u68AF' },       match: function(id) { return id.startsWith('Stair'); } },
-    { key: 'elev',  label: { en: 'Elevators',   zh: '\u7535\u68AF' },       match: function(id) { return id.includes('Elevator'); } },
-    { key: 'other', label: { en: 'Facilities',  zh: '\u8BBE\u65BD' },       match: function() { return true; } },
+    { key: 'ew',    label: { en: 'East Wing',   zh: '\u4E1C\u7FFC' },      match: function(id) { return id.startsWith('EW') && !id.includes('Elevator'); } },
+    { key: 'nw',    label: { en: 'North Wing',  zh: '\u5317\u7FFC' },      match: function(id) { return id.startsWith('NW') && !id.includes('Elevator'); } },
+    { key: 'ww',    label: { en: 'West Wing',   zh: '\u897F\u7FFC' },      match: function(id) { return id.startsWith('WW') && !id.includes('Elevator'); } },
+    { key: 'stair', label: { en: 'Stairs',      zh: '\u697C\u68AF' },      match: function(id) { return id.startsWith('Stair'); } },
+    { key: 'elev',  label: { en: 'Elevators',   zh: '\u7535\u68AF' },      match: function(id) { return id.includes('Elevator'); } },
+    { key: 'other', label: { en: 'Facilities',  zh: '\u8BBE\u65BD' },      match: function() { return true; } },
   ];
 
-  // ── Display names for non-obvious portal IDs ──
   const DISPLAY_NAMES = {
     en: {
       'Pod_A_WC_Girls':  'Girls WC (Pod A)',
@@ -93,20 +74,28 @@
 
   function displayName(id) {
     if (DISPLAY_NAMES[lang] && DISPLAY_NAMES[lang][id]) return DISPLAY_NAMES[lang][id];
-    return id.replace(/_/g, ' ').replace(/-/g, '\u2011');
+    var name = id.replace(/_/g, '-');
+    if (lang === 'zh') {
+      name = name.replace(/^Stair/, '\u697C\u68AF');
+    }
+    return name;
   }
 
-  // ── DOM refs ──
+  function sortKey(id) {
+    return id.replace(/[-_]/g, '-').toLowerCase();
+  }
+
   const canvas       = document.getElementById('mapcanvas');
   const ctx          = canvas.getContext('2d');
   const loadingEl    = document.getElementById('loading');
   const loadingText  = document.getElementById('loading-text');
   const statusEl     = document.getElementById('status');
-  const btnNav       = document.getElementById('btn-navigate');
-  const btnClear     = document.getElementById('btn-clear');
   const btnSwap      = document.getElementById('btn-swap');
   const btnLang      = document.getElementById('btn-lang');
+  const langWrap     = document.getElementById('lang-wrap');
+  const langDropdown = document.getElementById('lang-dropdown');
   const appTitle     = document.getElementById('app-title');
+  const floorBadge   = document.getElementById('floor-badge');
   const labelStart   = document.getElementById('label-start');
   const labelDest    = document.getElementById('label-dest');
   const pillStart    = document.getElementById('pill-start');
@@ -120,28 +109,28 @@
   const panelClearSearch = document.getElementById('panel-clear-search');
   const panelTitle   = document.getElementById('panel-title');
 
-  // ── State ──
   let bakedPaths = null;
   let portalIDs  = [];
   let mapImg     = null;
   let currentRoute = null;
-
   let startValue = '';
   let destValue  = '';
-
-  // Camera (pan & zoom in image-pixel space)
   let camX = 0, camY = 0;
   let camScale = 1;
   let minScale = 0.1, maxScale = 5;
-
-  // Panel state
   let panelTarget = null;
   let exactMatchTimer = null;
+  let dashOffset = 0;
+  let animFrameId = null;
+  let lastAnimTime = 0;
 
-  // ── Helpers ──
   function setStatus(msg, cls) {
     statusEl.textContent = msg;
-    statusEl.className = cls || '';
+    statusEl.className = '';
+    if (msg) {
+      statusEl.classList.add('visible');
+      if (cls) statusEl.classList.add(cls);
+    }
   }
 
   function t(key) { return STRINGS[lang][key] || key; }
@@ -161,24 +150,28 @@
       pillDestVal.textContent = t('tapToSelect');
       pillDestVal.classList.add('placeholder');
     }
-    btnNav.disabled = !(startValue && destValue);
   }
 
   function applyLanguage() {
-    appTitle.textContent   = t('title');
-    labelStart.textContent = t('from');
-    labelDest.textContent  = t('to');
-    btnNav.textContent     = t('navigate');
-    btnClear.textContent   = t('clear');
-    btnSwap.title          = t('swap');
+    appTitle.textContent    = t('title');
+    floorBadge.textContent  = t('floorBadge');
+    labelStart.textContent  = t('from');
+    labelDest.textContent   = t('to');
+    btnSwap.title           = t('swap');
     loadingText.textContent = t('loading');
     panelSearch.placeholder = t('searchPh');
     updatePills();
-    if (!currentRoute) setStatus(t('ready'));
     buildLocationList();
+    if (currentRoute) {
+      var info = computeRouteInfo(currentRoute);
+      setStatus(
+        displayName(startValue) + ' \u2192 ' + displayName(destValue) + '  \u00B7  ' +
+        t('routeInfo').replace('{dist}', info.meters).replace('{time}', info.minutes),
+        'success'
+      );
+    }
   }
 
-  // ── Data loading ──
   async function init() {
     try {
       const [pathsResp, img] = await Promise.all([
@@ -197,7 +190,6 @@
       bakedPaths = pathsResp;
       mapImg = img;
 
-      // Extract and sort portal IDs
       var idSet = new Set();
       for (var src of Object.keys(bakedPaths)) {
         idSet.add(src);
@@ -205,28 +197,26 @@
           idSet.add(dst);
         }
       }
-      portalIDs = [...idSet].sort(function(a, b) { return a.localeCompare(b, undefined, { numeric: true }); });
+      portalIDs = [...idSet].sort(function(a, b) {
+        return sortKey(a).localeCompare(sortKey(b), undefined, { numeric: true });
+      });
 
       buildLocationList();
       fitToView();
 
-      // Parse QR-code query params
+      startValue = 'Stair_2';
+
       var params = new URLSearchParams(window.location.search);
-      if (params.has('start')) {
-        startValue = params.get('start');
-      }
-      if (params.has('dest')) {
-        destValue = params.get('dest');
-      }
+      if (params.has('start')) startValue = params.get('start');
+      if (params.has('dest'))  destValue  = params.get('dest');
 
       updatePills();
-      btnNav.disabled = !(startValue && destValue);
       loadingEl.classList.add('hidden');
-      setStatus(t('ready'));
-      draw();
 
       if (startValue && destValue) {
         navigate();
+      } else {
+        draw();
       }
     } catch (err) {
       console.error(err);
@@ -234,7 +224,6 @@
     }
   }
 
-  // ── Location list ──
   function buildLocationList() {
     panelList.innerHTML = '';
     if (!portalIDs.length) return;
@@ -259,12 +248,6 @@
         btn.className = 'loc-item';
         btn.setAttribute('data-id', ids[j]);
         btn.textContent = displayName(ids[j]);
-        if (ids[j] !== displayName(ids[j]).replace(/\u2011/g, '-')) {
-          var span = document.createElement('span');
-          span.className = 'loc-id';
-          span.textContent = ids[j];
-          btn.appendChild(span);
-        }
         btn.addEventListener('click', onLocationClick);
         panelList.appendChild(btn);
       }
@@ -286,9 +269,9 @@
     }
     updatePills();
     closePanel();
+    tryNavigate();
   }
 
-  // ── Panel open/close ──
   function openPanel(target) {
     panelTarget = target;
     var currentVal = target === 'start' ? startValue : destValue;
@@ -332,7 +315,6 @@
       if (match) { visibleCount++; lastVisibleId = id; }
     }
 
-    // Hide empty group headers
     var headers = panelList.querySelectorAll('.loc-group-header');
     for (var h = 0; h < headers.length; h++) {
       var next = headers[h].nextElementSibling;
@@ -344,14 +326,34 @@
       headers[h].style.display = hasVisible ? '' : 'none';
     }
 
-    // Exact match auto-select
     clearTimeout(exactMatchTimer);
     if (q && visibleCount === 1 && lastVisibleId && lastVisibleId.toLowerCase() === q) {
       exactMatchTimer = setTimeout(function() { selectLocation(lastVisibleId); }, 400);
     }
   }
 
-  // ── Camera ──
+  function clampPan() {
+    if (!mapImg) return;
+    var cw = canvas.clientWidth;
+    var ch = canvas.clientHeight;
+    var mw = mapImg.width * camScale;
+    var mh = mapImg.height * camScale;
+
+    if (mw <= cw) {
+      camX = (cw - mw) / 2;
+    } else {
+      camX = Math.min(camX, 0);
+      camX = Math.max(camX, cw - mw);
+    }
+
+    if (mh <= ch) {
+      camY = (ch - mh) / 2;
+    } else {
+      camY = Math.min(camY, 0);
+      camY = Math.max(camY, ch - mh);
+    }
+  }
+
   function fitToView() {
     if (!mapImg) return;
     var cw = canvas.clientWidth;
@@ -363,7 +365,6 @@
     maxScale = camScale * 12;
   }
 
-  // ── Corner-rounding with arcTo ──
   function drawSmoothRoute(points) {
     if (points.length < 2) return;
     ctx.beginPath();
@@ -385,7 +386,33 @@
     ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
   }
 
-  // ── Drawing ──
+  function drawMapPin(px, py, color, r) {
+    ctx.save();
+    ctx.translate(px, py);
+    var s = r / 10;
+    ctx.scale(s, s);
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(-2, -5, -10, -11, -10, -18);
+    ctx.arc(0, -18, 10, Math.PI, 0, false);
+    ctx.bezierCurveTo(10, -11, 2, -5, 0, 0);
+    ctx.closePath();
+
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2 / (camScale * s);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0, -18, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
+    ctx.restore();
+  }
+
   function draw() {
     var cw = canvas.clientWidth;
     var ch = canvas.clientHeight;
@@ -399,58 +426,80 @@
       ctx.drawImage(mapImg, 0, 0);
     }
 
-    // Draw active route
     if (currentRoute && currentRoute.length > 1) {
-      // White halo for contrast on varied backgrounds
-      drawSmoothRoute(currentRoute);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.lineWidth = 22 / camScale;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.stroke();
 
-      // Red glow layer
       drawSmoothRoute(currentRoute);
-      ctx.strokeStyle = 'rgba(196, 30, 58, 0.20)';
-      ctx.lineWidth = 18 / camScale;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.lineWidth = 16 / camScale;
       ctx.stroke();
 
-      // Core path line (CIS red)
       drawSmoothRoute(currentRoute);
-      ctx.strokeStyle = '#C41E3A';
-      ctx.lineWidth = 7 / camScale;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(218, 41, 28, 0.15)';
+      ctx.lineWidth = 12 / camScale;
       ctx.stroke();
 
-      // Start marker (green dot)
+      drawSmoothRoute(currentRoute);
+      ctx.strokeStyle = '#DA291C';
+      ctx.lineWidth = 5 / camScale;
+      ctx.stroke();
+
+      drawSmoothRoute(currentRoute);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+      ctx.lineWidth = 3 / camScale;
+      ctx.setLineDash([8 / camScale, 24 / camScale]);
+      ctx.lineDashOffset = dashOffset / camScale;
+      ctx.stroke();
+      ctx.setLineDash([]);
+
       var start = currentRoute[0];
-      var dotR = 10 / camScale;
+      var dotR = 9 / camScale;
       ctx.beginPath();
       ctx.arc(start.x, start.y, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = '#16A34A';
+      ctx.fillStyle = '#4285F4';
       ctx.fill();
       ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2 / camScale;
+      ctx.lineWidth = 2.5 / camScale;
       ctx.stroke();
-
-      // End marker (red dot)
-      var end = currentRoute[currentRoute.length - 1];
       ctx.beginPath();
-      ctx.arc(end.x, end.y, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = '#C41E3A';
+      ctx.arc(start.x, start.y, dotR * 0.4, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
       ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2 / camScale;
-      ctx.stroke();
+
+      var end = currentRoute[currentRoute.length - 1];
+      drawMapPin(end.x, end.y, '#DA291C', 14 / camScale);
     }
 
     ctx.restore();
   }
 
-  // ── Resize handling ──
+  function startAnimation() {
+    if (animFrameId) return;
+    lastAnimTime = 0;
+    animFrameId = requestAnimationFrame(animTick);
+  }
+
+  function stopAnimation() {
+    if (animFrameId) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+  }
+
+  function animTick(now) {
+    if (!currentRoute) {
+      animFrameId = null;
+      return;
+    }
+    if (!lastAnimTime) lastAnimTime = now;
+    var dt = Math.min((now - lastAnimTime) / 1000, 0.1);
+    lastAnimTime = now;
+    dashOffset -= 40 * dt;
+    draw();
+    animFrameId = requestAnimationFrame(animTick);
+  }
+
   function resizeCanvas() {
     var wrap = canvas.parentElement;
     var dpr = window.devicePixelRatio || 1;
@@ -468,7 +517,6 @@
     resizeTimer = setTimeout(resizeCanvas, 100);
   });
 
-  // ── Route info ──
   function computeRouteInfo(route) {
     var totalDist = 0;
     for (var i = 1; i < route.length; i++) {
@@ -481,34 +529,53 @@
     return { meters: meters, minutes: minutes };
   }
 
-  // ── Navigation logic ──
+  function tryNavigate() {
+    if (startValue && destValue) {
+      navigate();
+    } else if (currentRoute) {
+      currentRoute = null;
+      stopAnimation();
+      setStatus('');
+      draw();
+    }
+  }
+
   function navigate() {
     var src = startValue.trim();
     var dst = destValue.trim();
 
-    if (!src || !dst) {
-      setStatus(t('ready'));
-      return;
-    }
+    if (!src || !dst) return;
+
     if (src === dst) {
       setStatus(t('same'), 'error');
+      currentRoute = null;
+      stopAnimation();
+      draw();
       return;
     }
     if (!bakedPaths[src]) {
       setStatus(t('invalidStart'), 'error');
+      currentRoute = null;
+      stopAnimation();
+      draw();
       return;
     }
     if (!bakedPaths[src][dst]) {
       if (bakedPaths[dst] && bakedPaths[dst][src] && bakedPaths[dst][src].length > 0) {
         currentRoute = [...bakedPaths[dst][src]].reverse();
         var info1 = computeRouteInfo(currentRoute);
-        setStatus(displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' + t('routeInfo').replace('{dist}', info1.meters).replace('{time}', info1.minutes), 'success');
+        setStatus(
+          displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' +
+          t('routeInfo').replace('{dist}', info1.meters).replace('{time}', info1.minutes),
+          'success'
+        );
         panToRoute();
-        draw();
+        startAnimation();
         return;
       }
       setStatus(t('noRoute'), 'error');
       currentRoute = null;
+      stopAnimation();
       draw();
       return;
     }
@@ -517,15 +584,20 @@
     if (!route || route.length === 0) {
       setStatus(t('noRoute'), 'error');
       currentRoute = null;
+      stopAnimation();
       draw();
       return;
     }
 
     currentRoute = route;
     var info = computeRouteInfo(currentRoute);
-    setStatus(displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' + t('routeInfo').replace('{dist}', info.meters).replace('{time}', info.minutes), 'success');
+    setStatus(
+      displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' +
+      t('routeInfo').replace('{dist}', info.meters).replace('{time}', info.minutes),
+      'success'
+    );
     panToRoute();
-    draw();
+    startAnimation();
   }
 
   function panToRoute() {
@@ -558,25 +630,12 @@
 
     camX = viewW / 2 - cx * camScale;
     camY = viewH / 2 - cy * camScale;
+    clampPan();
   }
 
-  function clearRoute() {
-    currentRoute = null;
-    startValue = '';
-    destValue = '';
-    updatePills();
-    setStatus(t('ready'));
-    fitToView();
-    draw();
-  }
-
-  // ── Pinch Zoom ──
-  let pointers = new Map();
-  let lastPinchDist = 0;
-
-  function getPointerXY(e) {
+  function getCanvasXY(clientX, clientY) {
     var rect = canvas.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    return { x: clientX - rect.left, y: clientY - rect.top };
   }
 
   function zoomAt(screenX, screenY, factor) {
@@ -586,12 +645,16 @@
     camX = screenX - (screenX - camX) * ratio;
     camY = screenY - (screenY - camY) * ratio;
     camScale = newScale;
+    clampPan();
     draw();
   }
 
+  var pointers = new Map();
+  var lastPinchDist = 0;
+
   canvas.addEventListener('pointerdown', function(e) {
     canvas.setPointerCapture(e.pointerId);
-    pointers.set(e.pointerId, getPointerXY(e));
+    pointers.set(e.pointerId, getCanvasXY(e.clientX, e.clientY));
     if (pointers.size === 2) {
       var pts = [...pointers.values()];
       lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
@@ -600,11 +663,19 @@
 
   canvas.addEventListener('pointermove', function(e) {
     if (!pointers.has(e.pointerId)) return;
-    pointers.set(e.pointerId, getPointerXY(e));
-    if (pointers.size === 2) {
+    var prev = pointers.get(e.pointerId);
+    var cur = getCanvasXY(e.clientX, e.clientY);
+    pointers.set(e.pointerId, cur);
+
+    if (pointers.size === 1) {
+      camX += cur.x - prev.x;
+      camY += cur.y - prev.y;
+      clampPan();
+      if (!animFrameId) draw();
+    } else if (pointers.size === 2) {
       var pts = [...pointers.values()];
       var dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
-      if (lastPinchDist > 0) {
+      if (lastPinchDist > 0 && mapImg) {
         var midX = (pts[0].x + pts[1].x) / 2;
         var midY = (pts[0].y + pts[1].y) / 2;
         zoomAt(midX, midY, dist / lastPinchDist);
@@ -626,28 +697,44 @@
   canvas.addEventListener('wheel', function(e) {
     e.preventDefault();
     if (!mapImg) return;
-    var pt = getPointerXY(e);
+    var pt = getCanvasXY(e.clientX, e.clientY);
     zoomAt(pt.x, pt.y, e.deltaY < 0 ? 1.15 : 1 / 1.15);
   }, { passive: false });
-
-  // ── Event wiring ──
-  btnNav.addEventListener('click', navigate);
-  btnClear.addEventListener('click', clearRoute);
 
   btnSwap.addEventListener('click', function() {
     var tmp = startValue;
     startValue = destValue;
     destValue = tmp;
     updatePills();
+    tryNavigate();
   });
 
-  btnLang.addEventListener('click', function() {
-    lang = lang === 'en' ? 'zh' : 'en';
-    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    applyLanguage();
+  btnLang.addEventListener('click', function(e) {
+    e.stopPropagation();
+    langDropdown.classList.toggle('dropdown-hidden');
   });
 
-  // Panel wiring
+  document.addEventListener('click', function(e) {
+    if (!langWrap.contains(e.target)) {
+      langDropdown.classList.add('dropdown-hidden');
+    }
+  });
+
+  langDropdown.addEventListener('click', function(e) {
+    var option = e.target.closest('.lang-option');
+    if (!option) return;
+    var newLang = option.getAttribute('data-lang');
+    if (newLang !== lang) {
+      lang = newLang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      langDropdown.querySelectorAll('.lang-option').forEach(function(opt) {
+        opt.classList.toggle('active', opt.getAttribute('data-lang') === lang);
+      });
+      applyLanguage();
+    }
+    langDropdown.classList.add('dropdown-hidden');
+  });
+
   pillStart.addEventListener('click', function() { openPanel('start'); });
   pillDest.addEventListener('click', function() { openPanel('dest'); });
   panelBack.addEventListener('click', closePanel);
@@ -660,7 +747,6 @@
     filterList(panelSearch.value);
   });
 
-  // ── Boot ──
   applyLanguage();
   resizeCanvas();
   init();
