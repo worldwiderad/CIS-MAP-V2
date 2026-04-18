@@ -54,21 +54,12 @@
       letter-spacing: 0.3px;
       white-space: nowrap;
     }
-    #btn-fullscreen {
-      background: rgba(22,27,34,0.8); color: #e6edf3;
-      border: 1px solid #30363d; border-radius: 8px;
-      padding: 8px 12px; font-size: 14px; cursor: pointer;
-      backdrop-filter: blur(8px);
-      flex-shrink: 0;
-    }
-    #btn-fullscreen:hover { background: rgba(48,54,61,0.9); }
-
     /* Bottom route pills */
     #route-summary {
       position: absolute;
       bottom: 24px;
       bottom: calc(24px + env(safe-area-inset-bottom));
-      left: 50%; transform: translateX(-50%);
+      left: 12px; right: 12px;
       display: flex; align-items: center; gap: 8px;
       padding: 10px 12px;
       background: rgba(13,17,23,0.85);
@@ -76,7 +67,6 @@
       border-radius: 16px;
       backdrop-filter: blur(12px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      max-width: calc(100vw - 32px);
     }
     .summary-pill {
       display: flex; align-items: center; gap: 8px;
@@ -85,7 +75,7 @@
       border: 1px solid #30363d;
       border-radius: 12px;
       cursor: pointer;
-      min-width: 160px; max-width: 240px;
+      flex: 1; min-width: 0;
       transition: background 0.15s, border-color 0.15s;
     }
     .summary-pill:hover, .summary-pill:active {
@@ -166,14 +156,6 @@
       background: #0d1117;
     }
     #panel-search::placeholder { color: #6e7681; }
-    #panel-clear-search {
-      width: 36px; height: 36px;
-      border: none; background: none;
-      font-size: 18px; color: #6e7681;
-      cursor: pointer; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    #panel-clear-search:hover { background: rgba(48,54,61,0.6); }
     #panel-title {
       padding: 12px 16px 8px;
       font-size: 14px; font-weight: 700;
@@ -261,7 +243,6 @@
       <h1>3D Navigator</h1>
       <span id="floor-badge">Level 4 Demo</span>
     </div>
-    <button id="btn-fullscreen" title="Fullscreen">⛶</button>
   </header>
 
   <div id="route-summary">
@@ -282,7 +263,6 @@
     <div id="panel-header">
       <button id="panel-back" aria-label="Back">←</button>
       <input id="panel-search" type="text" placeholder="Search locations…" autocomplete="off">
-      <button id="panel-clear-search" aria-label="Clear">✕</button>
     </div>
     <div id="panel-title">Select starting point</div>
     <div id="panel-list"></div>
