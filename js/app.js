@@ -29,7 +29,6 @@
   const panelSearch  = document.getElementById('panel-search');
   const panelList    = document.getElementById('panel-list');
   const panelBack    = document.getElementById('panel-back');
-  const panelClearSearch = document.getElementById('panel-clear-search');
   const panelTitle   = document.getElementById('panel-title');
 
   let bakedPaths = null;
@@ -592,11 +591,6 @@
   pillStart.addEventListener('click', function() { openPanel('start'); });
   pillDest.addEventListener('click', function() { openPanel('dest'); });
   panelBack.addEventListener('click', closePanel);
-  panelClearSearch.addEventListener('click', function() {
-    panelSearch.value = '';
-    filterList('');
-    panelSearch.focus();
-  });
   panelSearch.addEventListener('input', function() {
     filterList(panelSearch.value);
   });

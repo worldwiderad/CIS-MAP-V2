@@ -430,7 +430,6 @@
   const panelSearch   = document.getElementById('panel-search');
   const panelList     = document.getElementById('panel-list');
   const panelBack     = document.getElementById('panel-back');
-  const panelClear    = document.getElementById('panel-clear-search');
   const panelTitle    = document.getElementById('panel-title');
 
   const sortedIDs = S.sortPortalIDs(portalIDs);
@@ -486,11 +485,6 @@
   pillStart.addEventListener('click', () => openPanel('start'));
   pillDest.addEventListener('click',  () => openPanel('dest'));
   panelBack.addEventListener('click', closePanel);
-  panelClear.addEventListener('click', () => {
-    panelSearch.value = '';
-    S.filterLocationList(panelList, '', LANG);
-    panelSearch.focus();
-  });
   panelSearch.addEventListener('input', () => {
     clearTimeout(exactMatchTimer);
     S.filterLocationList(panelList, panelSearch.value, LANG, (id) => {
@@ -502,14 +496,6 @@
     const tmp = startValue; startValue = destValue; destValue = tmp;
     updatePills();
     if (startValue && destValue) showRoute(startValue, destValue);
-  });
-
-  document.getElementById('btn-fullscreen').addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
   });
 
   // ── Resize ──
