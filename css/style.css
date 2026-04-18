@@ -328,21 +328,6 @@ html, body {
 }
 #panel-search::placeholder { color: #999999; }
 
-#panel-clear-search {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: none;
-  font-size: 18px;
-  color: #999999;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-#panel-clear-search:active { background: #F0F0F0; }
-
 #panel-title {
   padding: 12px 16px 8px;
   font-size: 14px;
