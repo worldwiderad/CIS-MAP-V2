@@ -383,67 +383,20 @@
   }
 
   function tryNavigate() {
-    if (startValue && destValue) {
-      navigate();
-    } else if (currentRoute) {
-      currentRoute = null;
-      stopAnimation();
-      setStatus('');
-      draw();
-    }
+    if (startValue && destValue) navigate();
+    else if (currentRoute) clearRoute('');
   }
 
-  function navigate() {
-    var src = startValue.trim();
-    var dst = destValue.trim();
+  function clearRoute(msg, cls) {
+    currentRoute = null;
+    stopAnimation();
+    setStatus(msg || '', cls);
+    draw();
+  }
 
-    if (!src || !dst) return;
-
-    if (src === dst) {
-      setStatus(t('same'), 'error');
-      currentRoute = null;
-      stopAnimation();
-      draw();
-      return;
-    }
-    if (!bakedPaths[src]) {
-      setStatus(t('invalidStart'), 'error');
-      currentRoute = null;
-      stopAnimation();
-      draw();
-      return;
-    }
-    if (!bakedPaths[src][dst]) {
-      if (bakedPaths[dst] && bakedPaths[dst][src] && bakedPaths[dst][src].length > 0) {
-        currentRoute = [...bakedPaths[dst][src]].reverse();
-        var info1 = computeRouteInfo(currentRoute);
-        setStatus(
-          displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' +
-          t('routeInfo').replace('{dist}', info1.meters).replace('{time}', info1.minutes),
-          'success'
-        );
-        panToRoute();
-        startAnimation();
-        return;
-      }
-      setStatus(t('noRoute'), 'error');
-      currentRoute = null;
-      stopAnimation();
-      draw();
-      return;
-    }
-
-    var route = bakedPaths[src][dst];
-    if (!route || route.length === 0) {
-      setStatus(t('noRoute'), 'error');
-      currentRoute = null;
-      stopAnimation();
-      draw();
-      return;
-    }
-
+  function applyRoute(route, src, dst) {
     currentRoute = route;
-    var info = computeRouteInfo(currentRoute);
+    var info = computeRouteInfo(route);
     setStatus(
       displayName(src) + ' \u2192 ' + displayName(dst) + '  \u00B7  ' +
       t('routeInfo').replace('{dist}', info.meters).replace('{time}', info.minutes),
@@ -451,6 +404,23 @@
     );
     panToRoute();
     startAnimation();
+  }
+
+  function navigate() {
+    var src = startValue.trim();
+    var dst = destValue.trim();
+    if (!src || !dst) return;
+
+    if (src === dst)         return clearRoute(t('same'), 'error');
+    if (!bakedPaths[src])    return clearRoute(t('invalidStart'), 'error');
+
+    var route = bakedPaths[src][dst];
+    if (!route || route.length === 0) {
+      var reverse = bakedPaths[dst] && bakedPaths[dst][src];
+      if (reverse && reverse.length > 0) return applyRoute([...reverse].reverse(), src, dst);
+      return clearRoute(t('noRoute'), 'error');
+    }
+    applyRoute(route, src, dst);
   }
 
   function panToRoute() {
