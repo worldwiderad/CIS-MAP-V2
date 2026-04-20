@@ -100,7 +100,7 @@ Floor plan image
   → /engine_cpp/baker              (grid → A* → Laplacian → RDP → centering)
   → /data/baked_paths.json         (2,756 pre-computed routes, 944 KB)
   → index.html + js/app.js        (2D viewer: instant lookup, draws on canvas)
-  → 3d/index.html + 3d/main.js    (3D viewer: procedural geometry + flythrough)
+  → 3d/index.html + 3d/main.js    (3D viewer: procedural geometry + interactive orbit)
 ```
 
 ## Privacy

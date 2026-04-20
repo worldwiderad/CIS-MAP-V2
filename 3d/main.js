@@ -1,59 +1,42 @@
-// ============================================================================
-//  CIS Level 4 — 3D Navigator
-//  Procedurally generates a 3D corridor environment from 2D polygon data
-//  and animates route flythroughs through it.
-// ============================================================================
+// CIS Level 4 — 3D Navigator
+// Procedurally generates a 3D corridor environment from 2D polygon data.
 
 (async function () {
   'use strict';
 
-  // ── Constants ──
   const WALL_HEIGHT = 200;
-  const EYE_HEIGHT = 80;
   const IMG_W = 5712, IMG_H = 4284;
   const HALF_W = IMG_W / 2, HALF_H = IMG_H / 2;
 
-  // Convert image-pixel coords to Three.js world (Y-up)
-  function toWorld(px, py) {
-    return new THREE.Vector3(px - HALF_W, 0, py - HALF_H);
-  }
+  // image-pixel (x, y) → Three.js world (Y-up)
   function toWorld3(px, py, height) {
     return new THREE.Vector3(px - HALF_W, height, py - HALF_H);
   }
 
-  // Portal type → color
   function portalColor(id) {
-    if (id.startsWith('Stair'))       return 0xff8844;
-    if (id.includes('Elevator'))      return 0x44ff88;
+    if (id.startsWith('Stair'))                  return 0xff8844;
+    if (id.includes('Elevator'))                 return 0x44ff88;
     if (id.includes('Pod') || id.includes('WC')) return 0xaa44ff;
-    return 0x44aaff; // classrooms
+    return 0x44aaff;
   }
 
-  // ── Load data ──
   const [navData, bakedPaths] = await Promise.all([
     fetch('../data/navmesh_data.json').then(r => r.json()),
     fetch('../data/baked_paths.json').then(r => r.json()),
   ]);
 
-  const polygon = navData.polygon;   // [{x, y}, ...]
-  const portals = navData.portals;   // [{id, x, y}, ...]
+  const polygon = navData.polygon;
+  const portals = navData.portals;
+  const portalIDs = [...new Set(portals.map(p => p.id))];
 
-  // Sorted portal IDs for dropdowns
-  const portalIDs = [...new Set(portals.map(p => p.id))].sort(
-    (a, b) => a.localeCompare(b, undefined, { numeric: true })
-  );
-
-  // ── Renderer ──
   const container = document.getElementById('canvas-container');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(1); // capped at 1 — big win on Retina displays
+  renderer.setPixelRatio(1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.2;
-  // shadows disabled — minimal visual contribution in dark sci-fi aesthetic
   container.appendChild(renderer.domElement);
 
-  // CSS2D renderer for labels
   const labelRenderer = new THREE.CSS2DRenderer();
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.domElement.style.position = 'absolute';
@@ -61,29 +44,20 @@
   labelRenderer.domElement.style.pointerEvents = 'none';
   container.appendChild(labelRenderer.domElement);
 
-  // ── Scene ──
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x060a10);
   scene.fog = new THREE.FogExp2(0x060a10, 0.0003);
 
-  // ── Camera ──
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 12000);
   camera.position.set(0, 2500, 1500);
   camera.lookAt(0, 0, 0);
 
-  // ── Lighting (3 lights only — ambient, hemisphere, directional) ──
-  const ambient = new THREE.AmbientLight(0x404060, 0.5);
-  scene.add(ambient);
-
-  const hemi = new THREE.HemisphereLight(0x4488ff, 0x002244, 0.4);
-  scene.add(hemi);
-
+  scene.add(new THREE.AmbientLight(0x404060, 0.5));
+  scene.add(new THREE.HemisphereLight(0x4488ff, 0x002244, 0.4));
   const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
   dirLight.position.set(1000, 1500, -500);
-  // no shadows — saves an entire 2048x2048 depth pass per frame
   scene.add(dirLight);
 
-  // ── Build Floor ──
   const floorShape = new THREE.Shape();
   floorShape.moveTo(polygon[0].x - HALF_W, polygon[0].y - HALF_H);
   for (let i = 1; i < polygon.length; i++) {
@@ -91,7 +65,6 @@
   }
   floorShape.closePath();
 
-  // Procedural tile texture
   const tileCanvas = document.createElement('canvas');
   tileCanvas.width = 256; tileCanvas.height = 256;
   const tCtx = tileCanvas.getContext('2d');
@@ -112,11 +85,11 @@
     map: tileTex, roughness: 0.4, metalness: 0.1, side: THREE.DoubleSide,
   });
   const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-  floorMesh.rotation.x = Math.PI / 2; // XY shape → XZ floor
+  floorMesh.rotation.x = Math.PI / 2;
   floorMesh.position.y = 0;
   scene.add(floorMesh);
 
-  // ── Build Ceiling (semi-transparent so you can see through from above) ──
+  // Ceiling is translucent so the orbit view can see corridors from above.
   const ceilMat = new THREE.MeshStandardMaterial({
     color: 0x0d0d1a, roughness: 0.9, metalness: 0, side: THREE.DoubleSide,
     emissive: 0x0a0a15, emissiveIntensity: 0.3,
@@ -128,7 +101,6 @@
   ceilMesh.position.y = WALL_HEIGHT;
   scene.add(ceilMesh);
 
-  // ── Build Walls (MeshStandardMaterial — MeshPhysicalMaterial was overkill) ──
   const wallPositions = [];
   const wallNormals = [];
   const wallUVs = [];
@@ -160,14 +132,12 @@
   const wallMat = new THREE.MeshStandardMaterial({
     color: 0x334466, roughness: 0.15, metalness: 0.05,
     transparent: true, opacity: 0.35,
-    depthWrite: false, // don't block route ribbon or other overlays
+    depthWrite: false, // walls must not occlude the route ribbon
     side: THREE.DoubleSide,
     emissive: 0x112233, emissiveIntensity: 0.15,
   });
-  const wallMesh = new THREE.Mesh(wallGeo, wallMat);
-  scene.add(wallMesh);
+  scene.add(new THREE.Mesh(wallGeo, wallMat));
 
-  // ── Wall Edge Glow Lines ──
   const edgePoints = [];
   const edgePointsTop = [];
   for (let i = 0; i < n; i++) {
@@ -185,17 +155,15 @@
   scene.add(edgeBot);
   scene.add(edgeTop);
 
-  // ── Portal Markers ──
   const portalGroup = new THREE.Group();
   scene.add(portalGroup);
-  const portalRings = [];   // dedicated array for ring animation
-  const portalLabels = [];  // dedicated array for label culling
+  const portalRings = [];
+  const portalLabels = [];
 
   for (const p of portals) {
     const color = portalColor(p.id);
     const pos = toWorld3(p.x, p.y, 0);
 
-    // Glowing pillar — emissiveIntensity bumped to 1.0 to compensate for removed point lights
     const pillarGeo = new THREE.CylinderGeometry(6, 6, WALL_HEIGHT * 0.8, 8);
     const pillarMat = new THREE.MeshStandardMaterial({
       color, emissive: color, emissiveIntensity: 1.0,
@@ -206,9 +174,6 @@
     pillar.position.y = WALL_HEIGHT * 0.4;
     portalGroup.add(pillar);
 
-    // No point light — 53 dynamic lights was the #1 perf killer
-
-    // Ground ring
     const ringGeo = new THREE.RingGeometry(12, 18, 24);
     const ringMat = new THREE.MeshBasicMaterial({
       color, transparent: true, opacity: 0.4, side: THREE.DoubleSide,
@@ -220,7 +185,6 @@
     portalGroup.add(ring);
     portalRings.push(ring);
 
-    // CSS2D Label
     const labelDiv = document.createElement('div');
     labelDiv.className = 'portal-label';
     labelDiv.textContent = p.id.replace(/_/g, ' ');
@@ -231,7 +195,6 @@
     portalLabels.push(label);
   }
 
-  // ── Ambient Particles (reduced from 600 → 200) ──
   const PARTICLE_COUNT = 200;
   const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
   const particleSpeeds = new Float32Array(PARTICLE_COUNT);
@@ -250,7 +213,6 @@
   }
   const particleGeo = new THREE.BufferGeometry();
   particleGeo.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
-  // hint GPU driver that positions update every frame
   particleGeo.attributes.position.setUsage(THREE.DynamicDrawUsage);
   const particleMat = new THREE.PointsMaterial({
     color: 0x6688cc, size: 3, transparent: true, opacity: 0.4,
@@ -259,17 +221,14 @@
   const particles = new THREE.Points(particleGeo, particleMat);
   scene.add(particles);
 
-  // ── Post-Processing (Bloom at half resolution) ──
+  // Bloom runs at half resolution — visually indistinguishable, ~4× cheaper.
   const composer = new THREE.EffectComposer(renderer);
-  const renderPass = new THREE.RenderPass(scene, camera);
-  composer.addPass(renderPass);
-  const bloomPass = new THREE.UnrealBloomPass(
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  composer.addPass(new THREE.UnrealBloomPass(
     new THREE.Vector2(Math.floor(window.innerWidth / 2), Math.floor(window.innerHeight / 2)),
-    0.6, 0.4, 0.6  // strength reduced from 0.8 → 0.6 (half-res bloom is slightly more diffuse)
-  );
-  composer.addPass(bloomPass);
+    0.6, 0.4, 0.6
+  ));
 
-  // ── OrbitControls (for interactive mode) ──
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
@@ -279,33 +238,25 @@
   controls.target.set(cx, 0, cz);
   controls.enabled = true;
 
-  // ── Route Rendering ──
   let activeRouteMesh = null;
   let runnerDot = null;
   let startMarker = null;
   let endMarker = null;
-  let routeCurve = null;
-  let routeAnimT = 0;
-  let routeDrawing = false;
-  let routeTotalVerts = 0;
+  let routePts3d = null;
 
   function clearRoute() {
     if (activeRouteMesh) { scene.remove(activeRouteMesh); activeRouteMesh = null; }
-    if (runnerDot) { scene.remove(runnerDot); runnerDot = null; }
-    if (startMarker) { scene.remove(startMarker); startMarker = null; }
-    if (endMarker) { scene.remove(endMarker); endMarker = null; }
-    routeCurve = null;
+    if (runnerDot)       { scene.remove(runnerDot);       runnerDot = null; }
+    if (startMarker)     { scene.remove(startMarker);     startMarker = null; }
+    if (endMarker)       { scene.remove(endMarker);       endMarker = null; }
     routePts3d = null;
-    routeDrawing = false;
   }
 
-  // Build a flat ribbon mesh from an array of Vector3 waypoints.
-  // Uses straight segments (no CatmullRom) so the path never overshoots corners.
+  // Flat ribbon from polyline waypoints; straight segments avoid CatmullRom corner overshoot.
   function buildRibbonGeo(pts, halfWidth) {
     const verts = [];
     const indices = [];
     for (let i = 0; i < pts.length; i++) {
-      // perpendicular direction on XZ plane
       let dx, dz;
       if (i === 0) {
         dx = pts[1].x - pts[0].x;
@@ -314,20 +265,17 @@
         dx = pts[i].x - pts[i - 1].x;
         dz = pts[i].z - pts[i - 1].z;
       } else {
-        // average of incoming and outgoing direction for smooth joints
+        // averaging neighbour directions gives smooth joints
         dx = pts[i + 1].x - pts[i - 1].x;
         dz = pts[i + 1].z - pts[i - 1].z;
       }
       const len = Math.sqrt(dx * dx + dz * dz) || 1;
-      // perpendicular (rotate 90°)
       const px = -dz / len * halfWidth;
-      const pz = dx / len * halfWidth;
+      const pz =  dx / len * halfWidth;
 
-      // two vertices per waypoint: left and right of center
       verts.push(pts[i].x + px, pts[i].y, pts[i].z + pz);
       verts.push(pts[i].x - px, pts[i].y, pts[i].z - pz);
 
-      // two triangles per segment
       if (i < pts.length - 1) {
         const base = i * 2;
         indices.push(base, base + 1, base + 2);
@@ -341,17 +289,12 @@
     return geo;
   }
 
-  // Linear interpolation along a polyline (array of Vector3).
-  // t in [0,1], writes result into target Vector3.
   function lerpPolyline(pts, t, target) {
     if (pts.length < 2) { target.copy(pts[0]); return; }
     const idx = t * (pts.length - 1);
     const i = Math.min(Math.floor(idx), pts.length - 2);
-    const frac = idx - i;
-    target.lerpVectors(pts[i], pts[i + 1], frac);
+    target.lerpVectors(pts[i], pts[i + 1], idx - i);
   }
-
-  let routePts3d = null; // stored for runner dot interpolation
 
   function showRoute(fromId, toId) {
     clearRoute();
@@ -360,38 +303,21 @@
 
     routePts3d = route.map(p => toWorld3(p.x, p.y, 40));
 
-    // Flat ribbon — straight segments, no CatmullRom overshoot
-    const ribbonGeo = buildRibbonGeo(routePts3d, 8);
     const ribbonMat = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
-      depthTest: false,
-      depthWrite: false,
-      side: THREE.DoubleSide,
+      color: 0x00ffff, depthTest: false, depthWrite: false, side: THREE.DoubleSide,
     });
-    activeRouteMesh = new THREE.Mesh(ribbonGeo, ribbonMat);
+    activeRouteMesh = new THREE.Mesh(buildRibbonGeo(routePts3d, 8), ribbonMat);
     activeRouteMesh.renderOrder = 999;
     scene.add(activeRouteMesh);
 
-    routeDrawing = false;
-    routeAnimT = 1;
-
-    // Runner dot
-    const dotGeo = new THREE.SphereGeometry(14, 12, 12);
-    const dotMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      depthTest: false,
-      depthWrite: false,
-    });
-    runnerDot = new THREE.Mesh(dotGeo, dotMat);
+    const dotMat = new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false, depthWrite: false });
+    runnerDot = new THREE.Mesh(new THREE.SphereGeometry(14, 12, 12), dotMat);
     runnerDot.renderOrder = 1001;
-    runnerDot.visible = true;
     scene.add(runnerDot);
 
-    // Start / end markers
     const mkRing = (col) => {
-      const g = new THREE.TorusGeometry(20, 3, 8, 32);
       const m = new THREE.MeshBasicMaterial({ color: col, depthTest: false });
-      return new THREE.Mesh(g, m);
+      return new THREE.Mesh(new THREE.TorusGeometry(20, 3, 8, 32), m);
     };
     startMarker = mkRing(0x3fb950);
     startMarker.rotation.x = -Math.PI / 2;
@@ -408,16 +334,12 @@
     scene.add(endMarker);
   }
 
-  // ── Interactive mode (no flythrough) ──
-  let mode = 'interactive';
   camera.position.set(cx + 1200, 2000, cz + 1200);
   controls.target.set(cx, 0, cz);
   controls.update();
 
   const _tempVec = new THREE.Vector3();
-  const _lookTarget = new THREE.Vector3();
 
-  // ── UI wiring: shared pill + full-screen panel pattern ──
   const S = window.CISShared;
   const LANG = 'en';
 
@@ -498,7 +420,6 @@
     if (startValue && destValue) showRoute(startValue, destValue);
   });
 
-  // ── Resize ──
   window.addEventListener('resize', () => {
     const w = window.innerWidth, h = window.innerHeight;
     camera.aspect = w / h;
@@ -506,58 +427,47 @@
     renderer.setSize(w, h);
     labelRenderer.setSize(w, h);
     composer.setSize(w, h);
-    // bloom stays at half-res through composer internal handling
   });
 
-  // ── Hide loading screen ──
   const loadScreen = document.getElementById('loading-screen');
   loadScreen.classList.add('fade-out');
   setTimeout(() => loadScreen.style.display = 'none', 800);
 
-  // ── Animation Loop ──
   const clock = new THREE.Clock();
-  const LABEL_CULL_DIST = 800; // hide labels beyond this distance
+  const LABEL_CULL_DIST = 800;
 
   function animate() {
     requestAnimationFrame(animate);
     const dt = clock.getDelta();
     const elapsed = clock.getElapsedTime();
 
-    // ── Interactive mode ──
     controls.update();
 
-    // ── Animate particles ──
     const pPos = particles.geometry.attributes.position.array;
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       pPos[i * 3 + 1] += particleSpeeds[i] * dt * 30;
-      if (pPos[i * 3 + 1] > WALL_HEIGHT * 2) {
-        pPos[i * 3 + 1] = -10;
-      }
+      if (pPos[i * 3 + 1] > WALL_HEIGHT * 2) pPos[i * 3 + 1] = -10;
     }
     particles.geometry.attributes.position.needsUpdate = true;
 
-    // ── Animate runner dot (linear along polyline, no CatmullRom overshoot) ──
-    if (runnerDot && runnerDot.visible && routePts3d) {
+    if (runnerDot && routePts3d) {
       const t = (elapsed * 0.15) % 1;
       lerpPolyline(routePts3d, t, _tempVec);
       runnerDot.position.copy(_tempVec);
       runnerDot.position.y += 5;
     }
 
-    // ── Animate portal rings (dedicated array, no string comparison) ──
     for (let i = 0; i < portalRings.length; i++) {
       const ring = portalRings[i];
       ring.material.opacity = 0.25 + 0.15 * Math.sin(elapsed * 2 + ring.position.x * 0.01);
     }
 
-    // ── Cull distant labels to reduce DOM layout thrashing ──
     for (let i = 0; i < portalLabels.length; i++) {
       const label = portalLabels[i];
       const dist = camera.position.distanceTo(label.position);
       label.element.style.display = dist < LABEL_CULL_DIST ? '' : 'none';
     }
 
-    // ── Render ──
     composer.render();
     labelRenderer.render(scene, camera);
   }
