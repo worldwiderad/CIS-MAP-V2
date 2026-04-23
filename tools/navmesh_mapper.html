@@ -84,6 +84,29 @@
   .topbar-group button .count { color: rgba(255,255,255,0.7); font-size: 10px; margin-left: 3px;
                                   font-variant-numeric: tabular-nums; }
 
+  /* Mode tabs in topbar — segmented control */
+  #mode-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 1px;
+  }
+  #mode-tabs button {
+    font: inherit; color: rgba(255,255,255,0.85);
+    background: transparent; border: none;
+    padding: 4px 12px; cursor: pointer; font-size: 12px; font-weight: 600;
+    border-radius: 4px;
+    letter-spacing: 0.2px;
+  }
+  #mode-tabs button:hover:not(.active) { background: rgba(255,255,255,0.12); }
+  #mode-tabs button.active { background: #fff; color: var(--cis-red); }
+  #mode-tabs button .kbd-hint {
+    opacity: 0.55; font-weight: 500; font-size: 10px; margin-left: 4px;
+  }
+  #mode-tabs button.active .kbd-hint { opacity: 0.7; color: var(--cis-red); }
+
   /* Bottom bar (consolidated tooling) */
   #bottom-bar {
     display: flex; flex-direction: column;
@@ -119,8 +142,12 @@
   #toolbar button.primary:hover { background: var(--cis-red-dark); border-color: var(--cis-red-dark); }
   #toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
   #toolbar .sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
-  #toolbar .group { display: flex; align-items: center; gap: 4px; }
-  #toolbar .label { font-size: 11px; color: var(--text-dim); margin-right: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #toolbar .group { display: flex; align-items: center; gap: 4px; padding: 0 10px; position: relative; }
+  #toolbar .group:not(:first-child)::before {
+    content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 1px; background: var(--border);
+  }
+  #toolbar .label { font-size: 10px; color: var(--text-dim); margin-right: 6px; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
 
   #bg-opacity { width: 80px; }
   input[type="range"] { accent-color: var(--cis-red); }
@@ -341,18 +368,25 @@
     <button id="floor-badge" title="Recent floors">no file loaded ▾</button>
     <div id="recents-menu" class="hidden"></div>
   </div>
+  <nav id="mode-tabs" role="tablist" aria-label="Editing mode">
+    <button id="btn-mode-walkable" class="active" data-mode="walkable" title="Draw the walkable corridor (1)">Walkable<span class="kbd-hint">1</span></button>
+    <button id="btn-mode-blocked" data-mode="blocked" title="Draw blocked / void areas (2)">Blocked<span class="kbd-hint">2</span></button>
+    <button id="btn-mode-rooms"   data-mode="rooms"   title="Draw room footprints (3)">Rooms<span class="kbd-hint">3</span></button>
+    <button id="btn-mode-openings" data-mode="openings" title="Place doors and windows (4)">Openings<span class="kbd-hint">4</span></button>
+    <button id="btn-mode-portals" data-mode="portals" title="Place portals (5)">Portals<span class="kbd-hint">5</span></button>
+  </nav>
   <div id="topbar-spacer"></div>
   <div class="topbar-group">
-    <button id="btn-undo" title="Undo (⌘Z)">Undo<span id="undo-count"></span></button>
-    <button id="btn-redo" title="Redo (⌘⇧Z)">Redo<span id="redo-count"></span></button>
+    <button id="btn-undo" title="Undo (⌘Z)">Undo<span id="undo-count" class="count"></span></button>
+    <button id="btn-redo" title="Redo (⌘⇧Z)">Redo<span id="redo-count" class="count"></span></button>
   </div>
   <div class="topbar-group">
-    <button id="btn-import">Import</button>
-    <button id="btn-export" class="primary">Export</button>
+    <button id="btn-import" title="Import JSON or CAD PDF">Import</button>
+    <button id="btn-export" class="primary" title="Export navmesh_data.json">Export</button>
   </div>
   <div class="topbar-group">
-    <button id="btn-validate">Validate</button>
-    <button id="btn-clear" class="danger" title="Clear current floor">Clear</button>
+    <button id="btn-validate" title="Run validation checks">Validate</button>
+    <button id="btn-clear" class="danger" title="Clear current floor (keeps PDF background)">Clear</button>
   </div>
 </header>
 
@@ -381,54 +415,47 @@
   </div>
 
   <div id="toolbar">
-    <div class="group">
-      <span class="label">Mode</span>
-      <button id="btn-mode-walkable" class="active" data-mode="walkable">Walkable</button>
-      <button id="btn-mode-blocked" data-mode="blocked">Blocked</button>
-      <button id="btn-mode-rooms" data-mode="rooms">Rooms</button>
-      <button id="btn-mode-portals" data-mode="portals">Portals</button>
-    </div>
-    <div class="sep"></div>
     <div class="group" id="tools-group">
       <span class="label">Tool</span>
-      <button data-tool="polygon" class="active">Polygon</button>
-      <button data-tool="rectangle">Rectangle</button>
+      <button data-tool="polygon" class="active" title="Click vertices one-by-one (P)">Polygon</button>
+      <button data-tool="rectangle" title="Drag from corner to corner (R)">Rectangle</button>
     </div>
-    <div class="sep"></div>
+    <div class="group" id="opening-kind-group" style="display:none">
+      <span class="label">Kind</span>
+      <button data-opening-kind="door"       class="active" title="Any door">Door</button>
+      <button data-opening-kind="window-ext" title="Exterior window — room/corridor to outside">Win ext</button>
+      <button data-opening-kind="window-int" title="Interior window — corridor to room">Win int</button>
+    </div>
     <div class="group" id="snap-group">
       <span class="label">Snap</span>
-      <button data-snap="vertex"   class="active" title="Snap to existing vertices and edges">Vertex</button>
-      <button data-snap="right"    class="active" title="Snap to 0° / 90°">Right ∠</button>
-      <button data-snap="parallel" class="active" title="Snap parallel/perpendicular to nearby edges">Parallel</button>
+      <button data-snap="vertex"   class="active" title="Snap to existing polygon vertices & edges">Vertex</button>
+      <button data-snap="right"    class="active" title="Lock new segments to 0° / 90°">Right∠</button>
+      <button data-snap="parallel" class="active" title="Lock parallel/perpendicular to nearby edges">Parallel</button>
       <button data-snap="angle45"  title="Snap to 45° increments">45°</button>
-      <button data-snap="grid"     title="Snap to a fixed grid">Grid</button>
+      <button data-snap="grid"     title="Snap to fixed grid">Grid</button>
     </div>
-    <div class="sep"></div>
+    <div id="toolbar-spacer" style="flex:1"></div>
     <div class="group">
       <span class="label">View</span>
-      <button id="btn-fit" title="Fit to canvas (V)">Fit</button>
-      <button id="btn-reset-view" title="Reset view">Reset</button>
+      <button id="btn-fit" title="Fit entire floor to viewport (V)">Fit</button>
+      <button id="btn-reset-view" title="Reset view to 100%">100%</button>
       <button id="btn-zoom-out" title="Zoom out">−</button>
       <button id="btn-zoom-in" title="Zoom in">+</button>
     </div>
-    <div class="sep"></div>
     <div class="group">
       <span class="label">BG</span>
-      <input type="range" id="bg-opacity" min="0" max="100" value="100">
-      <button id="btn-bg-toggle" title="Hide/show background (B)">Hide</button>
+      <input type="range" id="bg-opacity" min="0" max="100" value="100" title="Background opacity">
+      <button id="btn-bg-toggle" title="Hide/show PDF background (B)">Hide</button>
     </div>
     <input type="file" id="file-import" accept=".json,.pdf,application/json,application/pdf" style="display:none">
   </div>
 
   <div id="keybind-bar">
-    <span class="kb-group"><kbd>1</kbd>–<kbd>4</kbd> mode</span>
-    <span class="kb-group"><kbd>P</kbd> polygon · <kbd>R</kbd> rectangle</span>
-    <span class="kb-group"><kbd>V</kbd> fit · <kbd>B</kbd> bg</span>
-    <span class="kb-group"><kbd>Space</kbd>+drag / middle-drag — pan · pinch / <kbd>⌘</kbd>wheel — zoom</span>
-    <span class="kb-group"><kbd>⌥</kbd>+click — delete vertex / portal</span>
-    <span class="kb-group">click an edge — insert vertex · snap targets shown by red ring + axis line</span>
-    <span class="kb-group"><kbd>Enter</kbd> close · <kbd>Esc</kbd> cancel · <kbd>Del</kbd> remove selection</span>
-    <span class="kb-group"><kbd>⌘Z</kbd> undo · <kbd>⌘⇧Z</kbd> redo</span>
+    <span class="kb-group" id="kb-contextual"></span>
+    <span class="kb-group" style="margin-left:auto">
+      <kbd>Space</kbd>+drag pan · <kbd>⌘</kbd>+wheel zoom · <kbd>⌥</kbd>+click delete ·
+      <kbd>⌘Z</kbd> undo · <kbd>?</kbd> shortcuts
+    </span>
   </div>
 </div>
 
@@ -542,6 +569,8 @@ window.addEventListener('load', () => {
       blocked: [],
       rooms: [],
       portals: [],
+      doors: [],            // [{ id, a:{x,y}, b:{x,y}, label:{en,zh} }]
+      windows: [],          // [{ id, a:{x,y}, b:{x,y}, exterior:bool, label:{en,zh} }]
     };
   }
 
@@ -555,6 +584,8 @@ window.addEventListener('load', () => {
     selection: null,        // null | { layer, index } | { kind:'vertex', layer, polyIdx, vertIdx } | { kind:'portal', index }
     drag: null,             // null | { kind, ... }
     rectStart: null,        // {x,y} during rectangle drag
+    openingKind: 'door',    // 'door' | 'window-ext' | 'window-int'
+    openingStart: null,     // {x,y} first click of a two-click opening
     snapHint: null,
     spaceDown: false,
     panning: false,
@@ -673,6 +704,19 @@ window.addEventListener('load', () => {
         portalId: r.portalId || null,
         vertices: r.vertices.map(v => ({ x: round2(v.x), y: round2(v.y) })),
       })),
+      doors: (s.doors || []).map(o => ({
+        id: o.id || '',
+        label: normalizeLabel(o.label),
+        a: { x: round2(o.a.x), y: round2(o.a.y) },
+        b: { x: round2(o.b.x), y: round2(o.b.y) },
+      })),
+      windows: (s.windows || []).map(o => ({
+        id: o.id || '',
+        label: normalizeLabel(o.label),
+        exterior: !!o.exterior,
+        a: { x: round2(o.a.x), y: round2(o.a.y) },
+        b: { x: round2(o.b.x), y: round2(o.b.y) },
+      })),
     };
   }
 
@@ -733,6 +777,24 @@ window.addEventListener('load', () => {
       }));
     }
 
+    if (Array.isArray(data.doors)) {
+      next.doors = data.doors.map(o => ({
+        id: o.id || '',
+        label: normalizeLabel(o.label),
+        a: { x: +o.a.x, y: +o.a.y },
+        b: { x: +o.b.x, y: +o.b.y },
+      }));
+    }
+    if (Array.isArray(data.windows)) {
+      next.windows = data.windows.map(o => ({
+        id: o.id || '',
+        label: normalizeLabel(o.label),
+        exterior: !!o.exterior,
+        a: { x: +o.a.x, y: +o.a.y },
+        b: { x: +o.b.x, y: +o.b.y },
+      }));
+    }
+
     state = next;
     history.past.length = 0;
     history.future.length = 0;
@@ -749,6 +811,7 @@ window.addEventListener('load', () => {
     rooms:     new Layer({ name: 'rooms' }),
     blocked:   new Layer({ name: 'blocked' }),
     walkable:  new Layer({ name: 'walkable' }),
+    openings:  new Layer({ name: 'openings' }),
     portals:   new Layer({ name: 'portals' }),
     edit:      new Layer({ name: 'edit' }),
   };
@@ -1035,6 +1098,25 @@ window.addEventListener('load', () => {
     layers.edit.activate();
     clearLayer(layers.edit);
 
+    // Openings mode — show anchor dot and rubber-band line from first click to cursor
+    if (ui.mode === 'openings' && ui.openingStart) {
+      const s = OPENING_STYLE[ui.openingKind];
+      new Path.Circle({
+        center: new Point(ui.openingStart.x, ui.openingStart.y),
+        radius: screenPx(4), fillColor: s.color,
+      });
+      if (ui.lastMouseScreen) {
+        const cursor = view.viewToProject(new Point(ui.lastMouseScreen.x, ui.lastMouseScreen.y));
+        new Path({
+          segments: [new Point(ui.openingStart.x, ui.openingStart.y), cursor],
+          strokeColor: s.color,
+          strokeWidth: screenPx(s.width),
+          dashArray: [screenPx(4), screenPx(3)],
+          opacity: 0.6,
+        });
+      }
+    }
+
     // Rectangle drag preview
     if (ui.drag && ui.drag.kind === 'rectangle' && ui.rectStart && ui.rectEnd) {
       const a = ui.rectStart, b = ui.rectEnd;
@@ -1194,9 +1276,44 @@ window.addEventListener('load', () => {
     renderPolygonLayer(layers.rooms, state.rooms, { fill: new Color(0.7, 0.7, 0.75, 0.25), stroke: '#8b949e' });
     renderPolygonLayer(layers.blocked, state.blocked, { fill: new Color(0.82, 0.58, 0.13, 0.2), stroke: '#d29922' });
     renderWalkable();
+    renderOpenings();
     renderPortals();
     renderEdit();
     updateStatus();
+  }
+
+  const OPENING_STYLE = {
+    'door':       { color: '#3fb950', dash: null,              width: 3 },
+    'window-ext': { color: '#1f8fff', dash: null,              width: 2 },
+    'window-int': { color: '#1f8fff', dash: [5, 3],            width: 2 },
+  };
+
+  function renderOpenings() {
+    layers.openings.activate();
+    clearLayer(layers.openings);
+    const selId = ui.selection && ui.selection.kind === 'opening' ? ui.selection.id : null;
+    const drawOne = (kind, op) => {
+      const s = OPENING_STYLE[kind];
+      const path = new Path({
+        segments: [new Point(op.a.x, op.a.y), new Point(op.b.x, op.b.y)],
+        strokeColor: s.color,
+        strokeWidth: screenPx(s.width),
+        strokeCap: 'round',
+        dashArray: s.dash ? [screenPx(s.dash[0]), screenPx(s.dash[1])] : null,
+      });
+      if (selId === op.id) {
+        path.shadowColor = new Color(1, 1, 1, 0.9);
+        path.shadowBlur = screenPx(8);
+      }
+      // Endcap dots so single-segment openings read clearly at low zoom.
+      [op.a, op.b].forEach(p => new Path.Circle({
+        center: new Point(p.x, p.y),
+        radius: screenPx(2),
+        fillColor: s.color,
+      }));
+    };
+    state.doors.forEach(op => drawOne('door', op));
+    state.windows.forEach(op => drawOne(op.exterior ? 'window-ext' : 'window-int', op));
   }
 
   /* ─── Polygon reference helpers ───────────────────────────────── */
@@ -1336,10 +1453,12 @@ window.addEventListener('load', () => {
   tool.onMouseMove = function (event) {
     ui.lastMouseScreen = view.projectToView(event.point);
     updateCoords(event.point);
-    // Refresh edit layer in polygon modes to show the live snap target.
+    // Refresh edit layer in polygon + openings modes to show the live snap target.
     const isPolyMode = ui.mode === 'walkable' || ui.mode === 'blocked' || ui.mode === 'rooms';
-    if (ui.inProgress || isPolyMode) {
-      ui.snapHint = isPolyMode ? findSnap(event.point, inProgressPrev(), ui.inProgress) : null;
+    const wantsSnap = isPolyMode || ui.mode === 'openings';
+    if (ui.inProgress || wantsSnap) {
+      const prev = ui.openingStart || inProgressPrev();
+      ui.snapHint = wantsSnap ? findSnap(event.point, prev, ui.inProgress) : null;
       renderEdit();
     }
   };
@@ -1354,6 +1473,11 @@ window.addEventListener('load', () => {
 
     if (mode === 'portals') {
       handlePortalsDown(event, pt);
+      return;
+    }
+
+    if (mode === 'openings') {
+      handleOpeningsDown(event, pt);
       return;
     }
 
@@ -1749,6 +1873,74 @@ window.addEventListener('load', () => {
     return m.charAt(0).toUpperCase() + m.slice(1);
   }
 
+  /* ─── Openings mode (doors + windows) ────────────────────────── */
+
+  let openingSeq = 0;
+  function nextOpeningId(prefix) {
+    openingSeq++;
+    return `${prefix}_${openingSeq}`;
+  }
+
+  function handleOpeningsDown(event, pt) {
+    // Alt-click deletes a hit opening.
+    const hit = hitTestOpening(pt);
+    const alt = event.modifiers.option || event.modifiers.alt;
+    if (alt && hit) {
+      commit((s) => {
+        const arr = hit.kind === 'door' ? s.doors : s.windows;
+        arr.splice(hit.index, 1);
+      });
+      return;
+    }
+    if (hit && !ui.openingStart) {
+      ui.selection = { kind: 'opening', kind2: hit.kind, index: hit.index, id: hit.ref.id };
+      renderAll();
+      renderSidePanel();
+      return;
+    }
+
+    // Two-click placement. Each click snaps via the snap engine.
+    const snap = findSnap(pt, null, null);
+    const p = snap ? { x: snap.x, y: snap.y } : { x: pt.x, y: pt.y };
+    if (!ui.openingStart) {
+      ui.openingStart = p;
+      renderEdit();
+      return;
+    }
+    const a = ui.openingStart;
+    const b = p;
+    ui.openingStart = null;
+    if (Math.hypot(a.x - b.x, a.y - b.y) < screenPx(4)) { renderEdit(); return; }
+    const kind = ui.openingKind;
+    commit((s) => {
+      if (kind === 'door') {
+        s.doors.push({ id: nextOpeningId('Door'), a, b, label: { en: '', zh: '' } });
+      } else {
+        s.windows.push({
+          id: nextOpeningId(kind === 'window-ext' ? 'WinExt' : 'WinInt'),
+          a, b, exterior: kind === 'window-ext',
+          label: { en: '', zh: '' },
+        });
+      }
+    });
+    toast(`${kind} placed`, 'ok');
+  }
+
+  function hitTestOpening(pt) {
+    const tol = screenPx(HIT_EDGE_PX);
+    for (let i = state.doors.length - 1; i >= 0; i--) {
+      const op = state.doors[i];
+      const c = closestOnSegment(pt.x, pt.y, op.a.x, op.a.y, op.b.x, op.b.y);
+      if (distSq(pt.x, pt.y, c.x, c.y) <= tol * tol) return { kind: 'door', index: i, ref: op };
+    }
+    for (let i = state.windows.length - 1; i >= 0; i--) {
+      const op = state.windows[i];
+      const c = closestOnSegment(pt.x, pt.y, op.a.x, op.a.y, op.b.x, op.b.y);
+      if (distSq(pt.x, pt.y, c.x, c.y) <= tol * tol) return { kind: 'window', index: i, ref: op };
+    }
+    return null;
+  }
+
   /* ─── Portals mode ────────────────────────────────────────────── */
 
   function handlePortalsDown(event, pt) {
@@ -1909,6 +2101,55 @@ window.addEventListener('load', () => {
         };
       }
     }
+
+    if (sel.kind === 'opening') {
+      const arr = sel.kind2 === 'door' ? state.doors : state.windows;
+      const op = arr[sel.index];
+      if (!op) { ui.selection = null; sidePanel.classList.remove('visible'); return; }
+      const isWindow = sel.kind2 === 'window';
+      const title = !isWindow ? 'Door' : (op.exterior ? 'Window (exterior)' : 'Window (interior)');
+      const extField = isWindow
+        ? `<div class="field"><label>Kind</label>
+             <select id="sp-exterior">
+               <option value="true"${op.exterior ? ' selected' : ''}>Exterior (to outside)</option>
+               <option value="false"${!op.exterior ? ' selected' : ''}>Interior (corridor ↔ room)</option>
+             </select></div>`
+        : '';
+      sidePanel.innerHTML = `
+        <h3>${title}</h3>
+        <div class="field"><label>ID</label><input id="sp-id" value="${escHtml(op.id || '')}"></div>
+        <div class="field"><label>Label (EN)</label><input id="sp-en" value="${escHtml((op.label && op.label.en) || '')}"></div>
+        <div class="field"><label>Label (ZH)</label><input id="sp-zh" value="${escHtml((op.label && op.label.zh) || '')}"></div>
+        ${extField}
+        <div class="btn-row">
+          <button id="sp-save" class="primary">Save</button>
+          <button id="sp-delete" class="danger">Delete</button>
+        </div>
+        <div class="hint">from (${op.a.x.toFixed(1)}, ${op.a.y.toFixed(1)}) to (${op.b.x.toFixed(1)}, ${op.b.y.toFixed(1)})</div>
+      `;
+      sidePanel.classList.add('visible');
+      document.getElementById('sp-save').onclick = () => {
+        const id = document.getElementById('sp-id').value.trim();
+        const en = document.getElementById('sp-en').value.trim();
+        const zh = document.getElementById('sp-zh').value.trim();
+        const ext = isWindow ? (document.getElementById('sp-exterior').value === 'true') : undefined;
+        commit((s) => {
+          const a2 = sel.kind2 === 'door' ? s.doors : s.windows;
+          const o = a2[sel.index];
+          if (!o) return;
+          o.id = id;
+          o.label = { en, zh };
+          if (isWindow) o.exterior = ext;
+        });
+      };
+      document.getElementById('sp-delete').onclick = () => {
+        if (!confirm(`Delete ${title}?`)) return;
+        commit((s) => {
+          const a2 = sel.kind2 === 'door' ? s.doors : s.windows;
+          a2.splice(sel.index, 1);
+        });
+      };
+    }
   }
 
   function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -2015,6 +2256,38 @@ window.addEventListener('load', () => {
       }
     });
 
+    // Openings should lie on (or very near) a wall edge.
+    const wallEdges = [];
+    const pushEdges = (poly) => {
+      if (!poly || poly.vertices.length < 2) return;
+      const n = poly.closed ? poly.vertices.length : poly.vertices.length - 1;
+      for (let i = 0; i < n; i++) {
+        wallEdges.push([poly.vertices[i], poly.vertices[(i + 1) % poly.vertices.length]]);
+      }
+    };
+    pushEdges(s.walkable);
+    s.blocked.forEach(pushEdges);
+    s.rooms.forEach(pushEdges);
+    const minDistToWall = (pt) => {
+      let best = Infinity;
+      for (const [a, b] of wallEdges) {
+        const c = closestOnSegment(pt.x, pt.y, a.x, a.y, b.x, b.y);
+        const d = Math.hypot(pt.x - c.x, pt.y - c.y);
+        if (d < best) best = d;
+      }
+      return best;
+    };
+    const OPENING_MAX_WALL_DIST = 4;
+    const checkOp = (o, kind) => {
+      const mid = { x: (o.a.x + o.b.x) / 2, y: (o.a.y + o.b.y) / 2 };
+      const d = wallEdges.length ? minDistToWall(mid) : Infinity;
+      if (d > OPENING_MAX_WALL_DIST) {
+        issues.push({ level: 'warn', msg: `${kind} "${o.id || '?'}" midpoint is ${d.toFixed(1)} units from any wall — likely not placed on a wall.` });
+      }
+    };
+    s.doors.forEach(o => checkOp(o, 'Door'));
+    s.windows.forEach(o => checkOp(o, 'Window'));
+
     return issues;
   }
 
@@ -2067,18 +2340,20 @@ window.addEventListener('load', () => {
   /* ─── UI: toolbar, status, keyboard ───────────────────────────── */
 
   function setMode(m) {
-    if (!['walkable', 'blocked', 'rooms', 'portals'].includes(m)) return;
+    if (!['walkable', 'blocked', 'rooms', 'openings', 'portals'].includes(m)) return;
     if (ui.inProgress && ui.inProgress.layer !== m) ui.inProgress = null;
     ui.mode = m;
     ui.selection = null;
+    ui.openingStart = null;
     if (!ui.inProgress) {
       const found = findInProgress(m);
       if (found) ui.inProgress = found;
     }
     // Tool / Snap groups only meaningful when drawing polygons.
-    const hide = m === 'portals' ? 'none' : '';
-    document.getElementById('tools-group').style.display = hide;
-    document.getElementById('snap-group').style.display = hide;
+    const isPoly = m === 'walkable' || m === 'blocked' || m === 'rooms';
+    document.getElementById('tools-group').style.display = isPoly ? '' : 'none';
+    document.getElementById('snap-group').style.display = (isPoly || m === 'openings') ? '' : 'none';
+    document.getElementById('opening-kind-group').style.display = m === 'openings' ? '' : 'none';
     updateToolbar();
     renderAll();
     renderSidePanel();
@@ -2117,10 +2392,23 @@ window.addEventListener('load', () => {
         : (ui.inProgress ? `Drawing walkable — ${state.walkable.vertices.length} vertices — click first vertex or Enter to close, Esc to cancel` : 'Click to start drawing the walkable corridor'),
       blocked: ui.inProgress ? 'Drawing blocked polygon — click first vertex or Enter to close, Esc to cancel' : `${state.blocked.length} blocked area(s) — click empty space to start a new one`,
       rooms: ui.inProgress ? 'Drawing room — click first vertex or Enter to close, Esc to cancel' : `${state.rooms.length} room(s) — click empty space to start a new one`,
+      openings: ui.openingStart
+        ? `Placing ${ui.openingKind} — click second point to finish, Esc to cancel`
+        : `${state.doors.length} door(s), ${state.windows.length} window(s) — pick a kind and click two points. Alt-click to delete.`,
       portals: `${state.portals.length} portals — click walkable edge to place, click portal to select, alt-click to delete`,
     };
     document.getElementById('status-mode').textContent = modeLabel(ui.mode);
     document.getElementById('status-message').textContent = msgs[ui.mode] || '';
+
+    const hints = {
+      walkable: '<kbd>Enter</kbd> close · <kbd>Esc</kbd> cancel · click edge to insert vertex',
+      blocked:  '<kbd>Enter</kbd> close · click empty to start a new one',
+      rooms:    '<kbd>Enter</kbd> close · link a portal in the side panel',
+      openings: 'pick a kind above · click 2 points · <kbd>Esc</kbd> cancels mid-placement',
+      portals:  'click near walkable boundary to place · click existing to edit · <kbd>Del</kbd> to remove',
+    };
+    const kbEl = document.getElementById('kb-contextual');
+    if (kbEl) kbEl.innerHTML = hints[ui.mode] || '';
   }
 
   function updateZoomStatus() {
@@ -2234,7 +2522,7 @@ window.addEventListener('load', () => {
 
   /* ─── Toolbar wiring ──────────────────────────────────────────── */
 
-  document.querySelectorAll('#toolbar [data-mode]').forEach(btn => {
+  document.querySelectorAll('#mode-tabs [data-mode]').forEach(btn => {
     btn.addEventListener('click', () => setMode(btn.dataset.mode));
   });
   document.querySelectorAll('#toolbar [data-tool]').forEach(btn => {
@@ -2256,6 +2544,16 @@ window.addEventListener('load', () => {
       snaps[btn.dataset.snap] = !snaps[btn.dataset.snap];
       btn.classList.toggle('active', snaps[btn.dataset.snap]);
       saveSnaps();
+      renderEdit();
+    });
+  });
+
+  document.querySelectorAll('#opening-kind-group [data-opening-kind]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ui.openingKind = btn.dataset.openingKind;
+      document.querySelectorAll('#opening-kind-group [data-opening-kind]').forEach(b => {
+        b.classList.toggle('active', b.dataset.openingKind === ui.openingKind);
+      });
       renderEdit();
     });
   });
@@ -2399,7 +2697,8 @@ window.addEventListener('load', () => {
     if (e.key === '1') setMode('walkable');
     if (e.key === '2') setMode('blocked');
     if (e.key === '3') setMode('rooms');
-    if (e.key === '4') setMode('portals');
+    if (e.key === '4') setMode('openings');
+    if (e.key === '5') setMode('portals');
     if (e.key === 'p' || e.key === 'P') setTool('polygon');
     if (e.key === 'r' || e.key === 'R') setTool('rectangle');
 
@@ -2410,6 +2709,7 @@ window.addEventListener('load', () => {
 
     if (e.key === 'Escape') {
       if (currentModalHandler) { closeModal(); return; }
+      if (ui.openingStart) { ui.openingStart = null; renderEdit(); return; }
       if (ui.inProgress) { cancelInProgress(); toast('Cancelled.', 'warn'); }
       else if (ui.selection) { ui.selection = null; renderAll(); renderSidePanel(); }
     }
@@ -2426,13 +2726,20 @@ window.addEventListener('load', () => {
       }
     }
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (ui.selection && ui.selection.kind === 'portal') {
-        commit((s) => s.portals.splice(ui.selection.index, 1));
+      const sel = ui.selection;
+      if (sel && sel.kind === 'portal') {
+        commit((s) => s.portals.splice(sel.index, 1));
         e.preventDefault();
-      } else if (ui.selection && ui.selection.kind === 'polygon' && ui.selection.layer !== 'walkable') {
+      } else if (sel && sel.kind === 'polygon' && sel.layer !== 'walkable') {
         commit((s) => {
-          if (ui.selection.layer === 'blocked') s.blocked.splice(ui.selection.index, 1);
-          if (ui.selection.layer === 'rooms') s.rooms.splice(ui.selection.index, 1);
+          if (sel.layer === 'blocked') s.blocked.splice(sel.index, 1);
+          if (sel.layer === 'rooms') s.rooms.splice(sel.index, 1);
+        });
+        e.preventDefault();
+      } else if (sel && sel.kind === 'opening') {
+        commit((s) => {
+          const arr = sel.kind2 === 'door' ? s.doors : s.windows;
+          arr.splice(sel.index, 1);
         });
         e.preventDefault();
       }
