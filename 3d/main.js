@@ -253,7 +253,7 @@
   }
 
   // Flat ribbon from polyline waypoints; straight segments avoid CatmullRom corner overshoot.
-  function buildRibbonGeo(pts, halfWidth) {
+  function weaveRibbon(pts, halfWidth) {
     const verts = [];
     const indices = [];
     for (let i = 0; i < pts.length; i++) {
@@ -306,7 +306,7 @@
     const ribbonMat = new THREE.MeshBasicMaterial({
       color: 0x00ffff, depthTest: false, depthWrite: false, side: THREE.DoubleSide,
     });
-    activeRouteMesh = new THREE.Mesh(buildRibbonGeo(routePts3d, 8), ribbonMat);
+    activeRouteMesh = new THREE.Mesh(weaveRibbon(routePts3d, 8), ribbonMat);
     activeRouteMesh.renderOrder = 999;
     scene.add(activeRouteMesh);
 
@@ -315,18 +315,18 @@
     runnerDot.renderOrder = 1001;
     scene.add(runnerDot);
 
-    const mkRing = (col) => {
+    const summonRing = (col) => {
       const m = new THREE.MeshBasicMaterial({ color: col, depthTest: false });
       return new THREE.Mesh(new THREE.TorusGeometry(20, 3, 8, 32), m);
     };
-    startMarker = mkRing(0x3fb950);
+    startMarker = summonRing(0x3fb950);
     startMarker.rotation.x = -Math.PI / 2;
     startMarker.position.copy(routePts3d[0]);
     startMarker.position.y = 2;
     startMarker.renderOrder = 998;
     scene.add(startMarker);
 
-    endMarker = mkRing(0xf85149);
+    endMarker = summonRing(0xf85149);
     endMarker.rotation.x = -Math.PI / 2;
     endMarker.position.copy(routePts3d[routePts3d.length - 1]);
     endMarker.position.y = 2;

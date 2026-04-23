@@ -3,25 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CIS Navmesh Mapper v2</title>
+<title>CIS Navmesh Mapper</title>
+<link rel="stylesheet" href="https://assets.web.digistorm.io/fonts/cis-sg-04-129/font.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.18/paper-full.min.js"></script>
+<script src="lib/pdf.min.js"></script>
 <style>
+  :root {
+    --cis-red: #DA291C;
+    --cis-red-dark: #9E1830;
+    --accent: #1F6FEB;
+    --bg: #FFFFFF;
+    --bg2: #F6F6F6;
+    --bg3: #ECECEC;
+    --border: #E0E0E0;
+    --border-strong: #C8C8C8;
+    --text: #1A1A1A;
+    --text-dim: #666666;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    background: #0d1117;
-    color: #e6edf3;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Theinhardt", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     display: flex; flex-direction: column;
     overflow: hidden;
     user-select: none;
   }
 
+  /* Topbar (CIS-branded) */
+  #topbar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 0 16px; height: 44px;
+    background: var(--cis-red);
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+  #topbar img { height: 20px; flex-shrink: 0; }
+  #topbar .sep { color: rgba(255,255,255,0.45); font-weight: 300; }
+  #topbar h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.3px; color: #fff; }
+  #floor-picker { position: relative; }
+  #floor-badge { font-size: 11px; font-weight: 600; color: #fff;
+                 background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3);
+                 padding: 4px 10px; border-radius: 5px; letter-spacing: 0.3px;
+                 cursor: pointer; font-family: inherit; }
+  #floor-badge:hover { background: rgba(255,255,255,0.28); }
+  #recents-menu { position: absolute; top: 100%; left: 0; margin-top: 6px;
+                  background: var(--bg); border: 1px solid var(--border);
+                  border-radius: 6px; min-width: 240px; max-width: 360px;
+                  z-index: 100; box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+                  padding: 4px; max-height: 280px; overflow-y: auto; color: var(--text); }
+  #recents-menu.hidden { display: none; }
+  #recents-menu .recent-item { display: flex; align-items: center; justify-content: space-between;
+                                gap: 8px; padding: 6px 10px; border-radius: 4px;
+                                cursor: pointer; font-size: 12px; }
+  #recents-menu .recent-item:hover { background: var(--bg2); }
+  #recents-menu .recent-item .x { color: var(--text-dim); padding: 0 4px; border-radius: 3px;
+                                   font-size: 14px; line-height: 1; }
+  #recents-menu .recent-item .x:hover { color: #DC2626; background: rgba(220,38,38,0.08); }
+  #recents-menu .empty { padding: 10px; color: var(--text-dim); font-size: 12px; text-align: center; }
+
+  #topbar-spacer { flex: 1; }
+  .topbar-group { display: flex; gap: 4px; padding-left: 10px; border-left: 1px solid rgba(255,255,255,0.25); }
+  .topbar-group:first-of-type { border-left: none; padding-left: 0; }
+  .topbar-group button {
+    font: inherit; color: #fff;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 4px 10px; cursor: pointer; font-size: 12px;
+  }
+  .topbar-group button:hover:not(:disabled) { background: rgba(255,255,255,0.28); }
+  .topbar-group button.primary { background: #fff; border-color: #fff; color: var(--cis-red); font-weight: 700; }
+  .topbar-group button.primary:hover { background: rgba(255,255,255,0.92); }
+  .topbar-group button.danger { background: rgba(0,0,0,0.18); border-color: rgba(0,0,0,0.25); color: #fff; }
+  .topbar-group button.danger:hover { background: rgba(0,0,0,0.3); }
+  .topbar-group button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .topbar-group button .count { color: rgba(255,255,255,0.7); font-size: 10px; margin-left: 3px;
+                                  font-variant-numeric: tabular-nums; }
+
   /* Bottom bar (consolidated tooling) */
   #bottom-bar {
     display: flex; flex-direction: column;
-    background: #161b22;
-    border-top: 1px solid #30363d;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
     flex-shrink: 0;
   }
 
@@ -35,30 +102,30 @@
   }
   #toolbar button, #toolbar select, #toolbar label.check {
     padding: 6px 12px;
-    border: 1px solid #30363d;
+    border: 1px solid var(--border);
     border-radius: 6px;
-    background: #21262d;
-    color: #e6edf3;
+    background: var(--bg);
+    color: var(--text);
     cursor: pointer;
     font-size: 13px;
     white-space: nowrap;
     transition: background 0.15s, border-color 0.15s;
   }
-  #toolbar button:hover { background: #30363d; }
-  #toolbar button.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
-  #toolbar button.danger { background: #da3633; border-color: #da3633; color: #fff; }
-  #toolbar button.danger:hover { background: #f85149; }
-  #toolbar button.primary { background: #238636; border-color: #238636; color: #fff; }
-  #toolbar button.primary:hover { background: #2ea043; }
+  #toolbar button:hover { background: var(--bg3); }
+  #toolbar button.active { background: var(--cis-red); border-color: var(--cis-red); color: #fff; }
+  #toolbar button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
+  #toolbar button.danger:hover { background: #B91C1C; }
+  #toolbar button.primary { background: var(--cis-red); border-color: var(--cis-red); color: #fff; font-weight: 600; }
+  #toolbar button.primary:hover { background: var(--cis-red-dark); border-color: var(--cis-red-dark); }
   #toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
-  #toolbar .sep { width: 1px; height: 24px; background: #30363d; margin: 0 4px; }
+  #toolbar .sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
   #toolbar .group { display: flex; align-items: center; gap: 4px; }
-  #toolbar .label { font-size: 11px; color: #8b949e; margin-right: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #toolbar .label { font-size: 11px; color: var(--text-dim); margin-right: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
   #bg-opacity { width: 80px; }
-  input[type="range"] { accent-color: #1f6feb; }
+  input[type="range"] { accent-color: var(--cis-red); }
 
-  #undo-count, #redo-count { color: #8b949e; font-size: 11px; margin-left: 2px; }
+  #undo-count, #redo-count { color: var(--text-dim); font-size: 11px; margin-left: 2px; }
 
   /* Main layout */
   #main {
@@ -70,7 +137,7 @@
   #canvas-wrap {
     flex: 1;
     position: relative;
-    background: #010409;
+    background: #F0F0F0;
     overflow: hidden;
   }
   canvas { display: block; width: 100%; height: 100%; }
@@ -80,8 +147,8 @@
   /* Side panel */
   #side-panel {
     width: 320px;
-    background: #161b22;
-    border-left: 1px solid #30363d;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
     overflow-y: auto;
     padding: 14px;
     font-size: 13px;
@@ -89,69 +156,69 @@
   }
   #side-panel.visible { display: block; }
   #side-panel h3 {
-    font-size: 14px; margin-bottom: 10px; color: #58a6ff;
+    font-size: 14px; margin-bottom: 10px; color: var(--cis-red);
     text-transform: uppercase; letter-spacing: 0.5px;
-    padding-bottom: 6px; border-bottom: 1px solid #30363d;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
   }
   #side-panel .field { margin-bottom: 10px; }
-  #side-panel label { display: block; color: #8b949e; font-size: 11px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #side-panel label { display: block; color: var(--text-dim); font-size: 11px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
   #side-panel input, #side-panel select {
     width: 100%; padding: 6px 8px;
-    background: #0d1117; color: #e6edf3;
-    border: 1px solid #30363d; border-radius: 5px;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 5px;
     font-size: 13px;
   }
   #side-panel input:focus, #side-panel select:focus {
-    outline: none; border-color: #1f6feb;
+    outline: none; border-color: var(--cis-red); box-shadow: 0 0 0 2px rgba(218,41,28,0.2);
   }
   #side-panel .btn-row { display: flex; gap: 8px; margin-top: 12px; }
   #side-panel button {
     flex: 1; padding: 7px;
-    border: 1px solid #30363d; border-radius: 5px;
-    background: #21262d; color: #e6edf3;
+    border: 1px solid var(--border); border-radius: 5px;
+    background: var(--bg); color: var(--text);
     font-size: 13px; cursor: pointer;
   }
-  #side-panel button:hover { background: #30363d; }
-  #side-panel button.danger { background: #da3633; border-color: #da3633; color: #fff; }
-  #side-panel button.primary { background: #238636; border-color: #238636; color: #fff; }
-  #side-panel .hint { font-size: 11px; color: #8b949e; margin-top: 4px; }
+  #side-panel button:hover { background: var(--bg3); }
+  #side-panel button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
+  #side-panel button.primary { background: var(--cis-red); border-color: var(--cis-red); color: #fff; }
+  #side-panel .hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 
   /* Status bar */
   #status-bar {
     display: flex; align-items: center;
     padding: 6px 12px;
-    background: #161b22;
-    border-top: 1px solid #30363d;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
     font-size: 12px;
-    color: #8b949e;
+    color: var(--text-dim);
     gap: 14px;
     flex-shrink: 0;
   }
   #status-bar .status-item { white-space: nowrap; }
-  #status-bar .status-mode { color: #58a6ff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  #status-bar .status-message { flex: 1; color: #e6edf3; }
-  #status-bar .status-warn { color: #d29922; cursor: pointer; }
-  #status-bar .status-warn:hover { color: #e3b341; }
+  #status-bar .status-mode { color: var(--cis-red); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  #status-bar .status-message { flex: 1; color: var(--text); }
+  #status-bar .status-warn { color: #B45309; cursor: pointer; }
+  #status-bar .status-warn:hover { color: #92400E; }
 
   /* Keybind cheat sheet */
   #keybind-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: 14px;
     padding: 5px 12px;
-    background: #0d1117;
-    border-top: 1px solid #21262d;
+    background: var(--bg);
+    border-top: 1px solid var(--bg3);
     font-size: 11px;
-    color: #8b949e;
+    color: var(--text-dim);
     flex-shrink: 0;
   }
   #keybind-bar kbd {
     display: inline-block;
     padding: 1px 5px;
-    background: #21262d;
-    border: 1px solid #30363d;
+    background: var(--bg2);
+    border: 1px solid var(--border);
     border-bottom-width: 2px;
     border-radius: 3px;
-    color: #e6edf3;
+    color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     font-size: 10px;
     margin: 0 1px;
@@ -164,73 +231,75 @@
     bottom: 30px; right: 16px;
     width: 360px;
     max-height: 50vh;
-    background: rgba(13, 17, 23, 0.96);
-    border: 1px solid #30363d;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid var(--border);
     border-radius: 8px;
     backdrop-filter: blur(8px);
     display: none;
     overflow: hidden;
     flex-direction: column;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    color: var(--text);
   }
   #validation-panel.visible { display: flex; }
   #validation-panel header {
     padding: 10px 12px;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
     font-size: 13px; font-weight: 600;
   }
-  #validation-panel header .close { cursor: pointer; color: #8b949e; padding: 2px 6px; border-radius: 4px; }
-  #validation-panel header .close:hover { background: #30363d; color: #e6edf3; }
+  #validation-panel header .close { cursor: pointer; color: var(--text-dim); padding: 2px 6px; border-radius: 4px; }
+  #validation-panel header .close:hover { background: var(--bg3); color: var(--text); }
   #validation-list { padding: 8px 0; overflow-y: auto; flex: 1; }
   #validation-list .item {
     padding: 8px 12px; font-size: 12px;
-    border-bottom: 1px solid #21262d;
+    border-bottom: 1px solid var(--bg3);
   }
   #validation-list .item:last-child { border-bottom: none; }
-  #validation-list .item.warn { color: #d29922; }
-  #validation-list .item.error { color: #f85149; }
-  #validation-list .item.ok { color: #3fb950; }
-  #validation-list .empty { padding: 14px; text-align: center; color: #8b949e; font-size: 12px; }
+  #validation-list .item.warn { color: #B45309; }
+  #validation-list .item.error { color: #DC2626; }
+  #validation-list .item.ok { color: #16A34A; }
+  #validation-list .empty { padding: 14px; text-align: center; color: var(--text-dim); font-size: 12px; }
 
   /* Modal */
   #modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.4);
     display: none;
     align-items: center; justify-content: center;
     z-index: 100;
   }
   #modal-overlay.visible { display: flex; }
   #modal {
-    background: #161b22;
-    border: 1px solid #30363d;
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 20px;
     width: 380px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    color: var(--text);
   }
-  #modal h3 { margin-bottom: 14px; font-size: 16px; color: #58a6ff; }
+  #modal h3 { margin-bottom: 14px; font-size: 16px; color: var(--cis-red); }
   #modal .field { margin-bottom: 12px; }
-  #modal label { display: block; color: #8b949e; font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #modal label { display: block; color: var(--text-dim); font-size: 11px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
   #modal input, #modal select {
     width: 100%; padding: 8px 10px;
-    background: #0d1117; color: #e6edf3;
-    border: 1px solid #30363d; border-radius: 6px;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
     font-size: 14px;
   }
-  #modal input:focus, #modal select:focus { outline: none; border-color: #1f6feb; }
+  #modal input:focus, #modal select:focus { outline: none; border-color: var(--cis-red); box-shadow: 0 0 0 2px rgba(218,41,28,0.2); }
   #modal .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
   #modal button {
     padding: 8px 18px;
-    border: 1px solid #30363d; border-radius: 6px;
-    background: #21262d; color: #e6edf3;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--text);
     font-size: 14px; cursor: pointer;
   }
-  #modal button.primary { background: #238636; border-color: #238636; color: #fff; }
-  #modal button.primary:hover { background: #2ea043; }
-  #modal button:hover { background: #30363d; }
+  #modal button.primary { background: var(--cis-red); border-color: var(--cis-red); color: #fff; font-weight: 600; }
+  #modal button.primary:hover { background: var(--cis-red-dark); }
+  #modal button:hover { background: var(--bg3); }
 
   /* Toasts */
   #toast-container {
@@ -241,20 +310,21 @@
     pointer-events: none;
   }
   .toast {
-    background: rgba(13, 17, 23, 0.95);
-    border: 1px solid #30363d;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 8px 14px;
-    color: #e6edf3;
+    color: var(--text);
     font-size: 13px;
     backdrop-filter: blur(8px);
     animation: toast-in 0.2s ease-out;
     pointer-events: auto;
     max-width: 320px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   }
-  .toast.warn { border-color: #d29922; }
-  .toast.error { border-color: #f85149; color: #f85149; }
-  .toast.ok { border-color: #3fb950; }
+  .toast.warn { border-color: #B45309; }
+  .toast.error { border-color: #DC2626; color: #DC2626; }
+  .toast.ok { border-color: #16A34A; }
   @keyframes toast-in {
     from { opacity: 0; transform: translateY(-8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -262,6 +332,29 @@
 </style>
 </head>
 <body>
+
+<header id="topbar">
+  <img src="../assets/img/cis-logo-white.svg" alt="CIS">
+  <span class="sep">|</span>
+  <h1>Navmesh Mapper</h1>
+  <div id="floor-picker">
+    <button id="floor-badge" title="Recent floors">no file loaded ▾</button>
+    <div id="recents-menu" class="hidden"></div>
+  </div>
+  <div id="topbar-spacer"></div>
+  <div class="topbar-group">
+    <button id="btn-undo" title="Undo (⌘Z)">Undo<span id="undo-count"></span></button>
+    <button id="btn-redo" title="Redo (⌘⇧Z)">Redo<span id="redo-count"></span></button>
+  </div>
+  <div class="topbar-group">
+    <button id="btn-import">Import</button>
+    <button id="btn-export" class="primary">Export</button>
+  </div>
+  <div class="topbar-group">
+    <button id="btn-validate">Validate</button>
+    <button id="btn-clear" class="danger" title="Clear current floor">Clear</button>
+  </div>
+</header>
 
 <div id="main">
   <div id="canvas-wrap">
@@ -296,6 +389,21 @@
       <button id="btn-mode-portals" data-mode="portals">Portals</button>
     </div>
     <div class="sep"></div>
+    <div class="group" id="tools-group">
+      <span class="label">Tool</span>
+      <button data-tool="polygon" class="active">Polygon</button>
+      <button data-tool="rectangle">Rectangle</button>
+    </div>
+    <div class="sep"></div>
+    <div class="group" id="snap-group">
+      <span class="label">Snap</span>
+      <button data-snap="vertex"   class="active" title="Snap to existing vertices and edges">Vertex</button>
+      <button data-snap="right"    class="active" title="Snap to 0° / 90°">Right ∠</button>
+      <button data-snap="parallel" class="active" title="Snap parallel/perpendicular to nearby edges">Parallel</button>
+      <button data-snap="angle45"  title="Snap to 45° increments">45°</button>
+      <button data-snap="grid"     title="Snap to a fixed grid">Grid</button>
+    </div>
+    <div class="sep"></div>
     <div class="group">
       <span class="label">View</span>
       <button id="btn-fit" title="Fit to canvas (V)">Fit</button>
@@ -309,36 +417,18 @@
       <input type="range" id="bg-opacity" min="0" max="100" value="100">
       <button id="btn-bg-toggle" title="Hide/show background (B)">Hide</button>
     </div>
-    <div class="sep"></div>
-    <div class="group">
-      <button id="btn-undo" title="Undo (⌘Z)">Undo<span id="undo-count"></span></button>
-      <button id="btn-redo" title="Redo (⌘⇧Z)">Redo<span id="redo-count"></span></button>
-    </div>
-    <div class="sep"></div>
-    <div class="group">
-      <button id="btn-import">Import</button>
-      <button id="btn-export" class="primary">Export</button>
-    </div>
-    <div class="sep"></div>
-    <div class="group">
-      <button id="btn-validate">Validate</button>
-      <button id="btn-clear" class="danger">Clear</button>
-    </div>
-    <input type="file" id="file-import" accept=".json" style="display:none">
+    <input type="file" id="file-import" accept=".json,.pdf,application/json,application/pdf" style="display:none">
   </div>
 
   <div id="keybind-bar">
     <span class="kb-group"><kbd>1</kbd>–<kbd>4</kbd> mode</span>
-    <span class="kb-group"><kbd>V</kbd> fit view</span>
-    <span class="kb-group"><kbd>B</kbd> toggle background</span>
-    <span class="kb-group">Two-finger drag / <kbd>Space</kbd>+drag / middle-drag — pan</span>
-    <span class="kb-group"><kbd>⌘</kbd>+wheel / pinch — zoom</span>
-    <span class="kb-group"><kbd>⌥</kbd>+click vertex or portal — delete</span>
-    <span class="kb-group">Click edge — insert vertex</span>
-    <span class="kb-group"><kbd>Enter</kbd> close polygon</span>
-    <span class="kb-group"><kbd>Esc</kbd> cancel / deselect</span>
+    <span class="kb-group"><kbd>P</kbd> polygon · <kbd>R</kbd> rectangle</span>
+    <span class="kb-group"><kbd>V</kbd> fit · <kbd>B</kbd> bg</span>
+    <span class="kb-group"><kbd>Space</kbd>+drag / middle-drag — pan · pinch / <kbd>⌘</kbd>wheel — zoom</span>
+    <span class="kb-group"><kbd>⌥</kbd>+click — delete vertex / portal</span>
+    <span class="kb-group">click an edge — insert vertex · snap targets shown by red ring + axis line</span>
+    <span class="kb-group"><kbd>Enter</kbd> close · <kbd>Esc</kbd> cancel · <kbd>Del</kbd> remove selection</span>
     <span class="kb-group"><kbd>⌘Z</kbd> undo · <kbd>⌘⇧Z</kbd> redo</span>
-    <span class="kb-group"><kbd>Del</kbd> delete selection</span>
   </div>
 </div>
 
@@ -386,6 +476,10 @@
 
 paper.install(window);
 
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
+}
+
 window.addEventListener('load', () => {
   const canvas = document.getElementById('navcanvas');
   paper.setup(canvas);
@@ -397,8 +491,16 @@ window.addEventListener('load', () => {
   const SNAP_CLOSE_PX = 12;
   const HIT_VERTEX_PX = 10;
   const HIT_EDGE_PX = 6;
+  const SNAP_VERT_PX = 12;       // snap a new vertex onto an existing one
+  const SNAP_EDGE_PX = 8;        // snap onto an existing edge (and split it)
+  const SNAP_AXIS_PX = 10;       // snap onto an angle/parallel axis line
+  const SNAPS_KEY    = 'cis_mapper_snaps';
+  const GRID_STEP    = 10;       // viewBox units per grid cell
   const HISTORY_CAP = 50;
-  const AUTOSAVE_KEY = 'cis_navmesh_mapper_v2_autosave';
+  const AUTOSAVE_PREFIX = 'cis_mapper:';   // per-file key: cis_mapper:<filename>
+  const RECENTS_KEY = 'cis_mapper_recents';
+  const RECENTS_MAX = 10;
+  const LEGACY_AUTOSAVE_KEYS = ['cis_navmesh_mapper_v2_autosave'];   // wiped on first run
 
   const PORTAL_TYPES = [
     { value: 'room',     color: '#58a6ff' },
@@ -424,7 +526,7 @@ window.addEventListener('load', () => {
 
   /* ─── State factory & global state ────────────────────────────── */
 
-  function freshState() {
+  function blankSlate() {
     return {
       schemaVersion: SCHEMA_VERSION,
       metadata: {
@@ -445,12 +547,15 @@ window.addEventListener('load', () => {
 
   // `state` is the serializable source of truth.
   // `ui` is transient (never exported, never in history).
-  let state = freshState();
+  let state = blankSlate();
   const ui = {
     mode: 'walkable',
+    tool: 'polygon',        // 'polygon' | 'rectangle' (only meaningful in polygon-drawing modes)
     inProgress: null,       // null | { layer, index }
     selection: null,        // null | { layer, index } | { kind:'vertex', layer, polyIdx, vertIdx } | { kind:'portal', index }
     drag: null,             // null | { kind, ... }
+    rectStart: null,        // {x,y} during rectangle drag
+    snapHint: null,
     spaceDown: false,
     panning: false,
     lastMouseScreen: null,  // screen-space {x,y}
@@ -458,6 +563,19 @@ window.addEventListener('load', () => {
   };
 
   const history = { past: [], future: [] };
+
+  // Snap toggles. Persisted across sessions.
+  const snaps = {
+    vertex: true,    // existing vertex / edge of any polygon
+    right: true,     // 0° / 90° from previous vertex (orthogonal walls)
+    parallel: true,  // parallel / perpendicular to a nearby existing edge
+    angle45: false,  // 45° increments
+    grid: false,     // multiples of GRID_STEP units
+  };
+  try { Object.assign(snaps, JSON.parse(localStorage.getItem(SNAPS_KEY) || '{}')); } catch (e) {}
+  function saveSnaps() {
+    try { localStorage.setItem(SNAPS_KEY, JSON.stringify(snaps)); } catch (e) {}
+  }
 
   /* ─── History ─────────────────────────────────────────────────── */
 
@@ -559,7 +677,7 @@ window.addEventListener('load', () => {
   }
 
   function importData(data) {
-    const next = freshState();
+    const next = blankSlate();
 
     // Image
     if (data.image) {
@@ -621,6 +739,7 @@ window.addEventListener('load', () => {
     afterCommit();
     loadBackgroundImage();
     fitToCanvas();
+    if (state.image.src) document.getElementById('floor-badge').textContent = state.image.src;
   }
 
   /* ─── Paper.js layers ─────────────────────────────────────────── */
@@ -635,11 +754,25 @@ window.addEventListener('load', () => {
   };
 
   let bgRaster = null;
+  let bgRasterFor = null;   // which filename the current bgRaster was rendered for
 
   function loadBackgroundImage() {
+    if (!state.image.src) {
+      layers.bg.removeChildren();
+      bgRaster = null; bgRasterFor = null;
+      return;
+    }
+    // PDFs can't be loaded by URL. Keep the mounted raster only if it matches the current file.
+    if (state.image.src.toLowerCase().endsWith('.pdf')) {
+      if (bgRasterFor !== state.image.src) {
+        layers.bg.removeChildren();
+        bgRaster = null; bgRasterFor = null;
+        toast(`Re-import ${state.image.src} to see the background.`, 'warn');
+      }
+      return;
+    }
     layers.bg.removeChildren();
     bgRaster = null;
-    if (!state.image.src) return;
     const src = state.image.src.startsWith('http') || state.image.src.startsWith('/') || state.image.src.includes('/')
       ? state.image.src
       : `../assets/img/${state.image.src}`;
@@ -665,6 +798,140 @@ window.addEventListener('load', () => {
   function renderBackground() {
     if (!bgRaster) return;
     bgRaster.opacity = state.image.visible ? state.image.opacity : 0;
+  }
+
+  /* ─── Adaptive PDF background rendering ──────────────────────────
+     Re-rasterise the PDF on zoom: full page if it fits in 8K, else
+     just the visible region at higher density. Cached page across calls. */
+
+  const MAX_RASTER_DIM = 8192;
+  const TARGET_OVERSAMPLE = 1.5;
+
+  let cachedPdfPage = null;
+  let cachedPdfFor = null;
+  let bgRender = null;
+  let bgRerenderTimer = null;
+  let bgRerenderInflight = false;
+
+  async function rasterPdfRegion(region, ppp) {
+    if (!cachedPdfPage) return null;
+    const cw = Math.max(1, Math.ceil(region.width  * ppp));
+    const ch = Math.max(1, Math.ceil(region.height * ppp));
+    const off = document.createElement('canvas');
+    off.width = cw; off.height = ch;
+    const ctx = off.getContext('2d');
+    const vp = cachedPdfPage.getViewport({
+      scale: ppp,
+      offsetX: -ppp * region.x,
+      offsetY: -ppp * region.y,
+    });
+    await cachedPdfPage.render({ canvasContext: ctx, viewport: vp }).promise;
+    return { canvas: off, region: { ...region }, ppp, cw, ch };
+  }
+
+  function mountBgRaster(rendered, filename) {
+    layers.bg.removeChildren();
+    layers.bg.activate();
+    const url = rendered.canvas.toDataURL('image/png');
+    const raster = new Raster({ source: url });
+    bgRaster = raster;
+    bgRasterFor = filename;
+    bgRender = { region: rendered.region, ppp: rendered.ppp };
+    raster.onLoad = function () {
+      if (bgRaster !== raster) return;
+      this.scale(1 / rendered.ppp);
+      this.position = new Point(
+        rendered.region.x + rendered.region.width  / 2,
+        rendered.region.y + rendered.region.height / 2
+      );
+      this.opacity = state.image.visible ? state.image.opacity : 0;
+      renderAll();
+    };
+  }
+
+  function computeBgTarget() {
+    if (!state.image.width || !state.image.height) return null;
+    const wantPpp = view.zoom * TARGET_OVERSAMPLE;
+    const fullW = state.image.width  * wantPpp;
+    const fullH = state.image.height * wantPpp;
+    if (fullW <= MAX_RASTER_DIM && fullH <= MAX_RASTER_DIM) {
+      return {
+        region: { x: 0, y: 0, width: state.image.width, height: state.image.height },
+        ppp: wantPpp,
+      };
+    }
+    const vb = view.bounds;
+    const pad = 0.3;
+    let rx = Math.max(0, vb.x - vb.width  * pad);
+    let ry = Math.max(0, vb.y - vb.height * pad);
+    let rw = Math.min(state.image.width  - rx, vb.width  * (1 + 2*pad));
+    let rh = Math.min(state.image.height - ry, vb.height * (1 + 2*pad));
+    let cw = rw * wantPpp, ch = rh * wantPpp;
+    if (cw > MAX_RASTER_DIM || ch > MAX_RASTER_DIM) {
+      const k = MAX_RASTER_DIM / Math.max(cw, ch);
+      cw *= k; ch *= k;
+    }
+    return { region: { x: rx, y: ry, width: rw, height: rh }, ppp: cw / rw };
+  }
+
+  function bgNeedsRerender() {
+    if (!cachedPdfPage) return false;
+    if (!bgRender) return true;
+    const target = computeBgTarget();
+    if (!target) return false;
+    if (target.ppp > bgRender.ppp * 1.3) return true;
+    const vb = view.bounds;
+    const r = bgRender.region;
+    if (vb.x < r.x || vb.y < r.y ||
+        vb.x + vb.width  > r.x + r.width ||
+        vb.y + vb.height > r.y + r.height) return true;
+    return false;
+  }
+
+  async function rerenderBg() {
+    if (bgRerenderInflight) return;
+    if (!bgNeedsRerender()) return;
+    const target = computeBgTarget();
+    if (!target) return;
+    bgRerenderInflight = true;
+    try {
+      const rendered = await rasterPdfRegion(target.region, target.ppp);
+      if (rendered && cachedPdfFor === bgRasterFor) mountBgRaster(rendered, cachedPdfFor);
+    } finally { bgRerenderInflight = false; }
+  }
+
+  function scheduleBgRerender() {
+    clearTimeout(bgRerenderTimer);
+    bgRerenderTimer = setTimeout(rerenderBg, 200);
+  }
+
+  async function loadBackgroundPDF(file) {
+    if (typeof pdfjsLib === 'undefined') { toast('pdf.js not loaded', 'error'); return; }
+    toast('Loading PDF…', 'ok');
+    const buffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    cachedPdfPage = await pdf.getPage(1);
+    cachedPdfFor = file.name;
+    const baseVp = cachedPdfPage.getViewport({ scale: 1 });
+
+    state.image.src = file.name;
+    state.image.width  = round2(baseVp.width);
+    state.image.height = round2(baseVp.height);
+    state.image.visible = true;
+
+    const initRegion = { x: 0, y: 0, width: baseVp.width, height: baseVp.height };
+    const capScale = MAX_RASTER_DIM / Math.max(baseVp.width, baseVp.height);
+    const initPpp = Math.min(2, capScale);
+    const rendered = await rasterPdfRegion(initRegion, initPpp);
+    if (rendered) mountBgRaster(rendered, file.name);
+
+    const restored = recallWork(file.name);
+    if (!restored) bumpRecent(file.name);
+    renderRecents();
+    renderAll();
+    fitToCanvas();
+    autosave();
+    scheduleBgRerender();
   }
 
   /* ─── Rendering helpers (polygons, portals, edit layer) ───────── */
@@ -754,10 +1021,10 @@ window.addEventListener('load', () => {
       new PointText({
         point: pt.add(new Point(r * 1.6, -r * 0.8)),
         content: p.id,
-        fillColor: '#e6edf3',
-        strokeColor: '#000',
-        strokeWidth: screenPx(0.3),
-        fontFamily: 'system-ui',
+        fillColor: '#1A1A1A',
+        strokeColor: '#fff',
+        strokeWidth: screenPx(0.6),
+        fontFamily: 'Theinhardt, system-ui, sans-serif',
         fontSize: screenPx(11),
         fontWeight: '600',
       });
@@ -767,6 +1034,57 @@ window.addEventListener('load', () => {
   function renderEdit() {
     layers.edit.activate();
     clearLayer(layers.edit);
+
+    // Rectangle drag preview
+    if (ui.drag && ui.drag.kind === 'rectangle' && ui.rectStart && ui.rectEnd) {
+      const a = ui.rectStart, b = ui.rectEnd;
+      const minX = Math.min(a.x, b.x), maxX = Math.max(a.x, b.x);
+      const minY = Math.min(a.y, b.y), maxY = Math.max(a.y, b.y);
+      new Path.Rectangle({
+        from: new Point(minX, minY), to: new Point(maxX, maxY),
+        strokeColor: '#DA291C', strokeWidth: screenPx(2),
+        dashArray: [screenPx(6), screenPx(4)],
+        fillColor: new Color(218/255, 41/255, 28/255, 0.08),
+      });
+    }
+
+    // Snap target hint — ring at the snap point + axis guide line if angle-constrained.
+    if (ui.snapHint) {
+      const sh = ui.snapHint;
+      const onEdge = !!sh.splitOnto;
+
+      // Axis guide: extend a thin dashed line through the snap point in the constrained direction.
+      if (sh.axisGuide) {
+        const g = sh.axisGuide;
+        const len = Math.max(view.bounds.width, view.bounds.height) * 1.5;
+        const ux = Math.cos(g.angle), uy = Math.sin(g.angle);
+        new Path({
+          segments: [
+            new Point(g.from.x - ux * len, g.from.y - uy * len),
+            new Point(g.from.x + ux * len, g.from.y + uy * len),
+          ],
+          strokeColor: '#DA291C',
+          strokeWidth: screenPx(0.8),
+          dashArray: [screenPx(5), screenPx(4)],
+          opacity: 0.7,
+        });
+      }
+
+      new Path.Circle({
+        center: new Point(sh.x, sh.y),
+        radius: screenPx(onEdge ? 6 : 7),
+        fillColor: null,
+        strokeColor: '#DA291C',
+        strokeWidth: screenPx(2),
+      });
+      if (!onEdge && sh.kind === 'vertex') {
+        new Path.Circle({
+          center: new Point(sh.x, sh.y),
+          radius: screenPx(2),
+          fillColor: '#DA291C',
+        });
+      }
+    }
 
     // In-progress polygon preview
     if (ui.inProgress) {
@@ -825,9 +1143,9 @@ window.addEventListener('load', () => {
         new Path.Circle({
           center: new Point(v.x, v.y),
           radius: screenPx(HANDLE_RADIUS_PX - 1),
-          fillColor: '#e6edf3',
-          strokeColor: '#1f6feb',
-          strokeWidth: screenPx(1.2),
+          fillColor: '#ffffff',
+          strokeColor: '#DA291C',
+          strokeWidth: screenPx(1.4),
         });
       });
     });
@@ -983,6 +1301,7 @@ window.addEventListener('load', () => {
     if (centerProjectPt) view.center = centerProjectPt;
     renderAll();
     updateZoomStatus();
+    scheduleBgRerender();
   }
 
   function zoomAt(screenPt, factor) {
@@ -992,6 +1311,7 @@ window.addEventListener('load', () => {
     view.center = view.center.add(pre.subtract(post));
     renderAll();
     updateZoomStatus();
+    scheduleBgRerender();
   }
 
   function fitToCanvas() {
@@ -1016,7 +1336,12 @@ window.addEventListener('load', () => {
   tool.onMouseMove = function (event) {
     ui.lastMouseScreen = view.projectToView(event.point);
     updateCoords(event.point);
-    if (ui.inProgress) renderEdit();
+    // Refresh edit layer in polygon modes to show the live snap target.
+    const isPolyMode = ui.mode === 'walkable' || ui.mode === 'blocked' || ui.mode === 'rooms';
+    if (ui.inProgress || isPolyMode) {
+      ui.snapHint = isPolyMode ? findSnap(event.point, inProgressPrev(), ui.inProgress) : null;
+      renderEdit();
+    }
   };
 
   tool.onMouseDown = function (event) {
@@ -1033,6 +1358,18 @@ window.addEventListener('load', () => {
     }
 
     // Polygon modes: walkable | blocked | rooms
+    // Rectangle tool starts a drag here, finishes on mouseUp.
+    if (ui.tool === 'rectangle') {
+      if (mode === 'walkable' && state.walkable.closed) {
+        toast('Walkable already closed — switch to Polygon tool to edit.', 'warn');
+        return;
+      }
+      ui.rectStart = { x: pt.x, y: pt.y };
+      ui.drag = { kind: 'rectangle' };
+      renderEdit();
+      return;
+    }
+
     if (ui.inProgress) {
       // Building a polygon — append vertices or close
       const poly = getPolygonByRef(ui.inProgress);
@@ -1048,11 +1385,14 @@ window.addEventListener('load', () => {
           return;
         }
       }
+      // Snap engine: vertex/edge/angle/parallel/grid based on enabled toggles.
+      const snap = findSnap(pt, inProgressPrev(), ui.inProgress);
+      const newVert = snap ? { x: snap.x, y: snap.y } : { x: pt.x, y: pt.y };
       commit((s) => {
         const p = getPolygonByRefFromState(s, ui.inProgress);
-        if (p) p.vertices.push({ x: pt.x, y: pt.y });
+        if (p) p.vertices.push(newVert);
+        if (snap?.splitOnto) cleaveEdge(s, snap.splitOnto, newVert);
       });
-      // Keep same inProgress ref (commit clears it — re-set)
       ui.inProgress = findInProgress(mode);
       renderAll();
       return;
@@ -1102,7 +1442,10 @@ window.addEventListener('load', () => {
       return;
     }
 
-    // Empty space — start a new polygon
+    // Empty space — start a new polygon (snap first vertex too, so adjoining starts shared)
+    const startSnap = findSnap(pt, null, null);
+    const startVert = startSnap ? { x: startSnap.x, y: startSnap.y } : { x: pt.x, y: pt.y };
+
     if (mode === 'walkable') {
       if (state.walkable.closed) {
         ui.selection = null;
@@ -1111,7 +1454,10 @@ window.addEventListener('load', () => {
         toast('Walkable is closed. Click vertices / edges to edit.', 'warn');
         return;
       }
-      commit((s) => { s.walkable.vertices.push({ x: pt.x, y: pt.y }); });
+      commit((s) => {
+        s.walkable.vertices.push(startVert);
+        if (startSnap?.splitOnto) cleaveEdge(s, startSnap.splitOnto, startVert);
+      });
       ui.inProgress = { layer: 'walkable' };
       renderAll();
     } else {
@@ -1121,10 +1467,11 @@ window.addEventListener('load', () => {
         arr.push({
           id: '',
           label: emptyLabel(),
-          vertices: [{ x: pt.x, y: pt.y }],
+          vertices: [startVert],
           closed: false,
           ...(mode === 'rooms' ? { portalId: null } : {}),
         });
+        if (startSnap?.splitOnto) cleaveEdge(s, startSnap.splitOnto, startVert);
       });
       const arr = mode === 'blocked' ? state.blocked : state.rooms;
       ui.inProgress = { layer: mode, index: arr.length - 1 };
@@ -1134,6 +1481,11 @@ window.addEventListener('load', () => {
 
   tool.onMouseDrag = function (event) {
     if (ui.panning) return;
+    if (ui.drag && ui.drag.kind === 'rectangle') {
+      ui.rectEnd = { x: event.point.x, y: event.point.y };
+      renderEdit();
+      return;
+    }
     if (ui.drag && ui.drag.kind === 'vertex') {
       const p = ui.drag.layer === 'walkable' ? state.walkable
               : ui.drag.layer === 'blocked' ? state.blocked[ui.drag.polyIdx]
@@ -1165,6 +1517,35 @@ window.addEventListener('load', () => {
 
   tool.onMouseUp = function (event) {
     if (ui.panning) return;
+    if (ui.drag && ui.drag.kind === 'rectangle' && ui.rectStart) {
+      const a = ui.rectStart;
+      const b = { x: event.point.x, y: event.point.y };
+      ui.rectStart = null; ui.rectEnd = null; ui.drag = null;
+      const minX = Math.min(a.x, b.x), maxX = Math.max(a.x, b.x);
+      const minY = Math.min(a.y, b.y), maxY = Math.max(a.y, b.y);
+      if ((maxX - minX) < 4 || (maxY - minY) < 4) { renderEdit(); return; }
+      const verts = [
+        { x: minX, y: minY }, { x: maxX, y: minY },
+        { x: maxX, y: maxY }, { x: minX, y: maxY },
+      ];
+      const mode = ui.mode;
+      commit((s) => {
+        if (mode === 'walkable') {
+          if (s.walkable.closed) return;
+          s.walkable.vertices = verts;
+          s.walkable.closed = true;
+        } else {
+          const arr = mode === 'blocked' ? s.blocked : s.rooms;
+          arr.push({
+            id: '', label: emptyLabel(),
+            vertices: verts, closed: true,
+            ...(mode === 'rooms' ? { portalId: null } : {}),
+          });
+        }
+      });
+      toast(`Rectangle ${modeLabel(mode)} added.`, 'ok');
+      return;
+    }
     if (ui.drag && ui.drag.beforeSnapshot) {
       // Finalize: the current state already has the new position applied directly.
       // We need to insert the "before" snapshot into history and re-apply the "after" as a commit.
@@ -1197,6 +1578,159 @@ window.addEventListener('load', () => {
       if (!arr[i].closed) return { layer: mode, index: i };
     }
     return null;
+  }
+
+  /* ─── Snap engine ─────────────────────────────────────────────
+     Snap modes are independent and run in priority order:
+       1. vertex / edge snap      (existing geometry — shares vertices)
+       2. angle / parallel snap   (constrains direction from prevVertex)
+       3. grid snap               (rounds to GRID_STEP)
+     Returns { x, y, splitOnto, axisGuide, kind } or null if nothing snapped. */
+
+  function collectPolyRefs() {
+    const refs = [];
+    if (state.walkable.vertices.length) refs.push({ layer: 'walkable', polyIdx: 0, poly: state.walkable });
+    state.blocked.forEach((p, i) => refs.push({ layer: 'blocked', polyIdx: i, poly: p }));
+    state.rooms.forEach((p, i)   => refs.push({ layer: 'rooms',   polyIdx: i, poly: p }));
+    return refs;
+  }
+  function refExcluded(s, excludeRef) {
+    return excludeRef && s.layer === excludeRef.layer
+      && (s.layer === 'walkable' || s.polyIdx === excludeRef.index);
+  }
+
+  function trySnapVertex(pt, excludeRef) {
+    let best = null;
+    const tol = screenPx(SNAP_VERT_PX);
+    for (const s of collectPolyRefs()) {
+      if (refExcluded(s, excludeRef)) continue;
+      for (let v = 0; v < s.poly.vertices.length; v++) {
+        const vert = s.poly.vertices[v];
+        const d = Math.hypot(pt.x - vert.x, pt.y - vert.y);
+        if (d < tol && (!best || d < best.d)) best = { x: vert.x, y: vert.y, d };
+      }
+    }
+    return best;
+  }
+
+  function trySnapEdge(pt, excludeRef) {
+    let best = null;
+    const tol = screenPx(SNAP_EDGE_PX);
+    for (const s of collectPolyRefs()) {
+      if (refExcluded(s, excludeRef)) continue;
+      const verts = s.poly.vertices;
+      if (verts.length < 2) continue;
+      const n = s.poly.closed ? verts.length : verts.length - 1;
+      for (let i = 0; i < n; i++) {
+        const a = verts[i], b = verts[(i + 1) % verts.length];
+        const c = closestOnSegment(pt.x, pt.y, a.x, a.y, b.x, b.y);
+        const d = Math.hypot(pt.x - c.x, pt.y - c.y);
+        if (d < tol && (!best || d < best.d)) {
+          best = { x: c.x, y: c.y, d, splitOnto: { layer: s.layer, polyIdx: s.polyIdx, segIdx: i } };
+        }
+      }
+    }
+    return best;
+  }
+
+  function projectOntoRay(pt, origin, angle) {
+    const dx = pt.x - origin.x, dy = pt.y - origin.y;
+    const ux = Math.cos(angle), uy = Math.sin(angle);
+    const proj = dx * ux + dy * uy;
+    return { x: origin.x + ux * proj, y: origin.y + uy * proj };
+  }
+
+  function trySnapAxis(pt, prev, excludeRef) {
+    if (!prev) return null;
+    const candidates = [];
+    if (snaps.right) {
+      for (const a of [0, Math.PI/2, Math.PI, -Math.PI/2]) candidates.push({ angle: a, kind: 'right' });
+    }
+    if (snaps.angle45) {
+      for (const a of [Math.PI/4, 3*Math.PI/4, -Math.PI/4, -3*Math.PI/4]) candidates.push({ angle: a, kind: '45°' });
+    }
+    if (snaps.parallel) {
+      for (const s of collectPolyRefs()) {
+        if (refExcluded(s, excludeRef)) continue;
+        const verts = s.poly.vertices;
+        if (verts.length < 2) continue;
+        const n = s.poly.closed ? verts.length : verts.length - 1;
+        for (let i = 0; i < n; i++) {
+          const a = verts[i], b = verts[(i + 1) % verts.length];
+          const ex = b.x - a.x, ey = b.y - a.y;
+          if (ex === 0 && ey === 0) continue;
+          const ea = Math.atan2(ey, ex);
+          candidates.push({ angle: ea, kind: 'parallel' });
+          candidates.push({ angle: ea + Math.PI/2, kind: 'perp' });
+        }
+      }
+    }
+    let best = null;
+    const tol = screenPx(SNAP_AXIS_PX);
+    for (const c of candidates) {
+      const p = projectOntoRay(pt, prev, c.angle);
+      const d = Math.hypot(pt.x - p.x, pt.y - p.y);
+      if (d <= tol && (!best || d < best.d)) {
+        best = { x: p.x, y: p.y, d, angle: c.angle, kind: c.kind };
+      }
+    }
+    return best;
+  }
+
+  function findSnap(pt, prev, excludeRef) {
+    // 1. Snap to existing vertex — strongest, takes precedence.
+    if (snaps.vertex) {
+      const v = trySnapVertex(pt, excludeRef);
+      if (v) return { x: v.x, y: v.y, splitOnto: null, axisGuide: null, kind: 'vertex' };
+    }
+
+    let cur = { x: pt.x, y: pt.y };
+    let kind = null;
+    let axisGuide = null;
+
+    // 2. Axis constraint (right-angle / 45° / parallel).
+    if ((snaps.right || snaps.angle45 || snaps.parallel) && prev) {
+      const ax = trySnapAxis(pt, prev, excludeRef);
+      if (ax) {
+        cur = { x: ax.x, y: ax.y };
+        kind = ax.kind;
+        axisGuide = { from: prev, angle: ax.angle, kind: ax.kind };
+      }
+    }
+
+    // 3. Grid snap.
+    if (snaps.grid) {
+      cur.x = Math.round(cur.x / GRID_STEP) * GRID_STEP;
+      cur.y = Math.round(cur.y / GRID_STEP) * GRID_STEP;
+      kind = kind || 'grid';
+    }
+
+    // 4. Snap to existing edge after axis constraint (so the resulting point still shares).
+    if (snaps.vertex) {
+      const e = trySnapEdge(cur, excludeRef);
+      if (e) return { x: e.x, y: e.y, splitOnto: e.splitOnto, axisGuide, kind: 'edge' };
+    }
+
+    if (!kind) return null;
+    return { x: cur.x, y: cur.y, splitOnto: null, axisGuide, kind };
+  }
+
+  // Last vertex of the in-progress polygon, used as the origin for axis snap.
+  function inProgressPrev() {
+    if (!ui.inProgress) return null;
+    const poly = getPolygonByRef(ui.inProgress);
+    if (!poly || poly.vertices.length === 0) return null;
+    return poly.vertices[poly.vertices.length - 1];
+  }
+
+  // Insert a new vertex onto an existing polygon at the given segment index.
+  // Used so a snapped click on someone else's edge becomes a true shared vertex.
+  function cleaveEdge(s, ref, point) {
+    const poly = ref.layer === 'walkable' ? s.walkable
+              : ref.layer === 'blocked'  ? s.blocked[ref.polyIdx]
+              :                            s.rooms[ref.polyIdx];
+    if (!poly) return;
+    poly.vertices.splice(ref.segIdx + 1, 0, { x: point.x, y: point.y });
   }
 
   function nearestOnPolygon(pt, verts) {
@@ -1534,16 +2068,17 @@ window.addEventListener('load', () => {
 
   function setMode(m) {
     if (!['walkable', 'blocked', 'rooms', 'portals'].includes(m)) return;
-    // Don't destroy in-progress work on mode change — just drop the reference.
-    // On return to that mode, findInProgress() will re-discover any open polygon.
     if (ui.inProgress && ui.inProgress.layer !== m) ui.inProgress = null;
     ui.mode = m;
     ui.selection = null;
-    // Re-discover in-progress for the new mode if any
     if (!ui.inProgress) {
       const found = findInProgress(m);
       if (found) ui.inProgress = found;
     }
+    // Tool / Snap groups only meaningful when drawing polygons.
+    const hide = m === 'portals' ? 'none' : '';
+    document.getElementById('tools-group').style.display = hide;
+    document.getElementById('snap-group').style.display = hide;
     updateToolbar();
     renderAll();
     renderSidePanel();
@@ -1595,34 +2130,134 @@ window.addEventListener('load', () => {
     document.getElementById('status-coords').textContent = `${Math.round(pt.x)}, ${Math.round(pt.y)}`;
   }
 
-  /* ─── Autosave ────────────────────────────────────────────────── */
+  /* ─── Autosave (per-file, multi-floor) ───────────────────────── */
+
+  // Wipe legacy single-key autosaves once.
+  LEGACY_AUTOSAVE_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+
+  function autosaveKey() {
+    if (!state.image.src) return null;          // can't key without a file context
+    return AUTOSAVE_PREFIX + state.image.src;
+  }
+
+  function readRecents() {
+    try { return JSON.parse(localStorage.getItem(RECENTS_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function writeRecents(list) {
+    try { localStorage.setItem(RECENTS_KEY, JSON.stringify(list.slice(0, RECENTS_MAX))); } catch (e) {}
+  }
+  function bumpRecent(name) {
+    if (!name) return;
+    const list = readRecents().filter(n => n !== name);
+    list.unshift(name);
+    writeRecents(list);
+    renderRecents();
+  }
 
   let autosaveTimer = null;
   function autosave() {
     if (autosaveTimer) clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(() => {
+      const key = autosaveKey();
+      if (!key) return;
       try {
-        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(exportState()));
+        localStorage.setItem(key, JSON.stringify(exportState()));
+        bumpRecent(state.image.src);
       } catch (e) { /* quota — ignore */ }
     }, 400);
   }
-  function tryLoadAutosave() {
+  function recallWork(filename) {
+    if (!filename) return false;
     try {
-      const raw = localStorage.getItem(AUTOSAVE_KEY);
+      const raw = localStorage.getItem(AUTOSAVE_PREFIX + filename);
       if (!raw) return false;
       const data = JSON.parse(raw);
       if (!data || !data.polygon) return false;
       importData(data);
-      toast('Restored autosaved work. Use Clear to start fresh.', 'ok');
+      toast(`Restored work for ${filename}.`, 'ok');
       return true;
     } catch (e) { /* corrupt — ignore */ }
     return false;
   }
 
+  function deleteAutosaveFor(filename) {
+    try { localStorage.removeItem(AUTOSAVE_PREFIX + filename); } catch (e) {}
+    writeRecents(readRecents().filter(n => n !== filename));
+    renderRecents();
+  }
+
+  /* ─── Recents menu ────────────────────────────────────────────── */
+
+  const recentsMenu  = document.getElementById('recents-menu');
+  const floorBadgeEl = document.getElementById('floor-badge');
+
+  function renderRecents() {
+    const recents = readRecents();
+    floorBadgeEl.textContent = (state.image.src || 'no file loaded') + (recents.length ? ' ▾' : '');
+    recentsMenu.innerHTML = '';
+    if (!recents.length) {
+      recentsMenu.innerHTML = '<div class="empty">No recent floors</div>';
+      return;
+    }
+    recents.forEach(name => {
+      const row = document.createElement('div');
+      row.className = 'recent-item';
+      const isCurrent = name === state.image.src;
+      row.innerHTML = `<span style="${isCurrent ? 'color:var(--cis-red);font-weight:600;' : ''}">${name}</span>
+                       <span class="x" title="Forget">✕</span>`;
+      row.querySelector('span').addEventListener('click', () => {
+        recentsMenu.classList.add('hidden');
+        if (name === state.image.src) return;
+        const ok = state.walkable.vertices.length === 0
+                || confirm('Switch floor? Unsaved changes are autosaved per file.');
+        if (!ok) return;
+        if (!recallWork(name)) toast(`Re-import the PDF for ${name}.`, 'warn');
+      });
+      row.querySelector('.x').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (confirm(`Forget all saved work for ${name}?`)) deleteAutosaveFor(name);
+      });
+      recentsMenu.appendChild(row);
+    });
+  }
+
+  floorBadgeEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    recentsMenu.classList.toggle('hidden');
+  });
+  document.addEventListener('click', (e) => {
+    if (!recentsMenu.contains(e.target) && e.target !== floorBadgeEl) {
+      recentsMenu.classList.add('hidden');
+    }
+  });
+
   /* ─── Toolbar wiring ──────────────────────────────────────────── */
 
   document.querySelectorAll('#toolbar [data-mode]').forEach(btn => {
     btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+  document.querySelectorAll('#toolbar [data-tool]').forEach(btn => {
+    btn.addEventListener('click', () => setTool(btn.dataset.tool));
+  });
+
+  function setTool(t) {
+    ui.tool = t;
+    document.querySelectorAll('#toolbar [data-tool]').forEach(b => {
+      b.classList.toggle('active', b.dataset.tool === t);
+    });
+    if (ui.inProgress && t !== 'polygon') cancelInProgress();
+    renderEdit();
+  }
+
+  document.querySelectorAll('#snap-group [data-snap]').forEach(btn => {
+    btn.classList.toggle('active', !!snaps[btn.dataset.snap]);
+    btn.addEventListener('click', () => {
+      snaps[btn.dataset.snap] = !snaps[btn.dataset.snap];
+      btn.classList.toggle('active', snaps[btn.dataset.snap]);
+      saveSnaps();
+      renderEdit();
+    });
   });
   document.getElementById('btn-fit').addEventListener('click', fitToCanvas);
   document.getElementById('btn-reset-view').addEventListener('click', resetView);
@@ -1650,7 +2285,7 @@ window.addEventListener('load', () => {
   document.getElementById('btn-clear').addEventListener('click', () => {
     if (!confirm('Clear everything? This cannot be undone with one Undo; it consumes the stack.')) return;
     commit((s) => {
-      const fresh = freshState();
+      const fresh = blankSlate();
       // Preserve image info
       fresh.image = s.image;
       fresh.metadata = { ...s.metadata, updatedAt: new Date().toISOString() };
@@ -1660,20 +2295,20 @@ window.addEventListener('load', () => {
   });
 
   const fileInput = document.getElementById('file-import');
-  fileInput.addEventListener('change', (e) => {
+  fileInput.addEventListener('change', async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        importData(data);
-        toast('Imported.', 'ok');
-      } catch (err) {
-        toast('Invalid JSON: ' + err.message, 'error');
-      }
-    };
-    reader.readAsText(f);
+    if (f.name.toLowerCase().endsWith('.pdf')) {
+      try { await loadBackgroundPDF(f); toast('PDF loaded as background.', 'ok'); }
+      catch (err) { toast('PDF failed: ' + err.message, 'error'); }
+    } else {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try { importData(JSON.parse(ev.target.result)); toast('Imported.', 'ok'); }
+        catch (err) { toast('Invalid JSON: ' + err.message, 'error'); }
+      };
+      reader.readAsText(f);
+    }
     fileInput.value = '';
   });
 
@@ -1709,6 +2344,7 @@ window.addEventListener('load', () => {
       canvas.classList.remove('panning');
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
+      scheduleBgRerender();
     };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
@@ -1738,6 +2374,7 @@ window.addEventListener('load', () => {
       const dy = e.deltaY / view.zoom;
       view.center = new Point(view.center.x + dx, view.center.y + dy);
       renderAll();
+      scheduleBgRerender();
       return;
     }
 
@@ -1763,6 +2400,8 @@ window.addEventListener('load', () => {
     if (e.key === '2') setMode('blocked');
     if (e.key === '3') setMode('rooms');
     if (e.key === '4') setMode('portals');
+    if (e.key === 'p' || e.key === 'P') setTool('polygon');
+    if (e.key === 'r' || e.key === 'R') setTool('rectangle');
 
     if (e.key === 'v' || e.key === 'V') { fitToCanvas(); }
     if (e.key === 'b' || e.key === 'B') {
@@ -1805,30 +2444,18 @@ window.addEventListener('load', () => {
 
   /* ─── Init ────────────────────────────────────────────────────── */
 
-  // Set default image (current Level 4 background) if no autosave
-  const hadAutosave = tryLoadAutosave();
-  if (!hadAutosave) {
-    state.image.src = 'lvl4map.jpg';
-    state.image.width = 5712;
-    state.image.height = 4284;
-    loadBackgroundImage();
-    // Try to auto-import existing /data/navmesh_data.json
-    fetch('../data/navmesh_data.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data && !ui.didAutoLoad && state.walkable.vertices.length === 0) {
-          ui.didAutoLoad = true;
-          importData(data);
-          toast('Loaded existing navmesh_data.json from /data/', 'ok');
-        }
-      })
-      .catch(() => {});
-  }
-
+  renderRecents();
   updateToolbar();
   renderAll();
   updateZoomStatus();
   setMode('walkable');
+
+  const recents = readRecents();
+  if (recents.length) {
+    toast(`Pick a recent floor or import a new PDF.`, 'ok');
+  } else {
+    toast('Import a CAD PDF to begin.', 'ok');
+  }
 
   // Resize handling
   window.addEventListener('resize', () => {
