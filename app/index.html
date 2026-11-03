@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1F24" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Walking directions anywhere on the CIS campus, Lakeside and Toh Tuck, in 16 languages.">
+  <!-- kept out of search engines until the school says otherwise: a link or a door label finds it -->
+  <meta name="robots" content="noindex">
+  <title>CIS Map</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="bar">
+      <!-- the CIS | MAP lockup (brand guide 3.1): the CIS mark, a rule, MAP with a pin in the A;
+           地图 in Chinese, as live text. Its colours are CSS, so dark mode reverses it -->
+      <a class="brand" href="./" id="brand" aria-label="CIS Map">
+        <svg class="brand-cis" viewBox="0 0 150 66" aria-hidden="true"><path d="M41.3132 63.9641C38.1367 65.3203 34.6712 66 30.9134 66C22.2888 66 14.9336 62.9068 8.85082 56.7171C2.76804 50.5243 0 41.4208 0 32.591C0 22.9965 2.2402 16.0831 8.66544 9.51268C19.9795 -2.05793 34.4827 0.147947 34.8566 0.204589L34.8251 0.956663H34.423C25.7041 0.956663 19.7407 8.37356 20.3 32.7263C20.5953 45.5839 22.4177 53.5578 26.2508 58.3534C29.2199 62.0005 32.8269 63.6809 37.1407 63.6809C38.3127 63.6809 39.7108 63.6368 41.087 63.2152L41.3132 63.9641Z"/><path d="M49.7053 10.9381C49.7053 15.6362 45.8973 19.3557 40.6503 18.6445C37.6969 18.2449 35.2116 16.0894 34.445 13.207C33.0248 7.86062 36.8108 3.09958 41.7877 3.09958C46.045 3.09958 49.7053 6.58303 49.7053 10.9381Z"/><path d="M85.5579 65.6161V64.8641L82.4191 63.9861C81.863 63.8382 81.8755 63.6242 81.8724 63.2592L81.8315 2.31919C81.8284 2.10521 81.9572 1.95416 82.3657 1.83773C82.7741 1.7213 85.5045 0.972377 85.5045 0.972377V0.22345H64.3247V0.96923C64.3247 0.96923 66.9514 1.69613 67.4635 1.83773C67.9756 1.98248 68.007 2.14612 68.007 2.56463C68.007 2.56463 68.0133 63.2781 68.0133 63.5078C68.0133 63.7375 67.9159 63.8634 67.4792 63.9861L64.3436 64.8641V65.6161H85.5579Z"/><path d="M134.647 18.6603C138.949 18.6603 142.43 15.1768 142.43 10.8658C142.43 6.55471 138.952 3.07126 134.647 3.07126C130.343 3.07126 126.865 6.55471 126.865 10.8658C126.865 15.1768 130.343 18.6603 134.647 18.6603Z"/><path d="M113.958 48.5072C109.656 48.5072 106.175 51.9907 106.175 56.3017C106.175 60.6128 109.653 64.0962 113.958 64.0962C118.262 64.0962 121.74 60.6128 121.74 56.3017C121.74 51.9907 118.262 48.5072 113.958 48.5072Z"/><path d="M147.385 45.886C147.385 21.5679 113.678 27.0904 113.678 10.8784C113.678 9.6228 113.848 8.42074 114.259 7.3414C116.748 0.833918 125.661 0.884266 127.512 0.922027L127.547 0.242328C125.592 0.132192 123.208 0.040936 120.713 0.450014C116.047 1.21467 112.654 2.94224 109.66 5.60125C109.6 5.65474 109.537 5.70509 109.477 5.76173C109.468 5.77117 109.455 5.78061 109.446 5.79005C105.836 9.05009 103.8 13.7734 103.8 19.5225C103.8 41.2571 138.188 35.2216 138.188 53.5704C138.188 55.3105 137.767 57.9192 136.394 59.5618C133.114 63.4889 128.86 64.9144 126.268 65.2605L126.535 65.9843C127.729 65.8805 128.807 65.6917 129.793 65.5028C134.732 64.5557 138.999 62.2585 141.802 59.2219C145.387 55.5182 147.378 50.883 147.378 45.8891L147.385 45.886Z"/></svg>
+        <span class="brand-rule" aria-hidden="true"></span>
+        <svg class="brand-map" viewBox="0 0 286 100" aria-hidden="true"><mask id="brand-pin-gap" maskUnits="userSpaceOnUse" x="-10" y="-10" width="306" height="120"><rect x="-10" y="-10" width="306" height="120" fill="#fff"/><path d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z" fill="#000" stroke="#000" stroke-width="7" stroke-linejoin="round"/></mask><g class="brand-letters" mask="url(#brand-pin-gap)" fill-rule="evenodd"><path d="M0 100V0h25l25 57L75 0h25v100H78V41L59 86H41L22 41v59Z"/><path d="M104 100L140 0h25l36 100h-23l-7-20h-37l-7 20Z"/><path d="M207 0h46c21 0 33 14 33 33s-12 33-33 33h-23v34h-23Z M230 20v26h21c8 0 12-6 12-13s-4-13-12-13Z"/></g><path class="brand-pin" d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z"/><circle class="brand-hole" cx="152.5" cy="44" r="5"/></svg>
+        <span class="brand-word" aria-hidden="true"></span>
+      </a>
+      <!-- the language page: two panels, 文 and A, the sign for languages that reads in any of them -->
+      <button class="bar-btn lang-btn" id="btn-lang" type="button">
+        <svg class="lang-ico" viewBox="0 0 24 24" aria-hidden="true">
+          <rect class="back" x="1.9" y="2.4" width="12.6" height="12.6" rx="2.4"/>
+          <text class="back-t" x="8.2" y="11.8">文</text>
+          <rect class="front" x="9.4" y="9" width="13.2" height="13.2" rx="2.6"/>
+          <text class="front-t" x="16" y="19.3">A</text>
+        </svg>
+      </button>
+    </header>
+
+    <!-- the trip first, so a keyboard or a screen reader reaches it before the map -->
+    <section class="sheet" id="sheet">
+      <button class="grip" id="grip" type="button" aria-label="Directions"><span></span></button>
+      <button class="mini" id="mini" type="button"></button>
+      <!-- a trip set: its name, and the way back to the plain map -->
+      <div class="trip-head" id="trip-head" hidden>
+        <span class="trip-title" data-t="steps">Directions</span>
+        <button class="icon-btn trip-end" id="btn-end" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+        <!-- the steps open over the whole map: this corner takes the sheet down to the trip, not the trip away -->
+        <button class="icon-btn trip-end" id="btn-down" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 8.6L12 13.2l4.6-4.6L18 10l-6 6-6-6z"/></svg></button>
+      </div>
+      <div class="trip">
+        <div class="ends">
+          <button class="end" id="end-from" type="button">
+            <span class="mark mark-from" aria-hidden="true"></span>
+            <span class="end-text"><span class="end-k" data-t="from">From</span><span class="end-v" id="from-v"></span></span>
+          </button>
+          <button class="end" id="end-to" type="button">
+            <span class="mark mark-to" aria-hidden="true"></span>
+            <span class="end-text"><span class="end-k" id="to-k">To</span><span class="end-v" id="to-v"></span></span>
+          </button>
+        </div>
+        <div class="trip-side">
+          <button class="swap" id="btn-swap" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l-4 4h3v7h2V8h3zm10 16l4-4h-3V9h-2v7h-3z"/></svg>
+          </button>
+          <button class="swap" id="btn-share" type="button" hidden>
+            <svg class="ico-qr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm8-2h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm2 2h2v2h-2zm-6 2h2v2h-2zm4 0h2v2h-2zm-2 2h2v2h-2zm4 0h2v2h-2z"/></svg>
+            <svg class="ico-share" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l4.7 4.7-1.4 1.4L13 6.4V15h-2V6.4L8.7 8.7 7.3 7.3zM5 10h3v2H6v8h12v-8h-2v-2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="opts">
+        <label class="toggle">
+          <input type="checkbox" id="opt-stepfree">
+          <span class="toggle-track" aria-hidden="true"><span></span></span>
+          <span class="toggle-text"><span data-t="stepFree">Step-free</span><small data-t="stepFreeHint">Lifts and ramps only</small></span>
+        </label>
+        <div class="summary" id="summary" aria-live="polite"></div>
+      </div>
+      <p class="route-note" id="route-note" aria-live="polite" hidden></p>
+      <button class="btn btn-next" id="btn-next" type="button" hidden></button>
+      <div class="go" id="go" hidden>
+        <button class="btn" id="btn-list" type="button" aria-controls="steps">All steps</button>
+        <button class="btn btn-primary" id="btn-start" type="button" data-t="start">Start</button>
+      </div>
+      <div class="stepbar" id="stepbar" hidden>
+        <button class="icon-btn" id="step-prev" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 7.4L14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <div class="stepbar-main" id="stepbar-main" aria-live="polite"></div>
+        <div class="stepbar-meta" id="stepbar-meta"></div>
+        <button class="icon-btn" id="step-next" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 16.6L10 18l6-6-6-6-1.4 1.4 4.6 4.6z"/></svg></button>
+        <button class="btn btn-primary step-done" id="step-done" type="button" data-t="done" hidden>Done</button>
+        <button class="icon-btn step-exit" id="step-exit" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+      </div>
+      <div class="notice" id="notice" role="status" hidden>
+        <span id="notice-text"></span>
+        <button class="notice-x" id="notice-x" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+      </div>
+      <div class="card" id="card" hidden>
+        <!-- a place tapped while a route is showing: the card takes the sheet, and this goes back -->
+        <button class="card-back" id="card-back" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg><span data-t="backToRoute">Back to route</span></button>
+        <div class="card-head">
+          <span class="card-ico" id="card-ico" aria-hidden="true"></span>
+          <div class="card-text"><div class="card-title" id="card-title"></div><div class="card-sub" id="card-sub"></div></div>
+          <button class="icon-btn" id="card-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+        </div>
+        <div class="card-actions" id="card-actions">
+          <button class="btn btn-primary" id="card-to" type="button" data-t="directionsHere">Directions here</button>
+          <button class="btn" id="card-from" type="button" data-t="startHere">Start here</button>
+        </div>
+        <!-- a start in a big place (the Secondary Library, the gym): which side, one button each -->
+        <div class="card-sides" id="card-sides" hidden></div>
+      </div>
+      <div class="idle" id="idle" hidden>
+        <div class="idle-head" id="idle-find"></div>
+        <div class="chips idle-chips" id="idle-chips"></div>
+        <div class="idle-head" id="idle-pop"></div>
+        <ul class="idle-list" id="idle-list"></ul>
+      </div>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <main class="stage" id="stage">
+      <canvas id="map" tabindex="0" role="img"></canvas>
+      <div class="floorname" id="floorname" aria-live="polite"></div>
+      <nav class="floorbar" id="floorbar" aria-label="Floors">
+        <button class="floor-pill" id="floor-pill" type="button" aria-expanded="false"><b id="floor-pill-n"></b><small id="floor-pill-b"></small></button>
+        <div class="levels" id="levels"></div>
+        <button class="fab" id="btn-fit" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5v2H6v3zm11-5h5v5h-2V6h-3zM4 15h2v3h3v2H4zm14 3v-3h2v5h-5v-2z"/></svg>
+        </button>
+      </nav>
+    </main>
+
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <!-- the language page: a first visit opens on it (main.js showGate); the header's button opens it
+       again. Shown from the first paint, brand only, so the empty app never flashes underneath. -->
+  <!-- hidden until the app shows it (a first visit, or a slow start): Safari on iOS 26 tints the status bar from the
+       page's first paint and keeps it, so the red page painted first left the bar red over the white header -->
+  <div class="gate" id="gate" tabindex="-1" hidden>
+    <div class="gate-top">
+      <span class="brand gate-brand"><svg class="brand-cis" viewBox="0 0 150 66" aria-hidden="true"><path d="M41.3132 63.9641C38.1367 65.3203 34.6712 66 30.9134 66C22.2888 66 14.9336 62.9068 8.85082 56.7171C2.76804 50.5243 0 41.4208 0 32.591C0 22.9965 2.2402 16.0831 8.66544 9.51268C19.9795 -2.05793 34.4827 0.147947 34.8566 0.204589L34.8251 0.956663H34.423C25.7041 0.956663 19.7407 8.37356 20.3 32.7263C20.5953 45.5839 22.4177 53.5578 26.2508 58.3534C29.2199 62.0005 32.8269 63.6809 37.1407 63.6809C38.3127 63.6809 39.7108 63.6368 41.087 63.2152L41.3132 63.9641Z"/><path d="M49.7053 10.9381C49.7053 15.6362 45.8973 19.3557 40.6503 18.6445C37.6969 18.2449 35.2116 16.0894 34.445 13.207C33.0248 7.86062 36.8108 3.09958 41.7877 3.09958C46.045 3.09958 49.7053 6.58303 49.7053 10.9381Z"/><path d="M85.5579 65.6161V64.8641L82.4191 63.9861C81.863 63.8382 81.8755 63.6242 81.8724 63.2592L81.8315 2.31919C81.8284 2.10521 81.9572 1.95416 82.3657 1.83773C82.7741 1.7213 85.5045 0.972377 85.5045 0.972377V0.22345H64.3247V0.96923C64.3247 0.96923 66.9514 1.69613 67.4635 1.83773C67.9756 1.98248 68.007 2.14612 68.007 2.56463C68.007 2.56463 68.0133 63.2781 68.0133 63.5078C68.0133 63.7375 67.9159 63.8634 67.4792 63.9861L64.3436 64.8641V65.6161H85.5579Z"/><path d="M134.647 18.6603C138.949 18.6603 142.43 15.1768 142.43 10.8658C142.43 6.55471 138.952 3.07126 134.647 3.07126C130.343 3.07126 126.865 6.55471 126.865 10.8658C126.865 15.1768 130.343 18.6603 134.647 18.6603Z"/><path d="M113.958 48.5072C109.656 48.5072 106.175 51.9907 106.175 56.3017C106.175 60.6128 109.653 64.0962 113.958 64.0962C118.262 64.0962 121.74 60.6128 121.74 56.3017C121.74 51.9907 118.262 48.5072 113.958 48.5072Z"/><path d="M147.385 45.886C147.385 21.5679 113.678 27.0904 113.678 10.8784C113.678 9.6228 113.848 8.42074 114.259 7.3414C116.748 0.833918 125.661 0.884266 127.512 0.922027L127.547 0.242328C125.592 0.132192 123.208 0.040936 120.713 0.450014C116.047 1.21467 112.654 2.94224 109.66 5.60125C109.6 5.65474 109.537 5.70509 109.477 5.76173C109.468 5.77117 109.455 5.78061 109.446 5.79005C105.836 9.05009 103.8 13.7734 103.8 19.5225C103.8 41.2571 138.188 35.2216 138.188 53.5704C138.188 55.3105 137.767 57.9192 136.394 59.5618C133.114 63.4889 128.86 64.9144 126.268 65.2605L126.535 65.9843C127.729 65.8805 128.807 65.6917 129.793 65.5028C134.732 64.5557 138.999 62.2585 141.802 59.2219C145.387 55.5182 147.378 50.883 147.378 45.8891L147.385 45.886Z"/></svg><span class="brand-rule" aria-hidden="true"></span><svg class="brand-map" viewBox="0 0 286 100" aria-hidden="true"><mask id="gate-pin-gap" maskUnits="userSpaceOnUse" x="-10" y="-10" width="306" height="120"><rect x="-10" y="-10" width="306" height="120" fill="#fff"/><path d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z" fill="#000" stroke="#000" stroke-width="7" stroke-linejoin="round"/></mask><g class="brand-letters" mask="url(#gate-pin-gap)" fill-rule="evenodd"><path d="M0 100V0h25l25 57L75 0h25v100H78V41L59 86H41L22 41v59Z"/><path d="M104 100L140 0h25l36 100h-23l-7-20h-37l-7 20Z"/><path d="M207 0h46c21 0 33 14 33 33s-12 33-33 33h-23v34h-23Z M230 20v26h21c8 0 12-6 12-13s-4-13-12-13Z"/></g><path class="brand-pin" d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z"/><circle class="brand-hole" cx="152.5" cy="44" r="5"/></svg><span class="brand-word" aria-hidden="true"></span></span>
+      <button class="gate-close" id="gate-close" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+    </div>
+    <div class="gate-body">
+      <h1 class="gate-title" id="gate-title" hidden></h1>
+      <div class="gate-langs" id="gate-langs" hidden></div>
+      <div class="gate-wait" id="gate-wait" role="status" hidden><span class="gate-spin" aria-hidden="true"></span><span id="gate-wait-text"></span></div>
+    </div>
+  </div>
+
+  <div class="share" id="share" hidden>
+    <div class="share-card" role="dialog" aria-modal="true" aria-labelledby="share-title">
+      <div class="share-head">
+        <h2 id="share-title" data-t="shareTitle">Take this route with you</h2>
+        <button class="icon-btn" id="share-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+      </div>
+      <p class="share-sub" data-t="shareSub">Scan with a phone camera to open it there.</p>
+      <div class="share-qr" id="share-qr"></div>
+      <p class="share-trip" id="share-trip"></p>
+      <div class="share-actions">
+        <button class="btn" id="share-copy" type="button" data-t="copyLink">Copy link</button>
+        <button class="btn btn-primary" id="share-native" type="button" data-t="shareNative" hidden>Share…</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="picker" id="picker" role="dialog" aria-modal="true" aria-labelledby="picker-q" hidden>
+    <div class="picker-head">
+      <button class="icon-btn" id="picker-back" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg></button>
+      <input id="picker-q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"
+             role="combobox" aria-autocomplete="list" aria-expanded="true" aria-controls="results">
+      <button class="icon-btn" id="picker-clear" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5L5 6.4 10.6 12 5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></svg></button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="chips chips-sub" id="chips-sub" hidden></div>
+    <div class="picker-body" id="picker-body">
+      <ul class="results" id="results" role="listbox"></ul>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

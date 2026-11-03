@@ -1,0 +1,1549 @@
+{
+ "schema": "cis-map/floors-evac/1",
+ "campus": "Canadian International School",
+ "note": "The ten floors built from the evacuation-plan sheets by tools/evacpipe -- the input for the future routing layer. This is NOT data/floors.json, which describes the legacy CAD build (data/L<n>/) that the shipped app reads.",
+ "coordinates": "Each floor is in its own sheet's pixel frame (origin top-left, x right, y down, canvas imageWidth x imageHeight). The sheets are not at one scale, nor at one scale in x and y: each floor's `metres.pxPerMetre` gives pixels per metre along its own axes (sourced from the CAD by tools/evacpipe/metres.py; read its docstring before trusting a figure). Lakeside floors also carry `metres.toCampus`, an affine [a, b, c, d, e, f] taking sheet (x, y) to campus metres (a*x + b*y + c, d*x + e*y + f) in the CAD's frame, so the six stack; Toh Tuck's four carry one too, fitted on stair cores, lifts, the bridge door and corners (turned about 25 degrees), and TT_L1 a `clip` polygon (sheet px) outside which the map does not draw it. `ffl` is the finished floor level in metres. Floors connect only through connector portals.",
+ "connectors": "data/connectors_evac.json",
+ "connectorConvention": "A stair or lift keeps the same portal id on every floor it serves (STAIR-<n> type \"stair\", ELEV-<n> type \"elevator\"); its link lists the other floors in vertical order. See tools/evacpipe/connectors.py. A linkway bridge between Lakeside L<n> and Toh Tuck TT_L<n> is BRIDGE-<n> type \"bridge\" (n = 2, 3, 4), marked sameLevelAs on both ends: a ramp, never a flight.",
+ "buildings": [
+  {
+   "id": "lakeside",
+   "name": {
+    "en": "Lakeside"
+   },
+   "verticalOrder": [
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6"
+   ]
+  },
+  {
+   "id": "tohtuck",
+   "name": {
+    "en": "Toh Tuck Wing"
+   },
+   "verticalOrder": [
+    "TT_L1",
+    "TT_L2",
+    "TT_L3",
+    "TT_L4"
+   ]
+  }
+ ],
+ "sameLevel": [
+  [
+   "L1",
+   "TT_L1"
+  ],
+  [
+   "L2",
+   "TT_L2"
+  ],
+  [
+   "L3",
+   "TT_L3"
+  ],
+  [
+   "L4",
+   "TT_L4"
+  ]
+ ],
+ "floors": [
+  {
+   "id": "L1",
+   "building": "lakeside",
+   "order": 1,
+   "level": 1,
+   "name": {
+    "en": "Lakeside Level 1",
+    "zh": "1\u697c"
+   },
+   "data": "data/L1_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L1_site.png",
+   "imageWidth": 3250,
+   "imageHeight": 3103,
+   "regions": 1,
+   "sameLevelAs": "TT_L1",
+   "metres": {
+    "pxPerMetre": {
+     "x": 15.511,
+     "y": 10.676
+    },
+    "toCampus": [
+     0.06447,
+     0,
+     11.171,
+     0,
+     0.093668,
+     -65.677
+    ],
+    "method": "cad-stairs",
+    "errorMetres": 0.6,
+    "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis)"
+   },
+   "ffl": 5.55,
+   "fflSource": "CAD sheet 01, \"FFL+5.55\" (seven times)"
+  },
+  {
+   "id": "L2",
+   "building": "lakeside",
+   "order": 2,
+   "level": 2,
+   "name": {
+    "en": "Lakeside Level 2",
+    "zh": "2\u697c"
+   },
+   "data": "data/L2_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L2_site.png",
+   "imageWidth": 2084,
+   "imageHeight": 2507,
+   "regions": 1,
+   "metres": {
+    "pxPerMetre": {
+     "x": 11.934,
+     "y": 10.872
+    },
+    "toCampus": [
+     0.083797,
+     0,
+     -1.429,
+     0,
+     0.091981,
+     4.259
+    ],
+    "method": "cad-room-codes",
+    "errorMetres": 2.7,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+   },
+   "ffl": 10.0,
+   "fflSource": "CAD sheet 02, \"FFL+10\" at the linkway bridge"
+  },
+  {
+   "id": "L3",
+   "building": "lakeside",
+   "order": 3,
+   "level": 3,
+   "name": {
+    "en": "Lakeside Level 3",
+    "zh": "3\u697c"
+   },
+   "data": "data/L3_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L3.png",
+   "imageWidth": 2236,
+   "imageHeight": 1704,
+   "regions": 1,
+   "metres": {
+    "pxPerMetre": {
+     "x": 13.097,
+     "y": 10.748
+    },
+    "toCampus": [
+     0.079081,
+     0,
+     -1.789,
+     0,
+     0.091792,
+     73.426
+    ],
+    "method": "cad-stairs",
+    "errorMetres": 0.2,
+    "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis); scaled by its own room codes shared with the CAD, which routing measures with"
+   },
+   "ffl": 14.3,
+   "fflSource": "CAD sheet 03, \"FFL+14.30\""
+  },
+  {
+   "id": "L4",
+   "building": "lakeside",
+   "order": 4,
+   "level": 4,
+   "name": {
+    "en": "Lakeside Level 4",
+    "zh": "4\u697c"
+   },
+   "data": "data/L4_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L4.png",
+   "imageWidth": 2334,
+   "imageHeight": 1696,
+   "regions": 2,
+   "note": "Two walkable regions by design (owner): the gymnasium floor is soft-blocked and is not a through-route, so the TK side reaches the KB side via L5 and the catwalk round the gym void. The second region is walkableParts[0].",
+   "metres": {
+    "pxPerMetre": {
+     "x": 12.138,
+     "y": 10.892
+    },
+    "toCampus": [
+     0.082388,
+     0,
+     -16.241,
+     0,
+     0.091813,
+     76.424
+    ],
+    "method": "cad-room-codes",
+    "errorMetres": 3.2,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+   },
+   "ffl": 18.0,
+   "fflSource": "CAD sheet 04, \"FFL+18\""
+  },
+  {
+   "id": "L5",
+   "building": "lakeside",
+   "order": 5,
+   "level": 5,
+   "name": {
+    "en": "Lakeside Level 5",
+    "zh": "5\u697c"
+   },
+   "data": "data/L5_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L5.png",
+   "imageWidth": 2216,
+   "imageHeight": 1699,
+   "regions": 1,
+   "metres": {
+    "pxPerMetre": {
+     "x": 13.104,
+     "y": 11.673
+    },
+    "toCampus": [
+     0.07631,
+     0,
+     6.317,
+     0,
+     0.085665,
+     80.426
+    ],
+    "method": "cad-room-codes",
+    "errorMetres": 1.7,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
+   },
+   "ffl": 21.7,
+   "fflSource": "assumed: L4 + 3.7 m (no FFL note on sheet 05)"
+  },
+  {
+   "id": "L6",
+   "building": "lakeside",
+   "order": 6,
+   "level": 6,
+   "name": {
+    "en": "Lakeside Level 6",
+    "zh": "6\u697c"
+   },
+   "data": "data/L6_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/LKS_L6.png",
+   "imageWidth": 1959,
+   "imageHeight": 1707,
+   "regions": 1,
+   "metres": {
+    "pxPerMetre": {
+     "x": 13.382,
+     "y": 10.361
+    },
+    "toCampus": [
+     0.07473,
+     0,
+     27.11,
+     0,
+     0.09652,
+     69.154
+    ],
+    "method": "cad-room-codes",
+    "errorMetres": 1.0,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+   },
+   "ffl": 25.4,
+   "fflSource": "assumed: L5 + 3.7 m (no FFL note on sheet 06)"
+  },
+  {
+   "id": "TT_L1",
+   "building": "tohtuck",
+   "order": 1,
+   "level": 1,
+   "name": {
+    "en": "Toh Tuck Wing Level 1",
+    "zh": "1\u697c"
+   },
+   "data": "data/TT_L1_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/TT_L1.jpg",
+   "imageWidth": 1244,
+   "imageHeight": 1688,
+   "regions": 1,
+   "sameLevelAs": "L1",
+   "note": "TT_L1 is at grade with Lakeside L1: one level, joined on the ground by the walkway and by Stairs 12, whose ground landing is printed on both sheets. Its STAIR-12 link carries \"sameLevelAs\": \"L1\" and L1's carries \"sameLevelAs\": \"TT_L1\"; a router charges no flight between the two.",
+   "metres": {
+    "pxPerMetre": {
+     "x": 14.156,
+     "y": 14.156
+    },
+    "toCampus": [
+     0.062399,
+     0.027931,
+     138.543,
+     -0.027931,
+     0.062399,
+     65.832
+    ],
+    "method": "8m-bays",
+    "errorFraction": 0.03,
+    "source": "the Toh Tuck classroom pitch, one classroom per 8,000 mm structural bay; x assumed equal to y",
+    "campusMethod": "similarity on 6 points both drawings show (tools/evacpipe/tt_campus_pairs.json: stair cores, lift lobbies, the bridge door, building corners against CAD sheets 02-04)",
+    "campusErrorMetres": 1.47,
+    "clip": [
+     [
+      387.7,
+      399.6
+     ],
+     [
+      1099.7,
+      386.1
+     ],
+     [
+      1099.8,
+      2482.2
+     ],
+     [
+      -270.0,
+      1869.0
+     ]
+    ]
+   },
+   "ffl": 5.55,
+   "fflSource": "at grade with L1: one level, joined on the ground (see this floor's note)"
+  },
+  {
+   "id": "TT_L2",
+   "building": "tohtuck",
+   "order": 2,
+   "level": 2,
+   "name": {
+    "en": "Toh Tuck Wing Level 2",
+    "zh": "2\u697c"
+   },
+   "data": "data/TT_L2_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/TT_L2.jpg",
+   "imageWidth": 1184,
+   "imageHeight": 1657,
+   "regions": 1,
+   "note": "Same storey as Lakeside L2 for routing: joined by the linkway bridge BRIDGE-2, a ramp of about 1.5 m (the CAD prints FFL +10.0 m at the Lakeside end and +11.6 m at the Toh Tuck end). Walked in the school's photo tour on L3 and L4; this floor's bridge door is photographed, its deck not.",
+   "metres": {
+    "pxPerMetre": {
+     "x": 19.75,
+     "y": 19.75
+    },
+    "toCampus": [
+     0.043916,
+     0.022063,
+     161.925,
+     -0.022328,
+     0.046586,
+     91.269
+    ],
+    "method": "8m-bays",
+    "errorFraction": 0.03,
+    "source": "the Toh Tuck classroom pitch, one classroom per 8,000 mm structural bay; x assumed equal to y",
+    "campusMethod": "affine on 10 points both drawings show (tools/evacpipe/tt_campus_pairs.json: stair cores, lift lobbies, the bridge door, building corners against CAD sheets 02-04)",
+    "campusErrorMetres": 0.49
+   },
+   "ffl": 11.625,
+   "fflSource": "CAD sheet 02, \"FFL+11.625\" at the bridge landing"
+  },
+  {
+   "id": "TT_L3",
+   "building": "tohtuck",
+   "order": 3,
+   "level": 3,
+   "name": {
+    "en": "Toh Tuck Wing Level 3",
+    "zh": "3\u697c"
+   },
+   "data": "data/TT_L3_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/TT_L3.jpg",
+   "imageWidth": 1232,
+   "imageHeight": 1650,
+   "regions": 1,
+   "note": "Same storey as Lakeside L3 for routing: joined by the linkway bridge BRIDGE-3, a ramp of about 1.5 m (the CAD prints FFL +14.3 m at the Lakeside end and +15.7 m at the Toh Tuck end). Walked in the school's photo tour on L3 and L4; TT_L2's bridge door is photographed.",
+   "metres": {
+    "pxPerMetre": {
+     "x": 19.688,
+     "y": 19.688
+    },
+    "toCampus": [
+     0.042397,
+     0.021557,
+     162.516,
+     -0.021694,
+     0.046849,
+     91.817
+    ],
+    "method": "8m-bays",
+    "errorFraction": 0.03,
+    "source": "the Toh Tuck classroom pitch, one classroom per 8,000 mm structural bay; x assumed equal to y",
+    "campusMethod": "affine on 8 points both drawings show (tools/evacpipe/tt_campus_pairs.json: stair cores, lift lobbies, the bridge door, building corners against CAD sheets 02-04)",
+    "campusErrorMetres": 0.76
+   },
+   "ffl": 15.65,
+   "fflSource": "CAD sheet 03, \"FFL+15.65\""
+  },
+  {
+   "id": "TT_L4",
+   "building": "tohtuck",
+   "order": 4,
+   "level": 4,
+   "name": {
+    "en": "Toh Tuck Wing Level 4",
+    "zh": "4\u697c"
+   },
+   "data": "data/TT_L4_evac/navmesh_data.json",
+   "sheet": "floorplans/evacuation/levels/TT_L4.jpg",
+   "imageWidth": 1248,
+   "imageHeight": 1664,
+   "regions": 1,
+   "note": "Same storey as Lakeside L4 for routing: joined by the linkway bridge BRIDGE-4, a ramp of about 1.5 m (the CAD prints FFL +18.0 m at the Lakeside end and +19.7 m at the Toh Tuck end). Walked in the school's photo tour on L3 and L4; TT_L2's bridge door is photographed.",
+   "metres": {
+    "pxPerMetre": {
+     "x": 19.835,
+     "y": 19.835
+    },
+    "toCampus": [
+     0.041606,
+     0.021802,
+     161.842,
+     -0.021186,
+     0.046105,
+     91.966
+    ],
+    "method": "stairs-vs-TT_L3",
+    "errorFraction": 0.05,
+    "source": "TT_L3's scale through the three stairs both sheets draw; x assumed equal to y",
+    "campusMethod": "affine on 7 points both drawings show (tools/evacpipe/tt_campus_pairs.json: stair cores, lift lobbies, the bridge door, building corners against CAD sheets 02-04)",
+    "campusErrorMetres": 0.62
+   },
+   "ffl": 19.675,
+   "fflSource": "CAD sheet 04, \"FFL+19.675\""
+  }
+ ],
+ "corrections": {
+  "lakeside-west": {
+   "what": "Lakeside's west side (library, theatre, music block, atrium, Stairs 1-4, the lift ELEV-1) is drawn about 10 m too far north on every sheet, relative to the pods, which are within a few metres of the CAD. Inside `region` (campus metres, hard edges), campus y moves by `dy` (piecewise linear in y, metres): north-south only, so rooms stay rectangles. The east edge runs on the wall line between the west side's rooms and the pods' (no room straddles it).",
+   "anchors": {
+    "_": "true campus metres from the CAD (stair cores = clusters of the stair layer, the lift box, the atrium balustrade circle; per sheet through floor_transforms.json and the dimension-chain scale), and where the sheets put them (app, L3)",
+    "STAIR-1": {
+     "true": [
+      32.5,
+      124.0
+     ],
+     "app": [
+      42.9,
+      111.1
+     ],
+     "cad": "L1 (33,124), L2 (32.5,124.2), L3 (31.4,123.2)"
+    },
+    "STAIR-2": {
+     "true": [
+      72.0,
+      115.0
+     ],
+     "app": [
+      73.8,
+      105.7
+     ],
+     "cad": "L1 (72,115), L2 (71.4,114.5), L3 (73.2,116.8)"
+    },
+    "ELEV-1": {
+     "true": [
+      75.5,
+      120.7
+     ],
+     "app": [
+      76.0,
+      112.7
+     ],
+     "cad": "L3 lift box"
+    },
+    "ATRIUM": {
+     "true": [
+      65.7,
+      162.8
+     ],
+     "app": [
+      58.4,
+      153.4
+     ],
+     "cad": "balustrade circle r 7.3 m, L2, L3, L4 agree to 0.2 m"
+    },
+    "STAIR-3": {
+     "true": [
+      48.6,
+      176.0
+     ],
+     "app": [
+      42.6,
+      170.1
+     ],
+     "cad": "L1 (48,176), L2 (49.2,176.1), L3 (48.6,175.8)"
+    },
+    "STAIR-4": {
+     "true": [
+      77.8,
+      209.0
+     ],
+     "app": [
+      77.0,
+      212.0
+     ],
+     "cad": "L1 (77,209), L2 (78,209), L3 (78,209)"
+    }
+   },
+   "dy": [
+    [
+     95,
+     10.5
+    ],
+    [
+     113,
+     10.3
+    ],
+    [
+     153.4,
+     9.4
+    ],
+    [
+     170.1,
+     5.9
+    ],
+    [
+     212,
+     -3.0
+    ],
+    [
+     240,
+     -3.0
+    ]
+   ],
+   "region": {
+    "L1": {
+     "ring": [
+      [
+       -300,
+       106.85
+      ],
+      [
+       40.6,
+       106.85
+      ],
+      [
+       48.3,
+       103.25
+      ],
+      [
+       69.2,
+       103.25
+      ],
+      [
+       69.2,
+       103.1
+      ],
+      [
+       81.35,
+       103.1
+      ],
+      [
+       81.35,
+       170.8
+      ],
+      [
+       81.35,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2.4,
+      0,
+      0,
+      0
+     ]
+    },
+    "L2": {
+     "ring": [
+      [
+       -300,
+       103.0
+      ],
+      [
+       81.5,
+       103.0
+      ],
+      [
+       81.5,
+       181.5
+      ],
+      [
+       81.5,
+       185.0
+      ],
+      [
+       81.6,
+       185.0
+      ],
+      [
+       81.6,
+       201.0
+      ],
+      [
+       86.2,
+       201.0
+      ],
+      [
+       86.2,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      0,
+      3.0,
+      0,
+      0,
+      0,
+      0,
+      4.5,
+      0,
+      0
+     ]
+    },
+    "L3": {
+     "ring": [
+      [
+       -300,
+       -300
+      ],
+      [
+       81.7,
+       -300
+      ],
+      [
+       81.7,
+       151.0
+      ],
+      [
+       86.0,
+       151.0
+      ],
+      [
+       86.0,
+       165.6
+      ],
+      [
+       81.7,
+       165.6
+      ],
+      [
+       81.7,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      0,
+      3.2,
+      3.0,
+      4.4,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L4": {
+     "ring": [
+      [
+       -300,
+       -300
+      ],
+      [
+       83.85,
+       -300
+      ],
+      [
+       83.85,
+       116.6
+      ],
+      [
+       81.75,
+       116.6
+      ],
+      [
+       81.75,
+       141.0
+      ],
+      [
+       86.1,
+       141.0
+      ],
+      [
+       86.1,
+       166.0
+      ],
+      [
+       81.75,
+       166.0
+      ],
+      [
+       81.75,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      0,
+      2.1,
+      2.0,
+      3.1,
+      3.0,
+      4.5,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L5": {
+     "ring": [
+      [
+       -300,
+       -300
+      ],
+      [
+       80.55,
+       -300
+      ],
+      [
+       80.55,
+       182.0
+      ],
+      [
+       80.55,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      0,
+      2.1,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "later": "x is not corrected here: Stairs 1 (10.5 m east of true), Stairs 3 (6 m west) and the atrium (7.3 m west) are shape errors (the sheets straighten the library's curved front and slide the atrium under the theatre's west half); they are fixed in the labels.",
+   "regionNote": "Hard edges where rooms meet across the edge or a route crosses it in the direction of the move (north-south: the route only lengthens); soft where a corridor or open floor runs along the edge and routes cross it east-west (a hard edge there jogged them sideways). L1: south of the Gardening Space and the north roads, east edge on the admin corridor (x 81.35, 2.4 m fade across the corridor); the play area east of it moves by play-L1 (2 Nov 2026, night: it was in this region with a 3 m fade on its south edge at y 124.5, which folded a 10 m move: the floor north of the KB toilets lay over TOILET-KB-1 and Stairs 8, and routes ran 4.8 m through the toilet). L2: south of the field deck (the CAD has 10.8 m of open ground between the deck's south-west corner and the theatre block). L3-L5: the whole west side. tools/evacpipe/fixcheck.py: no room is cut by a fade, every door moves with its room. L1's north edge west of x 40.6 is at 106.85 (was 107.7, the sheet's building edge): the CAD's north wall (117.1 campus) and the HR Meeting Room are north of the sheet's; it stays south of the garden (106.8)."
+  },
+  "lakeside-southwest": {
+   "what": "Lakeside's south-west wing (Stairs 3, the LKS-31x rooms along its angled facade, their corridor) is drawn up to 6.7 m too far west, and its facade steeper than the CAD's (24 degrees off north against 17): x moves 6.7 m east down to y 195 (the sheet's), tapering to nothing at LKS-312, where LKS-310 and LKS-311 already sit on the CAD's wall. The wing's angled rooms lean with the facade, as the CAD's do. Inside `region` (campus metres as the sheet places them, before lakeside-west's move), campus x moves by `dx` (piecewise linear in y).",
+   "dx": [
+    [
+     150,
+     6.7
+    ],
+    [
+     195,
+     6.7
+    ],
+    [
+     206,
+     5.2
+    ],
+    [
+     214.5,
+     0.0
+    ],
+    [
+     260,
+     0.0
+    ]
+   ],
+   "region": {
+    "L3": {
+     "ring": [
+      [
+       -300,
+       153.0
+      ],
+      [
+       47.5,
+       153.0
+      ],
+      [
+       47.5,
+       158.0
+      ],
+      [
+       49.6,
+       158.0
+      ],
+      [
+       49.6,
+       165.25
+      ],
+      [
+       63.8,
+       165.25
+      ],
+      [
+       63.8,
+       196.0
+      ],
+      [
+       63.8,
+       208.0
+      ],
+      [
+       63.8,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      6.0,
+      0,
+      0,
+      0,
+      0,
+      14.35,
+      10.0,
+      6.2,
+      0,
+      0
+     ]
+    },
+    "L2": {
+     "ring": [
+      [
+       -300,
+       145.0
+      ],
+      [
+       48.7,
+       145.0
+      ],
+      [
+       48.7,
+       167.3
+      ],
+      [
+       63.0,
+       167.3
+      ],
+      [
+       63.0,
+       400
+      ],
+      [
+       -300,
+       400
+      ]
+     ],
+     "band": [
+      6.0,
+      0,
+      0,
+      14.3,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "2 Nov 2026, night: the wing moved 6.7 m east onto floor that stayed put -- the corridor beside it was split down its east side, the open floor east of it (L3's Study Area, L2's canteen) torn along a hard edge -- so Stairs 3's box lay on 16 m2 of floor and routes ran up to 14 m inside LKS-317, LKS-315, LKS-316, the Kitchen and L3's unnamed room. Now the wing and its corridor move whole and the move fades out eastward across the open floor to nothing at the next fixed wall: smoothstep bands at least 1.5 x the move wide, so the floor is squeezed, never folded. L3: x 49.6 north of y 165.25 (the library, unchanged: its outline, the atrium void and the library stair are placed from the CAD); south of it the band runs from x 49.45 (full move) to x 63.8 (none; the block LKS-305-309's west wall is 63.86), 14.35 m wide to y 196, then 10 m to y 208 and 6.2 m below, where the move tapers, so the slanted rooms LKS-315-312 keep their full move to their east walls (0.15 m at most less at LKS-313's corner). The unnamed room's hole and the Study Area are squeezed onto the CAD's room and courtyard (x 56.2 to 62.4); the room's cell and the courtyard feature are re-placed in the labels to match. L2: x 48.7 north of y 167.3 (the library, unchanged); south of it the band runs from x 48.7 to 63.0 (14.3 m) across the passage by Stairs 3, the music block's hole and the canteen; LKS-200's west wall is re-placed in the labels at its CAD position (map x 56.3)."
+  },
+  "block-south-L2": {
+   "what": "South of the atrium the sheets squeeze the corridor between the block west of the seam and its rooms south of it: with lakeside-west alone that corridor lands 2.7-3.5 m south of the pods' corridor it meets at the seam (the CAD has one straight corridor there, north wall y 182.7-183.5 both sides, on L2-L4), and the jog closed it (owner, 2 Nov 2026: \"it blocks the hallway\"). This adds to lakeside-west inside the block only (rooms whole, never cut): `dy` is fitted to the CAD's walls; 0 north of y 170.1 (Stairs 3's anchor) and at Stairs 4. L2: the music room's south wall to the CAD's 183.2 (was 186.2), the Staff Room's north wall to 186.3 (was 188.2) and south wall to 200.7, Music Practice Room LKS-212 as it was.",
+   "anchors": {
+    "LKS-200 south wall": {
+     "sheet": 183.07,
+     "cad": 183.2
+    },
+    "STAFFROOM north wall": {
+     "sheet": 185.55,
+     "cad": 186.3
+    },
+    "STAFFROOM south wall": {
+     "sheet": 200.73,
+     "cad": 200.7
+    },
+    "LKS-212 south wall": {
+     "sheet": 208.92,
+     "cad": 206.6
+    }
+   },
+   "dy": [
+    [
+     170.1,
+     0.0
+    ],
+    [
+     183.07,
+     -3.05
+    ],
+    [
+     185.55,
+     -1.87
+    ],
+    [
+     200.73,
+     0.58
+    ],
+    [
+     208.9,
+     0.0
+    ]
+   ],
+   "region": {
+    "L2": {
+     "ring": [
+      [
+       48.7,
+       165.0
+      ],
+      [
+       81.5,
+       165.0
+      ],
+      [
+       81.5,
+       181.5
+      ],
+      [
+       81.5,
+       185.0
+      ],
+      [
+       81.6,
+       185.0
+      ],
+      [
+       81.6,
+       201.0
+      ],
+      [
+       86.2,
+       201.0
+      ],
+      [
+       86.2,
+       212.0
+      ],
+      [
+       48.7,
+       212.0
+      ]
+     ],
+     "band": [
+      0,
+      3.0,
+      0,
+      0,
+      0,
+      0,
+      4.5,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "lakeside-west's east edge and bands, so the two fade together; the west edge is lakeside-southwest's east edge (x 48.7), hard: the step it makes in the canteen's north side is under the moved Kitchen and passage."
+  },
+  "block-south-L3": {
+   "what": "South of the atrium the sheets squeeze the corridor between the block west of the seam and its rooms south of it: with lakeside-west alone that corridor lands 2.7-3.5 m south of the pods' corridor it meets at the seam (the CAD has one straight corridor there, north wall y 182.7-183.5 both sides, on L2-L4), and the jog closed it (owner, 2 Nov 2026: \"it blocks the hallway\"). This adds to lakeside-west inside the block only (rooms whole, never cut): `dy` is fitted to the CAD's walls; 0 north of y 170.1 (Stairs 3's anchor) and at Stairs 4. L3: LKS-305/306's south wall to the CAD's 182.8 (was 186.3), the corridor under them in line with the pods' corridor, Store LKS-308 and LKS-309's north wall to the CAD's 194.8-196.7.",
+   "anchors": {
+    "LKS-305 south wall": {
+     "sheet": 183.14,
+     "cad": 182.8
+    },
+    "LKS-308 north wall": {
+     "sheet": 195.43,
+     "cad": 194.75
+    },
+    "LKS-309 north wall": {
+     "sheet": 199.28,
+     "cad": 196.7
+    }
+   },
+   "dy": [
+    [
+     170.1,
+     0.0
+    ],
+    [
+     183.14,
+     -3.5
+    ],
+    [
+     185.62,
+     -2.9
+    ],
+    [
+     195.43,
+     -1.2
+    ],
+    [
+     199.28,
+     -2.3
+    ],
+    [
+     209.2,
+     0.0
+    ]
+   ],
+   "region": {
+    "L3": {
+     "ring": [
+      [
+       64.3,
+       165.6
+      ],
+      [
+       81.7,
+       165.6
+      ],
+      [
+       81.7,
+       209.25
+      ],
+      [
+       64.3,
+       209.25
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "the block LKS-305 to LKS-309: west edge on its west walls (the courtyard outside), east edge lakeside-west's (hard there)."
+  },
+  "block-south-L4": {
+   "what": "South of the atrium the sheets squeeze the corridor between the block west of the seam and its rooms south of it: with lakeside-west alone that corridor lands 2.7-3.5 m south of the pods' corridor it meets at the seam (the CAD has one straight corridor there, north wall y 182.7-183.5 both sides, on L2-L4), and the jog closed it (owner, 2 Nov 2026: \"it blocks the hallway\"). This adds to lakeside-west inside the block only (rooms whole, never cut): `dy` is fitted to the CAD's walls; 0 north of y 170.1 (Stairs 3's anchor) and at Stairs 4. L4: the LAN Room's south wall to the CAD's 183.0 (was 186.1); Stairs 6 moved whole, its north side in line with the pods' corridor's south side.",
+   "anchors": {
+    "LAN-BT south wall": {
+     "sheet": 182.93,
+     "cad": 183.05
+    },
+    "STAIR-6 north side": {
+     "sheet": 184.86,
+     "app": 185.6
+    }
+   },
+   "dy": [
+    [
+     170.1,
+     0.0
+    ],
+    [
+     182.93,
+     -3.1
+    ],
+    [
+     184.86,
+     -2.0
+    ],
+    [
+     195.69,
+     -2.0
+    ],
+    [
+     209.3,
+     0.0
+    ]
+   ],
+   "region": {
+    "L4": {
+     "ring": [
+      [
+       75.4,
+       165.0
+      ],
+      [
+       81.75,
+       165.0
+      ],
+      [
+       81.75,
+       209.3
+      ],
+      [
+       75.4,
+       209.3
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "the LAN Room, Stairs 6 and the open floor south of it to Stairs 4; west of x 75.4 the roof garden's open floor (the floor's edge along the LAN Room's west wall inside, whole)."
+  },
+  "tk-south": {
+   "what": "The TK wing's south end (south of its toilets) is drawn up to 6 m north of the CAD, the gap growing southwards, and squeezed: Stairs 13 and 14 sit 5.6 m north of the CAD's (their whole length north of its treads, on L1-L5 alike), and the classrooms on the south row are drawn 6.4 m deep where the CAD's are 7.7 m, 4-5 m north. The BT wing beside it is where the CAD has it. Measured against the CAD's walls (L2; L3 and L4 are drawn and built alike, to 0.3 m), north to south (sheet y -> CAD y): the Thermal Energy Storage 144.25-151.52 -> 145.0-154.4, TK-223 151.89-159.98 -> 154.7-162.5, Stairs 13/14 163.8-169.45 -> 170.3-173.7, TK-224..228 171.2-177.64 -> 175.1-182.8. North-south only, so rooms stay square.",
+   "dy": [
+    [
+     139.0,
+     0.0
+    ],
+    [
+     144.25,
+     0.75
+    ],
+    [
+     151.7,
+     2.85
+    ],
+    [
+     159.98,
+     2.5
+    ],
+    [
+     163.8,
+     6.5
+    ],
+    [
+     169.45,
+     4.25
+    ],
+    [
+     171.2,
+     3.9
+    ],
+    [
+     177.64,
+     5.2
+    ]
+   ],
+   "region": {
+    "L2": {
+     "ring": [
+      [
+       119.87,
+       136.5
+      ],
+      [
+       170.0,
+       136.5
+      ],
+      [
+       170.0,
+       178.5
+      ],
+      [
+       119.87,
+       178.5
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L3": {
+     "ring": [
+      [
+       119.89,
+       136.5
+      ],
+      [
+       170.0,
+       136.5
+      ],
+      [
+       170.0,
+       178.5
+      ],
+      [
+       119.89,
+       178.5
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L4": {
+     "ring": [
+      [
+       119.95,
+       136.5
+      ],
+      [
+       170.0,
+       136.5
+      ],
+      [
+       170.0,
+       178.5
+      ],
+      [
+       119.95,
+       178.5
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "The TK wing south of its toilets, from just east of the corridor west of the wing (x 119.87 L2, 119.89 L3, 119.95 L4: between that corridor's east wall line and Stairs 13's and the west column's west walls, so every door of the wing is inside) to the building's east end. The corridor itself moves with tk-junction, whose move matches this one at the passage south of Stairs 13, so the corridor and the passage meet where the CAD has them (2 Nov 2026, night: the corridor stayed put and the passage moved ~4 m south, leaving a 4 m dead-end stub every route to Stairs 13 ran up and back down). North edge where the move is 0. Each floor's lift by Stairs 14 is re-outlined on the CAD's shaft in the labels (the move stretched it)."
+  },
+  "tk-south-L5": {
+   "what": "As tk-south, on L5, whose sheet draws the wing a little differently (TK-502/503 144.08-159.67, the south row 171.32-177.23 -> 175.0-182.9) and Stairs 13 and 14 2.5 m apart in y (162.92 and 165.41), where the CAD has one stair core for both at 170.3-173.7: no north-south move can put both there, so the two stairs and the lift are placed from the CAD in the labels and this moves the rest.",
+   "dy": [
+    [
+     139.0,
+     0.0
+    ],
+    [
+     144.08,
+     0.9
+    ],
+    [
+     151.5,
+     3.0
+    ],
+    [
+     159.67,
+     2.8
+    ],
+    [
+     169.0,
+     4.6
+    ],
+    [
+     171.32,
+     3.7
+    ],
+    [
+     177.23,
+     5.7
+    ]
+   ],
+   "region": {
+    "L5": {
+     "ring": [
+      [
+       119.83,
+       136.5
+      ],
+      [
+       170.0,
+       136.5
+      ],
+      [
+       170.0,
+       178.5
+      ],
+      [
+       119.83,
+       178.5
+      ]
+     ],
+     "band": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "The wing south of its toilets, x 119.83 (just east of the corridor west of the wing, west of Stairs 13's and the west column's west walls at 119.87-119.94) to the building's east end; the corridor moves with tk-junction-L5 (2 Nov 2026, night: was x 119.5, which split that corridor and left the passage south of Stairs 13 4 m south of the corridor's end)."
+  },
+  "tk-junction": {
+   "what": "The corridor west of the TK wing (from the BT corridor north to the passage south of Stairs 13) on L2-L4. tk-south moves the passage about 4 m south onto the CAD (passage y 173.7-175.0, Stairs 13's south wall 173.5-173.7); with the corridor left where the sheet draws it, its end ran 4.2 m past the passage (to y 169.4) and every route to Stairs 13 went up that stub and back. Here `dy` is tk-south's at the passage (up to y 171.2), then falls linearly to nothing at the BT corridor (y 183.3, which stays), so the corridor is shortened, not torn: its end meets the passage, its south end the BT corridor. The CAD has the corridor's north end at the passage too (x 118.5-120.0, open to the light well north of y 173.5).",
+   "dy": [
+    [
+     139.0,
+     0.0
+    ],
+    [
+     144.25,
+     0.75
+    ],
+    [
+     151.7,
+     2.85
+    ],
+    [
+     159.98,
+     2.5
+    ],
+    [
+     163.8,
+     6.5
+    ],
+    [
+     169.45,
+     4.25
+    ],
+    [
+     171.2,
+     3.9
+    ],
+    [
+     183.3,
+     0.0
+    ]
+   ],
+   "region": {
+    "L2": {
+     "ring": [
+      [
+       117.95,
+       164.0
+      ],
+      [
+       119.87,
+       164.0
+      ],
+      [
+       119.87,
+       184.0
+      ],
+      [
+       117.95,
+       184.0
+      ]
+     ],
+     "band": [
+      5.0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L3": {
+     "ring": [
+      [
+       117.8,
+       164.0
+      ],
+      [
+       119.89,
+       164.0
+      ],
+      [
+       119.89,
+       184.0
+      ],
+      [
+       117.8,
+       184.0
+      ]
+     ],
+     "band": [
+      5.0,
+      0,
+      0,
+      0
+     ]
+    },
+    "L4": {
+     "ring": [
+      [
+       117.95,
+       164.0
+      ],
+      [
+       119.95,
+       164.0
+      ],
+      [
+       119.95,
+       184.0
+      ],
+      [
+       117.95,
+       184.0
+      ]
+     ],
+     "band": [
+      5.0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "West edge just east of the corridor's west wall line (L2: the thin partition at x 117.56-117.9, whose west face and the wide floor west of it stay; L3: 117.63-117.71, the blocked cell west of it stays; L4: 117.80-117.89, the open-air cell stays), east edge tk-south's west edge. North edge banded 5 m (y 164-169): on L2 the floor north of the partition's top (an alcove along TK-229's glazed west wall) stretches down to the passage instead of tearing; on L3-L4 there is nothing there but open air. South edge where `dy` is 0."
+  },
+  "tk-junction-L5": {
+   "what": "As tk-junction, on L5 (tk-south-L5's move at the passage south of Stairs 13, falling linearly to nothing at the BT corridor, y 182.4).",
+   "dy": [
+    [
+     139.0,
+     0.0
+    ],
+    [
+     144.08,
+     0.9
+    ],
+    [
+     151.5,
+     3.0
+    ],
+    [
+     159.67,
+     2.8
+    ],
+    [
+     169.0,
+     4.6
+    ],
+    [
+     171.32,
+     3.7
+    ],
+    [
+     182.4,
+     0.0
+    ]
+   ],
+   "region": {
+    "L5": {
+     "ring": [
+      [
+       116.85,
+       164.0
+      ],
+      [
+       119.83,
+       164.0
+      ],
+      [
+       119.83,
+       183.0
+      ],
+      [
+       117.1,
+       183.0
+      ],
+      [
+       117.1,
+       177.0
+      ],
+      [
+       116.85,
+       177.0
+      ]
+     ],
+     "band": [
+      4.0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "regionNote": "West edge x 116.85 down to y 177 (the courtyard's notch and the corridor's west wall move with it, so no sliver of courtyard is left behind), then x 117.1 (the accessible toilet TOILET-BT-S, from y 177.23, stays whole). North edge banded 4 m in the courtyard's open air (y 164-168, nothing there)."
+  },
+  "play-L1": {
+   "what": "L1's primary play area between the admin corridor and the KB block, north of the KB toilets and Stairs 8 (the sheet's open floor x 81.35-91, y 103.1-128.5). It takes lakeside-west's move (the same `dy`), fading out eastward over 9.5 m to the KB block (as before) and southward over 18 m to the toilet block's north side (y 128.5), which stays where the CAD has it: 18 m >= 1.5 x the 10 m move, so the floor is squeezed, never folded. Westward its move fades in over the corridor exactly as lakeside-west's fades out (both 2.4 m, x 78.95-81.35), so the corridor moves whole where the play area does.",
+   "dy": [
+    [
+     95,
+     10.5
+    ],
+    [
+     113,
+     10.3
+    ],
+    [
+     153.4,
+     9.4
+    ],
+    [
+     170.1,
+     5.9
+    ],
+    [
+     212,
+     -3.0
+    ],
+    [
+     240,
+     -3.0
+    ]
+   ],
+   "region": {
+    "L1": {
+     "ring": [
+      [
+       78.95,
+       103.1
+      ],
+      [
+       91.0,
+       103.1
+      ],
+      [
+       91.0,
+       128.5
+      ],
+      [
+       78.95,
+       128.5
+      ]
+     ],
+     "band": [
+      0,
+      9.5,
+      18.0,
+      2.4
+     ]
+    }
+   },
+   "regionNote": "No shape has a vertex inside but the floor and the toilet block's north edge (on the south edge). North edge as lakeside-west's (y 103.1, the north roads)."
+  }
+ }
+}

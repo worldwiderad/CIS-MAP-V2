@@ -1,0 +1,272 @@
+{
+ "schema": "cis-map/toilets/1",
+ "note": "What each toilet block on the map holds, read off the door signs in the school's virtual tour (tools/tourkit; read 31 October 2026). The signs: girls' and boys' toilets say 'Students only'; men's, women's and all-gender ('adults') toilets 'Adults only'; neither may use the other's. Older plates show only a woman or a man ('female', 'male'). 'accessible' is a wheelchair toilet (in Toh Tuck signed 'Adults only'). Keys are the app's place keys. confidence: 'read' = the words or plates were read; 'likely' = the pictograms and colours were seen, the words too far to read; 'signs' = not seen, from the direction signs; 'map' = the map's own name. Read by app/search.js (names, the Toilets choices) and drawn on the map.",
+ "kinds": [
+  "girls",
+  "boys",
+  "women",
+  "men",
+  "adults",
+  "female",
+  "male",
+  "accessible"
+ ],
+ "blocks": {
+  "L1:TOILET-CANTEEN-1": {
+   "has": [
+    "girls",
+    "women",
+    "men"
+   ],
+   "confidence": "read",
+   "seen": "Girls 'Students only' door; women's and men's 'Adults only' flags (baby changing in the women's). Panos 21166586, 21166288, 11191744."
+  },
+  "L1:TOILET-CANTEEN-2": {
+   "has": [
+    "girls"
+   ],
+   "confidence": "likely",
+   "seen": "Pink girl flag and wall figure, the caption too far to read (the students' sign design). Panos 21166347, 21166339."
+  },
+  "L1:TOILET-CANTEEN-3": {
+   "has": [
+    "boys",
+    "accessible"
+   ],
+   "confidence": "likely",
+   "seen": "Light-blue boy flag (caption unreadable, the students' design); an accessible recess with a wheelchair door, on the line with CANTEEN-2 (it may be that block's). Panos 21166347, 21166339."
+  },
+  "L1:TOILET-KB-1": {
+   "has": [
+    "girls",
+    "boys"
+   ],
+   "confidence": "read",
+   "seen": "Girls' and boys' flags, 'Students Only'. Pano 21166586."
+  },
+  "L2:TOILET-BT": {
+   "has": [
+    "female",
+    "male"
+   ],
+   "confidence": "read",
+   "seen": "Older door plaques, a woman and a man, no wording. Pano 3070950."
+  },
+  "L2:TOILET-TK-E": {
+   "has": [
+    "male"
+   ],
+   "confidence": "read",
+   "seen": "A man plaque, and the corridor's sign points 'MALE TOILET' this way. Panos 3070989, 3070972, 3070973."
+  },
+  "L2:TOILET-TK-W": {
+   "has": [
+    "female",
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "A woman plaque, and the corridor's sign points 'FEMALE TOILET ♿' this way. Panos 3070972, 3070973."
+  },
+  "L2:TOILET-CANTEEN": {
+   "has": [
+    "male"
+   ],
+   "confidence": "map",
+   "seen": "Named 'Toilet (Men)' on the map already; no photo near it."
+  },
+  "L2:TOILET-CANTEEN-E": {
+   "has": [
+    "female"
+   ],
+   "confidence": "map",
+   "seen": "Named 'Toilet (Women)' on the map already; no photo near it."
+  },
+  "L4:TOILET-KB-N": {
+   "has": [
+    "girls",
+    "women"
+   ],
+   "confidence": "read",
+   "seen": "On the north wall of the short corridor by the Secondary Office: girls 'Students only', women 'Adults only'. Pano 40067845. Which block each wall's doors open into is judged by side (moderate)."
+  },
+  "L4:TOILET-KB-S": {
+   "has": [
+    "boys",
+    "men",
+    "adults"
+   ],
+   "confidence": "read",
+   "seen": "On the south wall of the same corridor: an all-gender 'Adults only', boys 'Students only', men 'Adults only'. Pano 40067845."
+  },
+  "L4:TOILET-TK-N": {
+   "has": [
+    "girls",
+    "boys",
+    "adults"
+   ],
+   "confidence": "likely",
+   "seen": "Doors off the gym floor with a boy, a girl and a red/navy all-gender figure, too far to read the words; the real doors are about 4 m east of the map's. Panos 39877819, 3071064."
+  },
+  "L4:TOILET-TK-W": {
+   "has": [
+    "female"
+   ],
+   "confidence": "signs",
+   "seen": "Not seen; both faces of the gym doorway's sign point 'FEMALE TOILET' this way. Panos 3071055, 3071059."
+  },
+  "L4:TOILET-TK-E": {
+   "has": [
+    "male",
+    "accessible"
+   ],
+   "confidence": "signs",
+   "seen": "Not seen; the same signs point 'MALE TOILET ♿' this way. Panos 3071055, 3071059."
+  },
+  "L5:TOILET-BT-S": {
+   "has": [
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "A wheelchair plate; the junction's sign points 'STAFF TOILET ♿' down this corridor. Two more doors beside it have no readable sign. Pano 3071097."
+  },
+  "L5:TOILET-TK-N": {
+   "has": [
+    "female",
+    "accessible"
+   ],
+   "confidence": "likely",
+   "seen": "A woman plate and a wheelchair plate, no wording, in the recess by the staff room (the men's door, if any, is not in view). Panos 3071092, 3071089."
+  },
+  "L6:TOILET-TK-6": {
+   "has": [
+    "female",
+    "male",
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "A woman plate and a wheelchair plate, no wording, by the staff room; no men's door in view. Panos 3071124, 3071123. CAD sheet 06 (2025) draws men's and women's toilet and changing rooms here: the men's door is out of the photos' view."
+  },
+  "TT_L1:TOILET-TT-ACC": {
+   "has": [
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "'Accessible toilet' plate, wheelchair flag 'Adults only'. Pano 39877791."
+  },
+  "TT_L1:TOILET-TT-PK": {
+   "has": [
+    "adults"
+   ],
+   "confidence": "likely",
+   "seen": "A red/navy all-gender sign read as 'Adults only' at the limit of the photo. Pano 39877770."
+  },
+  "TT_L1:TOILET-TT-CH2": {
+   "has": [
+    "girls",
+    "adults",
+    "accessible"
+   ],
+   "confidence": "likely",
+   "seen": "On the junior pool deck: a red/navy all-gender door, an accessible entrance, a girl figure inside it; the words too far to read. Pano 39877765."
+  },
+  "TT_L2:TOILET-TT-E": {
+   "has": [
+    "girls",
+    "boys"
+   ],
+   "confidence": "read",
+   "seen": "Girls 'Students only' (the map's door) and boys 'Students only' with a 'Boys' toilets' plate, from a second passage 5 m south. Panos 39877710, 39877714."
+  },
+  "TT_L2:TOILET-TT-W": {
+   "has": [
+    "adults",
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "An accessible toilet ('Adults only' flag) and two all-gender 'Adults only' rooms. Panos 39877710, 39877714."
+  },
+  "TT_L3:TOILET-TT-E": {
+   "has": [
+    "girls",
+    "boys"
+   ],
+   "confidence": "read",
+   "seen": "Girls 'Students only' flag; a boys' flag of the same design (caption unreadable). The map's door is the boys'. Panos 39877842, 39877841."
+  },
+  "TT_L3:TOILET-TT-W": {
+   "has": [
+    "adults",
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "An accessible toilet ('Adults only' flag) and an all-gender 'Adults only' room. Panos 39877842, 39877841."
+  },
+  "TT_L4:TOILET-TT-E": {
+   "has": [
+    "girls",
+    "boys"
+   ],
+   "confidence": "read",
+   "seen": "Boys' and girls' doors, 'Students only'. The map's door is the boys'. Panos 39877815, 39877813."
+  },
+  "TT_L4:TOILET-TT-W": {
+   "has": [
+    "adults",
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "An accessible toilet ('Adults only' flag) and two all-gender 'Adults only' rooms. Panos 39877815, 39877813."
+  },
+  "TT_L4:TOILET-TT-GYM": {
+   "has": [
+    "girls",
+    "boys",
+    "adults"
+   ],
+   "confidence": "read",
+   "seen": "At the junior gym: boys' and girls' 'Students only' flags and an all-gender 'Adults only' flag. Panos 39877818, 39877809, 39877822."
+  },
+  "L1:TOILET-POOL-M": {
+   "has": [
+    "male"
+   ],
+   "confidence": "map",
+   "seen": "CAD sheet 01 'MALE TOILET', off the north lobby behind the 2020 'NO ENTRY' gate; no photo of its door (pano 11191780, not downloaded, has the OCR 'For coaches only (Men)' / 'STAFF ONLY')."
+  },
+  "L1:TOILET-POOL-F": {
+   "has": [
+    "female"
+   ],
+   "confidence": "map",
+   "seen": "CAD sheet 01 'FEMALE TOILET', off the south lobby behind the 2020 'NO ENTRY - Please use Main Gate' gate (pano 11191709 yaw 167); no photo of its door."
+  },
+  "L1:TOILET-POOL-ACC": {
+   "has": [
+    "accessible"
+   ],
+   "confidence": "read",
+   "seen": "'Gender neutral' plate with man/woman, child and wheelchair figures on the passage door (pano 11191712 yaw 262, Jan 2020); no 'Adults only' or 'Students only' words; a wheelchair arrow sign at the south lobby (11191709 yaw 146)."
+  }
+ },
+ "unknown": {
+  "L2:TOILET-KB-N": "No photo within sight (the nearest is in the auditorium).",
+  "L2:TOILET-KB-S": "No photo within sight.",
+  "L3:TOILET-LKS": "Behind the library wall from the nearest photos.",
+  "L3:TOILET-TK-E": "Behind the makerspace wall from the nearest photos.",
+  "L3:TOILET-TK-W": "Behind the makerspace wall from the nearest photos.",
+  "L3:TOILET-KB-N": "No photo near it.",
+  "L3:TOILET-KB-S": "No photo near it.",
+  "L4:TOILET-ADMIN": "No photo near it.",
+  "L4:TOILET-BT-S": "No photo near it.",
+  "L5:TOILET-BT-N": "Behind the counselling suite from the nearest photos; a sign points '← TOILET ♿' towards it.",
+  "TT_L1:TOILET-TT-CH1": "The nearest photos (2020) show the pool deck still being built.",
+  "TT_L1:TT-CHANGING-1": "Not in view of the nearest photos.",
+  "TT_L1:TT-CHANGING-2": "Not in view of the nearest photos.",
+  "TT_L2:TOILET-TT-N": "No photo within sight; a wayfinding sign shows three toilet symbols this way.",
+  "TT_L4:TT-CHANGE-1": "Inside the Black Box Theatre's back rooms, out of the photos' sight (probably dressing rooms).",
+  "TT_L4:TT-CHANGE-2": "Inside the Black Box Theatre's back rooms, out of the photos' sight.",
+  "L5:TOILET-KB-N": "Not photographed; the CAD (sheet 05) draws WC cubicles and basins (app review 31 Oct 2026).",
+  "L5:TOILET-KB-S": "Not photographed; the CAD (sheet 05) draws WC cubicles and basins (app review 31 Oct 2026).",
+  "L4:TOILET-BT-E": "The CAD's toilet group east of BT-405, its doors on the BT-TK link; no photo in sight (app review 31 Oct 2026)."
+ }
+}

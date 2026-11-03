@@ -1,0 +1,1087 @@
+{
+ "lang": "fil",
+ "strings": {
+  "title": "Mapa",
+  "from": "Mula",
+  "to": "Papunta",
+  "chooseStart": "Piliin kung nasaan ka",
+  "whereTo": "Saan ka pupunta?",
+  "youAreHere": "Narito ka",
+  "swap": "Pagpalitin ang simula at destinasyon",
+  "endTrip": "Burahin ang ruta",
+  "showMap": "Ipakita ang mapa",
+  "stepFree": "Walang hagdan",
+  "stepFreeHint": "Elevator at rampa lamang",
+  "searchPh": "Maghanap ng silid, code o lugar",
+  "noResults": "Walang tumugma sa “{q}”. Subukan ang code ng silid gaya ng KB⁠-⁠405, o lugar gaya ng aklatan o CR.",
+  "nearest": "Pinakamalapit na {what}",
+  "nearestToilet": "Pinakamalapit na CR",
+  "nearestLift": "Pinakamalapit na elevator",
+  "nearestOf": "Pinakamalapit: {what}",
+  "nearestFor": "Pinakamalapit para sa {who}",
+  "nearestAccessible": "Pinakamalapit na CR para sa PWD",
+  "kindNear": "{kind} malapit sa {place}",
+  "needStart": "Piliin muna kung nasaan ka para mahanap ang pinakamalapit.",
+  "chipToilet": "CR",
+  "chipLift": "Elevator",
+  "chipStairs": "Hagdan",
+  "chipFood": "Kantina",
+  "chipLibrary": "Aklatan",
+  "chipOffice": "Opisina",
+  "chipGym": "Gym",
+  "chipTheatre": "Teatro",
+  "directionsHere": "Pumunta rito",
+  "startHere": "Magsimula rito",
+  "backToRoute": "Bumalik sa ruta",
+  "whichSide": "Saang gawi ka naroroon?",
+  "sideCancel": "Hindi muna",
+  "summary": "{dist} · mga {time}",
+  "summaryShort": "{dist} · wala pang isang minuto",
+  "min": "{n} min",
+  "sec": "{n} seg",
+  "metres": "{n} m",
+  "noRoute": "Walang ruta sa pagitan ng dalawang lugar na ito.",
+  "noStepFree": "Hindi maiiwasan ang hagdan sa pagitan ng dalawang lugar na ito.",
+  "stepFreeYours": "Walang hagdan, ayon sa setting ng teleponong ito: elevator at rampa lamang ang ginagamit ng ruta.",
+  "same": "Narito ka na.",
+  "loading": "Inihahanda ang mapa ng campus…",
+  "loadFail": "Hindi mabuksan ang mapa. Suriin ang koneksiyon at i-reload ang pahina.",
+  "showFloor": "Ipakita ang buong palapag",
+  "floors": "Mga palapag",
+  "close": "Isara",
+  "back": "Bumalik",
+  "clear": "Burahin",
+  "endSteps": "Ipakita ang buong ruta",
+  "popular": "Mga madalas puntahan",
+  "arrivals": "Mga pasukan at babaan",
+  "keepTyping": "Ituloy ang pag-type…",
+  "done": "Tapos na",
+  "findPlace": "Maghanap ng lugar",
+  "shareTitlePhone": "Ibahagi ang rutang ito",
+  "shareSubPhone": "Ipadala ang link, o ipa-scan ang code sa ibang telepono.",
+  "floorUp": "isang palapag pataas",
+  "floorDown": "isang palapag pababa",
+  "floorUps": "{n} palapag pataas",
+  "floorDowns": "{n} palapag pababa",
+  "viaFloor": "dadaan sa {f}",
+  "steps": "Mga direksiyon",
+  "allSteps": "Lahat ng hakbang",
+  "hideSteps": "Itago ang mga hakbang",
+  "start": "Simulan",
+  "stepCount": "Hakbang {i} sa {n}",
+  "nextStop": "Susunod na hinto: {place}",
+  "stopOf": "{i} sa {n}",
+  "prevStep": "Nakaraang hakbang",
+  "nextStep": "Susunod na hakbang",
+  "stepsTip": "Hindi alam ng mapa kung nasaan ka: sundin ang bawat hakbang, saka i-tap ang › para sa susunod.",
+  "docTitle": "Mapa ng CIS",
+  "language": "Wika",
+  "chooseLanguage": "Piliin ang iyong wika",
+  "languageLabel": "Wika",
+  "results": "Mga lugar",
+  "recent": "Kamakailan",
+  "share": "Buksan ang rutang ito sa iyong telepono",
+  "shareTitle": "Dalhin ang rutang ito",
+  "shareSub": "I-scan gamit ang camera ng telepono para mabuksan ito roon.",
+  "copyLink": "Kopyahin ang link",
+  "copied": "Nakopya na",
+  "shareLink": "Ibahagi ang rutang ito",
+  "linkCopied": "Nakopya na ang link",
+  "shareNative": "Ibahagi…",
+  "tapMapTip": "Hindi sigurado sa silid? Bumalik at i-tap kung nasaan ka sa mapa, saka pindutin ang “Magsimula rito”.",
+  "pickOnMap": "Pumili sa mapa",
+  "pickFromSub": "I-tap kung nasaan ka",
+  "pickToSub": "I-tap kung saan ka pupunta",
+  "pickFromNotice": "I-tap sa mapa kung nasaan ka.",
+  "pickToNotice": "I-tap sa mapa kung saan ka pupunta.",
+  "floorOf": "{floor}",
+  "leave": "Lumabas sa {place}",
+  "leaveTurn": "Lumabas sa {place} at {dirTurn}",
+  "leaveStraight": "Lumabas sa {place} at dumiretso",
+  "startAt": "Magsimula sa {place}",
+  "startAtTurn": "Mula sa {place}, {dirTurn}",
+  "startAtStraight": "Mula sa {place}, dumiretso",
+  "startAtToward": "Mula sa {place}, maglakad papunta sa {mark}",
+  "leaveByStraight": "Lumabas sa {place} sa {side}",
+  "leaveByHead": "Lumabas sa {place} sa {side} at pumunta sa {target}",
+  "leaveByToward": "Lumabas sa {place} sa {side} at maglakad papunta sa {mark}",
+  "leaveHead": "Lumabas sa {place} at pumunta sa {target}",
+  "leaveTurnHead": "Lumabas sa {place}, {dirTurn} at pumunta sa {target}",
+  "startAtHead": "Mula sa {place}, pumunta sa {target}",
+  "startAtTurnHead": "Mula sa {place}, {dirTurn} at pumunta sa {target}",
+  "onHead": "Pumunta sa {target}",
+  "onStraight": "Dumiretso",
+  "onTurn": "Lumiko sa {dir}",
+  "onTurnHead": "Lumiko sa {dir} at pumunta sa {target}",
+  "onToward": "Maglakad papunta sa {mark}",
+  "turn": "Lumiko sa {dir}",
+  "turnAt": "Pagdating sa {mark}, {dirTurn}",
+  "turnBy": "Sa tabi ng {mark}, {dirTurn}",
+  "turnEnd": "Sa dulo ng pasilyo, {dirTurn}",
+  "turnEndPath": "Sa dulo ng daan, {dirTurn}",
+  "turnAgain": "Lumiko ulit sa {dir}",
+  "bear": "Bahagyang lumiko sa {dir}",
+  "bearAt": "Pagdating sa {mark}, bahagyang lumiko sa {dir}",
+  "bearBy": "Sa tabi ng {mark}, bahagyang lumiko sa {dir}",
+  "bearAgain": "Bahagyang lumiko ulit sa {dir}",
+  "turnAround": "Umikot pabalik",
+  "then": "{first}, saka {dirTurn}",
+  "thenAgain": "{first}, saka {dirTurn} ulit",
+  "left": "kaliwa",
+  "right": "kanan",
+  "leftTurn": "kumaliwa",
+  "rightTurn": "kumanan",
+  "arrive": "Narito na ang {place}",
+  "arriveSide": "Nasa {dir} mo ang {place}",
+  "arriveAhead": "Nasa harap mo ang {place}",
+  "arriveOn": "Nasa {dir} mo",
+  "arriveAheadShort": "Nasa harap mo",
+  "stairsUp": "Umakyat sa {stair} hanggang {floor}",
+  "stairsDown": "Bumaba sa {stair} hanggang {floor}",
+  "stairsUpN": "Umakyat ng {n} palapag sa {stair} hanggang {floor}",
+  "stairsDownN": "Bumaba ng {n} palapag sa {stair} hanggang {floor}",
+  "liftUp": "Sumakay sa {lift} paakyat sa {floor}",
+  "liftDown": "Sumakay sa {lift} pababa sa {floor}",
+  "bridge": "Tumawid sa Tulay na Linkway papunta sa {floor}",
+  "walkway": "Dumaan sa daanang may bubong papunta sa {floor}",
+  "seam": "Magpatuloy papunta sa {floor}",
+  "landing": "Dumaan sa landing ng {stair} papunta sa {floor}",
+  "walkTo": "{dist} papunta sa {place}",
+  "onFloor": "sa {floor}",
+  "toFloor": "Papunta sa {floor}",
+  "fromFloor": "Mula sa {floor}",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "Level {n}",
+  "ttLevel": "Toh Tuck Level {n}",
+  "floorIn": "{floor}, {building}",
+  "levelWord": "Level",
+  "levelShort": "L{n}",
+  "ttShort": "TT L{n}",
+  "viaPlace": "{place}",
+  "about": "Tungkol sa mapang ito",
+  "staffOnly": "Kawani lamang",
+  "noteGym": "Umiikot sa labas ng gym dahil hindi ito daanan.",
+  "noteStaff": "Umiikot sa labas ng lugar na para sa kawani lamang.",
+  "noteOffice": "Umiikot sa labas ng opisina dahil hindi ito daanan.",
+  "noteLibrary": "Umiikot sa labas ng aklatan sa halip na dumaan sa loob nito.",
+  "noteBusBay": "Umiikot sa paligid ng hintuan ng bus sa halip na tumawid dito.",
+  "noteCourts": "Umiikot sa paligid ng basketbolan sa halip na tumawid dito.",
+  "notePool": "Umiikot sa paligid ng languyan dahil may bakod ito.",
+  "noteLobby": "Umiikot sa labas ng gusali ng bihisan: hindi daanan ang mga lobby nito.",
+  "noteRoads": "Dumaraan sa daanan ng tao, hindi sa daanan ng sasakyan o sa paradahan.",
+  "notePrimary": "Hindi dumaraan sa mga pasilyo ng Primarya.",
+  "noteSecondary": "Hindi dumaraan sa mga pasilyo ng Sekundarya.",
+  "liftRef": "elevator",
+  "liftBy": "elevator na katabi ng {mark}",
+  "liftOwn": "{name}",
+  "bridgeRef": "Tulay na Linkway",
+  "walkwayRef": "daanang may bubong",
+  "connLift": "Elevator",
+  "connBridge": "Tulay",
+  "connWalkway": "Daanan",
+  "near": "malapit sa {place}",
+  "listSep": ", ",
+  "and": " at ",
+  "capSep": " · ",
+  "withCode": "{name} ({code})",
+  "capGirls": "Batang Babae",
+  "capBoys": "Batang Lalaki",
+  "capWomen": "Kababaihan",
+  "capMen": "Kalalakihan",
+  "capAdults": "Adulto",
+  "capFemale": "Babae",
+  "capMale": "Lalaki",
+  "capAccessible": "PWD",
+  "whoGirls": "mga batang babae",
+  "whoBoys": "mga batang lalaki",
+  "whoWomen": "kababaihan",
+  "whoMen": "kalalakihan",
+  "toiletGirls": "CR ng mga Batang Babae",
+  "toiletBoys": "CR ng mga Batang Lalaki",
+  "toiletWomen": "CR ng Kababaihan",
+  "toiletMen": "CR ng Kalalakihan",
+  "toiletAdults": "CR ng mga Adulto (Lahat ng Kasarian)",
+  "toiletFemale": "Pambabaeng CR",
+  "toiletMale": "Panlalaking CR",
+  "toiletAccessible": "CR para sa PWD",
+  "toiletsOf": "CR ({list})",
+  "minUnder": "<1 min",
+  "unknownPlace": "Tumuturo ang link na ito sa “{q}”, na wala sa mapa."
+ },
+ "names": {
+  "Accessible Toilet": "CR para sa PWD",
+  "Accessible Toilet (Swimming Complex)": "CR para sa PWD (Languyan)",
+  "Activities and Camps Office": "Opisina ng mga Aktibidad at Kampo",
+  "Activity pod": "Pod ng Aktibidad",
+  "Admissions, Marketing and Communications": "Opisina ng Admisyon, Marketing at Komunikasyon",
+  "Alfresco Area": "Alfresco na Kainan",
+  "Arts Room": "Silid ng Sining",
+  "Arts Room (Arts Pod)": "Silid ng Sining (Pod ng Sining)",
+  "Atrium Lobby": "Lobby ng Atrium",
+  "atrium side": "gawing atrium",
+  "Atrium void": "Puwang ng Atrium",
+  "Bakery": "Panaderya",
+  "Baking Classroom": "Silid-aralan sa Pagbe-bake",
+  "Basketball court": "Basketbolan",
+  "Basketball Courts": "Basketbolan",
+  "Bicycle lots": "Paradahan ng Bisikleta",
+  "Black Box Theatre": "Teatrong Black Box",
+  "Board Room": "Silid-pulungan ng Lupon",
+  "Bus and car egress lane": "Labasan ng Bus at Kotse",
+  "Bus Bay": "Hintuan ng Bus",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "Babaan at Sakayan ng Bus / Lugar ng Recess at Aktibidad",
+  "Bus egress lane": "Labasan ng Bus",
+  "Cafe": "Kapihan",
+  "Canteen Kitchen": "Kusina ng Kantina",
+  "Canteen Kitchen #": "Kusina ng Kantina #",
+  "Canteen Level 1": "Kantina sa Level 1",
+  "Canteen Level 2": "Kantina sa Level 2",
+  "CEB Principal": "Opisina ng Prinsipal ng CEB",
+  "CEB Vice-Principal": "Opisina ng Bise Prinsipal ng CEB",
+  "Centralised Equipment": "Silid ng Sentral na Kagamitan",
+  "Changing Room": "Bihisan",
+  "Changing Rooms": "Bihisan",
+  "Chiller / Plant Room": "Silid ng Chiller / Silid ng Makina",
+  "Classroom": "Silid-aralan",
+  "Co-Worker Space LKS-#": "Pinagsasaluhang Opisina LKS-#",
+  "Coordinators office": "Opisina ng mga Koordinador",
+  "Costumes / Props": "Silid ng Kasuotan / Props",
+  "Counselling Behaviorist": "Silid ng Pagpapayo sa Pag-uugali",
+  "Counsellor Classroom": "Silid-aralan ng Tagapayo",
+  "Covered landing": "Platapormang may Bubong",
+  "Covered walkway": "Daanang may Bubong",
+  "Covered Walkway": "Daanang may Bubong",
+  "CSR": "CSR",
+  "Dance Studio": "Studio ng Sayaw",
+  "David Foster Theatre": "Teatro David Foster",
+  "David Foster Theatre (upper part)": "Teatro David Foster (itaas na bahagi)",
+  "Deputy Head of School": "Opisina ng Pangalawang Pinuno ng Paaralan",
+  "Digital Film Studio": "Studio ng Digital na Pelikula",
+  "Digital Recording Studio (SW-#)": "Studio ng Digital na Pagrerekord (SW-#)",
+  "Director of CEB": "Opisina ng Direktor ng CEB",
+  "Director of Operations": "Opisina ng Direktor ng Operasyon",
+  "Driveway": "Daanan ng Sasakyan",
+  "Drop-off": "Babaan",
+  "ECA": "Opisina ng ECA",
+  "Electrical riser": "Riser ng Kuryente",
+  "ELL": "Silid ng Ingles (ELL)",
+  "ELL Classroom": "Silid-aralan ng Ingles (ELL)",
+  "Emergency vehicles only": "Sasakyang Pang-emerhensiya Lamang",
+  "Equipment Room": "Silid ng Kagamitan",
+  "Facilities": "Opisina ng Pasilidad",
+  "Female Toilet (Swimming Complex)": "Pambabaeng CR (Languyan)",
+  "Field deck": "Plataporma ng Palaruan",
+  "Finance Counter": "Counter ng Pananalapi",
+  "Finance Department": "Departamento ng Pananalapi",
+  "Fitness Centre and Gymnasium Viewing Gallery": "Fitness Center at Tanawan ng Gymnasium",
+  "Football pitch": "Palaruan ng Football",
+  "Footpath": "Daanan ng Tao",
+  "French Office (NW-#)": "Opisina ng Wikang Pranses (NW-#)",
+  "Game Equipment Room / Storage": "Silid ng Kagamitang Pampalakasan / Imbakan",
+  "Gardening Space": "Taniman",
+  "Gate": "Gate",
+  "Glass-topped parapet": "Pasamanong may Salamin",
+  "Grade # to # Learning Lead": "Opisina ng Pinuno ng Pagkatuto, Grade #–#",
+  "Gross Motor Room": "Silid ng Gross Motor",
+  "Gross Motor Room #": "Silid ng Gross Motor #",
+  "Guard House": "Himpilan ng Guwardiya",
+  "Gym Office": "Opisina ng Gym",
+  "Gymnasium": "Gymnasium",
+  "Head of Admissions": "Opisina ng Pinuno ng Admisyon",
+  "Head of Facilities": "Opisina ng Pinuno ng Pasilidad",
+  "Head of Finance": "Opisina ng Pinuno ng Pananalapi",
+  "Head of HR": "Opisina ng Pinuno ng HR",
+  "Head of Inclusion": "Opisina ng Pinuno ng Inklusyon",
+  "Head of Innovative Learning": "Opisina ng Pinuno ng Makabagong Pagkatuto",
+  "Head of IT": "Opisina ng Pinuno ng IT",
+  "Head of Marketing and Communication": "Opisina ng Pinuno ng Marketing at Komunikasyon",
+  "Head of School": "Opisina ng Pinuno ng Paaralan",
+  "Head of Student Support and Well-being": "Opisina ng Pinuno ng Suporta at Kapakanan ng Mag-aaral",
+  "High linkway": "Linkway na Mataas ang Bubong",
+  "Hose Reel": "Hose ng Bumbero",
+  "HR Meeting Room": "Silid-pulungan ng HR",
+  "I.T. Applications": "Opisina ng IT Applications",
+  "Instructional Bakery": "Panaderyang Panturo",
+  "IT Closet": "Silid ng IT",
+  "JK Classroom": "Silid-aralan ng Junior Kinder",
+  "Junior Gymnasium": "Pambatang Gymnasium",
+  "Junior Library": "Pambatang Aklatan",
+  "Junior Library Office": "Opisina ng Pambatang Aklatan",
+  "Junior Pool": "Pambatang Languyan",
+  "Kindergarten Office (Reception & Admin)": "Opisina ng Kindergarten (Resepsiyon at Admin)",
+  "Kitchen": "Kusina",
+  "LAN Room (BT wing)": "Silid ng LAN (BT wing)",
+  "LAN Room (KB wing)": "Silid ng LAN (KB wing)",
+  "Lawn": "Damuhan",
+  "Learning Support": "Suporta sa Pagkatuto",
+  "Library spiral stair": "Paikot na Hagdan ng Aklatan",
+  "Library stair": "Hagdan ng Aklatan",
+  "Library Store LKS-#-#": "Imbakan ng Aklatan LKS-#-#",
+  "Library Workroom #": "Silid-trabaho ng Aklatan #",
+  "Linkway Bridge": "Tulay na Linkway",
+  "Locker": "Silid ng mga Locker",
+  "LS": "Suporta sa Pagkatuto",
+  "LS Classroom": "Silid ng Suporta sa Pagkatuto",
+  "M&E": "Silid ng Makina at Kuryente",
+  "M&E ACHI": "Silid ng Makina at Kuryente",
+  "Main Entrance / School Entrance": "Pangunahing Pasukan / Pasukan ng Paaralan",
+  "Main Lift": "Pangunahing Elevator",
+  "Maintenance": "Opisina ng Maintenance",
+  "Male Toilet (Swimming Complex)": "Panlalaking CR (Languyan)",
+  "Meeting Room": "Silid-pulungan",
+  "Meeting Room #": "Silid-pulungan #",
+  "Music Academy": "Akademya ng Musika",
+  "Music Practice Room": "Silid-ensayo ng Musika",
+  "Music Practice Room #": "Silid-ensayo ng Musika #",
+  "Music Room": "Silid ng Musika",
+  "Music Room (Secondary)": "Silid ng Musika (Sekundarya)",
+  "Music Room (SW-#)": "Silid ng Musika (SW-#)",
+  "Netted court": "Court na may Lambat",
+  "North Entrance (Jurong West St #)": "Hilagang Pasukan (Jurong West St #)",
+  "Not a through route": "Hindi Daanan",
+  "Nurse Room": "Silid ng Nars",
+  "Nursery and Pre-K playground": "Palaruan ng Nursery at Pre-K",
+  "Nursery Room": "Silid ng Nursery",
+  "Occupational Therapy": "Okupasyonal na Terapiya",
+  "Occupational Therapy Room": "Silid ng Okupasyonal na Terapiya",
+  "Office": "Opisina",
+  "Open Minds Office": "Opisina ng Open Minds",
+  "Open-air courtyard": "Bukas na Patyo",
+  "Outdoor Discovery Centre": "Sentro ng Pagtuklas sa Labas",
+  "Outdoor Discovery garden": "Hardin ng Pagtuklas sa Labas",
+  "Passage": "Daanan",
+  "Passenger Lift": "Elevator",
+  "PE Office": "Opisina ng PE",
+  "PE Office side": "gawing Opisina ng PE",
+  "Plant room": "Silid ng Makina",
+  "Pod": "Pod",
+  "Pod A": "Pod A",
+  "Pod B": "Pod B",
+  "Pod C": "Pod C",
+  "Pod D": "Pod D",
+  "Pod E": "Pod E",
+  "Pod F": "Pod F",
+  "Pod G": "Pod G",
+  "Pod H": "Pod H",
+  "Pool deck": "Paligid ng Languyan",
+  "Pool road": "Daan sa Languyan",
+  "Pool-side walk": "Daanan sa Gilid ng Languyan",
+  "Practice Room": "Silid-ensayo",
+  "Practice Room #": "Silid-ensayo #",
+  "Pre-function Space": "Lobby ng Teatro",
+  "Pre-K Room": "Silid ng Pre-K",
+  "Prep Room #": "Silid-paghahanda #",
+  "Primary Counselling": "Pagpapayo sa Primarya",
+  "Primary Drop-off Zone": "Babaan ng Primarya",
+  "Primary Library": "Aklatan ng Primarya",
+  "Primary Library LKS-#": "Aklatan ng Primarya LKS-#",
+  "Primary Makerspace": "Makerspace ng Primarya",
+  "Primary PE Office": "Opisina ng PE ng Primarya",
+  "Primary Play Area": "Palaruan ng Primarya",
+  "Primary Principal": "Opisina ng Prinsipal ng Primarya",
+  "Primary School Office": "Opisina ng Primarya",
+  "Primary Vice-Principal": "Opisina ng Bise Prinsipal ng Primarya",
+  "Principal": "Opisina ng Prinsipal",
+  "PTA Room": "Silid ng PTA",
+  "Raised platform": "Nakataas na Plataporma",
+  "Ramp to the field": "Rampa papunta sa Palaruan",
+  "Reception / Main Office": "Resepsiyon / Pangunahing Opisina",
+  "Red Dot Cafe": "Kapihang Red Dot",
+  "Red Dot Convention Centre": "Bulwagang Red Dot",
+  "Riser": "Riser",
+  "Risers and IT room": "Riser at Silid ng IT",
+  "Road": "Kalsada",
+  "Roof (no access)": "Bubong (hindi mapupuntahan)",
+  "Roof Garden": "Hardin sa Bubong",
+  "Sand play area": "Palaruan ng Buhangin",
+  "School Nurse": "Klinika ng Paaralan",
+  "School Nurse (Primary)": "Klinika ng Paaralan (Primarya)",
+  "Science Lab #": "Laboratoryo ng Agham #",
+  "Secondary Counselling": "Pagpapayo sa Sekundarya",
+  "Secondary Drama": "Silid ng Drama ng Sekundarya",
+  "Secondary Library": "Aklatan ng Sekundarya",
+  "Secondary Library LKS-#": "Aklatan ng Sekundarya LKS-#",
+  "Secondary Music Room": "Silid ng Musika ng Sekundarya",
+  "Secondary Principal": "Opisina ng Prinsipal ng Sekundarya",
+  "Secondary School Office": "Opisina ng Sekundarya",
+  "Secondary Vice Principal": "Opisina ng Bise Prinsipal ng Sekundarya",
+  "Security": "Opisina ng Seguridad",
+  "Senior Field (Upper Sports Field)": "Itaas na Palaruan (Senior Field)",
+  "Senior Pool (# m)": "Malaking Languyan (# m)",
+  "Server Room": "Silid ng Server",
+  "Servery": "Kuhanan ng Pagkain",
+  "Service Lift": "Service Elevator",
+  "Sheltered Drop-off Point": "Babaang may Bubong",
+  "SK Room": "Silid ng Senior Kinder",
+  "Sound Lock Lobby": "Soundproof na Lobby",
+  "Spectator bleachers": "Upuan ng mga Manonood",
+  "Speech / OT / LS": "Terapiya sa Pagsasalita / OT / LS",
+  "Speech Pathologist": "Silid ng Terapiya sa Pagsasalita",
+  "Staff Room": "Silid ng mga Kawani",
+  "Stairs #": "Hagdan #",
+  "Stairs # (no door on this floor)": "Hagdan # (walang pinto sa palapag na ito)",
+  "Stairs # side": "gawing Hagdan #",
+  "STEAM Centre (Pod F)": "Sentro ng STEAM (Pod F)",
+  "STEAM Room": "Silid ng STEAM",
+  "Steam Store": "Imbakan ng STEAM",
+  "Steps and ramp": "Baitang at Rampa",
+  "Storage": "Imbakan",
+  "Store": "Imbakan",
+  "Store Room": "Imbakan",
+  "Student crossing": "Tawiran ng Mag-aaral",
+  "Study Area (Secondary Arts Centre courtyard)": "Lugar ng Pag-aaral (Patyo ng Sentro ng Sining ng Sekundarya)",
+  "Supply": "Silid ng Suplay",
+  "Swim Office": "Opisina ng Paglangoy",
+  "Thermal Energy Storage": "Imbakan ng Enerhiyang Termal",
+  "Tiered seating": "Pabaitang na Upuan",
+  "Toilet": "CR",
+  "Toilet (Men)": "CR (Kalalakihan)",
+  "Toilet (Women)": "CR (Kababaihan)",
+  "Toilets (Junior Gym)": "CR (Pambatang Gym)",
+  "Transformer / Switch Room": "Silid ng Transformer / Silid ng Switch",
+  "Two-way driveway": "Two-way na Daanan",
+  "University advisors": "Opisina ng mga Tagapayo sa Unibersidad",
+  "Unnamed room": "Silid na Walang Pangalan",
+  "Vice-Principal": "Opisina ng Bise Prinsipal",
+  "Viewing Area": "Tanawan",
+  "Visitor car park": "Paradahan ng Bisita",
+  "Visitor Car Park": "Paradahan ng Bisita",
+  "Void": "Puwang",
+  "Void over the Study Area courtyard": "Puwang sa Itaas ng Patyo",
+  "Wading Pool": "Mababaw na Languyan",
+  "Walkway": "Daanan",
+  "Walkway to Toh Tuck Wing": "Daanan papunta sa Toh Tuck",
+  "Work Room": "Silid-trabaho",
+  "Workroom": "Silid-trabaho",
+  "Yeap Transport": "Opisina ng Yeap Transport",
+  "Zebra crossing": "Tawiran"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "cr",
+    "c r",
+    "comfort room",
+    "banyo",
+    "palikuran",
+    "kubeta",
+    "kasilyas",
+    "toilet",
+    "restroom"
+   ],
+   "lift": [
+    "elevator",
+    "elebeytor",
+    "lift"
+   ],
+   "stair": [
+    "hagdan",
+    "hagdanan"
+   ],
+   "food": [
+    "kantina",
+    "canteen",
+    "kainan",
+    "pagkain",
+    "kumain",
+    "tanghalian",
+    "meryenda",
+    "cafeteria"
+   ],
+   "office": [
+    "tanggapan",
+    "office"
+   ]
+  },
+  "who": {
+   "girls": [
+    "batang babae",
+    "babaeng estudyante",
+    "estudyanteng babae",
+    "babaeng mag-aaral",
+    "mag-aaral na babae",
+    "girls"
+   ],
+   "boys": [
+    "batang lalaki",
+    "lalaking estudyante",
+    "estudyanteng lalaki",
+    "lalaking mag-aaral",
+    "mag-aaral na lalaki",
+    "boys"
+   ],
+   "women": [
+    "babae",
+    "babaeng",
+    "kababaihan",
+    "pambabae",
+    "pambabaeng",
+    "women",
+    "ladies"
+   ],
+   "men": [
+    "lalaki",
+    "lalaking",
+    "kalalakihan",
+    "panlalaki",
+    "panlalaking",
+    "men",
+    "gents"
+   ],
+   "adults": [
+    "adulto",
+    "nasa hustong gulang",
+    "unisex",
+    "lahat ng kasarian",
+    "all-gender",
+    "cr ng kawani",
+    "cr ng guro",
+    "cr ng staff",
+    "cr ng magulang",
+    "cr ng bisita"
+   ],
+   "accessible": [
+    "pwd",
+    "may kapansanan",
+    "kapansanan",
+    "wheelchair",
+    "silyang de-gulong",
+    "accessible"
+   ]
+  },
+  "ignore": [
+   "ang",
+   "ng",
+   "nang",
+   "sa",
+   "mga",
+   "na",
+   "ay",
+   "at",
+   "si",
+   "ni",
+   "kay",
+   "ko",
+   "mo",
+   "ako",
+   "ka",
+   "po",
+   "ho",
+   "ba",
+   "nasaan",
+   "saan",
+   "asan",
+   "san",
+   "nasa",
+   "pinakamalapit",
+   "malapit",
+   "tabi",
+   "katabi",
+   "papunta",
+   "patungo",
+   "pupunta",
+   "pumunta",
+   "punta",
+   "hanapin",
+   "hanap",
+   "para",
+   "may",
+   "dito",
+   "rito",
+   "yung",
+   "iyong",
+   "nasan",
+   "ung",
+   "saang",
+   "anong",
+   "ano",
+   "paano",
+   "papaano",
+   "pano",
+   "gusto",
+   "pwede",
+   "pwedeng",
+   "puwede",
+   "puwedeng",
+   "direksiyon",
+   "direksyon",
+   "lokasyon",
+   "estudyante",
+   "mag-aaral",
+   "bata"
+  ],
+  "level": [
+   "level",
+   "lebel",
+   "palapag",
+   "antas",
+   "lvl"
+  ],
+  "levelAfter": [],
+  "synonyms": {
+   "klinika": [
+    "nars"
+   ],
+   "nars": [
+    "klinika"
+   ],
+   "klinik": [
+    "klinika",
+    "nars"
+   ],
+   "clinic": [
+    "klinika",
+    "nars"
+   ],
+   "nurse": [
+    "klinika",
+    "nars"
+   ],
+   "doktor": [
+    "klinika",
+    "nars"
+   ],
+   "doctor": [
+    "klinika",
+    "nars"
+   ],
+   "sakit": [
+    "klinika",
+    "nars"
+   ],
+   "guidance": [
+    "pagpapayo",
+    "tagapayo"
+   ],
+   "counseling": [
+    "pagpapayo",
+    "tagapayo"
+   ],
+   "counselling": [
+    "pagpapayo",
+    "tagapayo"
+   ],
+   "counselor": [
+    "pagpapayo",
+    "tagapayo"
+   ],
+   "tagapayo": [
+    "pagpapayo"
+   ],
+   "pagpapayo": [
+    "tagapayo"
+   ],
+   "principal": [
+    "prinsipal"
+   ],
+   "punong-guro": [
+    "prinsipal"
+   ],
+   "pangalawang": [
+    "bise"
+   ],
+   "bise-prinsipal": [
+    "bise"
+   ],
+   "assistant": [
+    "bise"
+   ],
+   "silid-aklatan": [
+    "aklatan"
+   ],
+   "library": [
+    "aklatan"
+   ],
+   "libro": [
+    "aklatan"
+   ],
+   "pool": [
+    "languyan"
+   ],
+   "swimming": [
+    "languyan",
+    "paglangoy"
+   ],
+   "langoy": [
+    "languyan",
+    "paglangoy"
+   ],
+   "paglangoy": [
+    "languyan"
+   ],
+   "tanghalan": [
+    "teatro",
+    "teatrong",
+    "bulwagang"
+   ],
+   "auditorium": [
+    "teatro",
+    "teatrong",
+    "bulwagang"
+   ],
+   "awditoryum": [
+    "teatro",
+    "teatrong",
+    "bulwagang"
+   ],
+   "theater": [
+    "teatro",
+    "teatrong"
+   ],
+   "theatre": [
+    "teatro",
+    "teatrong"
+   ],
+   "entablado": [
+    "teatro",
+    "teatrong"
+   ],
+   "teatro": [
+    "teatrong"
+   ],
+   "music": [
+    "musika"
+   ],
+   "banda": [
+    "musika"
+   ],
+   "piyano": [
+    "musika"
+   ],
+   "koro": [
+    "musika"
+   ],
+   "science": [
+    "agham"
+   ],
+   "lab": [
+    "laboratoryo"
+   ],
+   "laboratory": [
+    "laboratoryo"
+   ],
+   "kimika": [
+    "agham"
+   ],
+   "pisika": [
+    "agham"
+   ],
+   "biyolohiya": [
+    "agham"
+   ],
+   "kompyuter": [
+    "it"
+   ],
+   "computer": [
+    "it"
+   ],
+   "labasan": [
+    "pasukan"
+   ],
+   "exit": [
+    "pasukan"
+   ],
+   "entrance": [
+    "pasukan"
+   ],
+   "geyt": [
+    "gate",
+    "pasukan"
+   ],
+   "parking": [
+    "paradahan",
+    "babaan"
+   ],
+   "paradahan": [
+    "babaan"
+   ],
+   "sunduan": [
+    "babaan",
+    "sakayan"
+   ],
+   "sundo": [
+    "babaan",
+    "sakayan"
+   ],
+   "hatid": [
+    "babaan"
+   ],
+   "hatid-sundo": [
+    "babaan",
+    "sakayan"
+   ],
+   "kahera": [
+    "pananalapi"
+   ],
+   "cashier": [
+    "pananalapi"
+   ],
+   "bayaran": [
+    "pananalapi"
+   ],
+   "finance": [
+    "pananalapi"
+   ],
+   "bayad": [
+    "pananalapi"
+   ],
+   "matrikula": [
+    "pananalapi"
+   ],
+   "tuition": [
+    "pananalapi"
+   ],
+   "enrollment": [
+    "admisyon"
+   ],
+   "enrolment": [
+    "admisyon"
+   ],
+   "pagpapatala": [
+    "admisyon"
+   ],
+   "admission": [
+    "admisyon"
+   ],
+   "admissions": [
+    "admisyon"
+   ],
+   "enroll": [
+    "admisyon"
+   ],
+   "enrol": [
+    "admisyon"
+   ],
+   "registrar": [
+    "admisyon"
+   ],
+   "kinder": [
+    "kindergarten",
+    "nursery",
+    "pre-k"
+   ],
+   "kindergarten": [
+    "kinder",
+    "nursery",
+    "pre-k"
+   ],
+   "elementarya": [
+    "primarya"
+   ],
+   "elementary": [
+    "primarya"
+   ],
+   "elem": [
+    "primarya"
+   ],
+   "primary": [
+    "primarya"
+   ],
+   "hayskul": [
+    "sekundarya"
+   ],
+   "secondary": [
+    "sekundarya"
+   ],
+   "guro": [
+    "kawani"
+   ],
+   "titser": [
+    "kawani"
+   ],
+   "teacher": [
+    "kawani"
+   ],
+   "faculty": [
+    "kawani"
+   ],
+   "staff": [
+    "kawani"
+   ],
+   "kolehiyo": [
+    "unibersidad"
+   ],
+   "college": [
+    "unibersidad"
+   ],
+   "university": [
+    "unibersidad"
+   ],
+   "art": [
+    "sining"
+   ],
+   "arts": [
+    "sining"
+   ],
+   "dula": [
+    "drama"
+   ],
+   "dance": [
+    "sayaw"
+   ],
+   "sayawan": [
+    "sayaw"
+   ],
+   "bake": [
+    "pagbe-bake",
+    "panaderya"
+   ],
+   "baking": [
+    "pagbe-bake",
+    "panaderya"
+   ],
+   "pagluluto": [
+    "pagbe-bake",
+    "panaderya"
+   ],
+   "field": [
+    "palaruan"
+   ],
+   "oval": [
+    "field"
+   ],
+   "playground": [
+    "palaruan"
+   ],
+   "guwardiya": [
+    "guwardiya",
+    "seguridad"
+   ],
+   "gwardya": [
+    "guwardiya",
+    "seguridad"
+   ],
+   "guard": [
+    "guwardiya",
+    "seguridad"
+   ],
+   "bantay": [
+    "guwardiya",
+    "seguridad"
+   ],
+   "security": [
+    "seguridad",
+    "guwardiya"
+   ],
+   "meeting": [
+    "silid-pulungan"
+   ],
+   "room": [
+    "silid"
+   ],
+   "pulungan": [
+    "silid-pulungan"
+   ],
+   "kape": [
+    "kapihan",
+    "kapihang"
+   ],
+   "coffee": [
+    "kapihan",
+    "kapihang"
+   ],
+   "cafe": [
+    "kapihan",
+    "kapihang"
+   ],
+   "kapihan": [
+    "kapihang"
+   ],
+   "bridge": [
+    "tulay"
+   ],
+   "walkway": [
+    "daanan",
+    "daanang"
+   ],
+   "therapy": [
+    "terapiya"
+   ],
+   "terapi": [
+    "terapiya"
+   ],
+   "speech": [
+    "pagsasalita"
+   ],
+   "ot": [
+    "okupasyonal"
+   ],
+   "sports": [
+    "palaruan",
+    "gymnasium",
+    "basketbolan",
+    "languyan"
+   ],
+   "palakasan": [
+    "palaruan",
+    "gymnasium",
+    "basketbolan",
+    "languyan",
+    "pampalakasan"
+   ],
+   "basketball": [
+    "basketbolan"
+   ],
+   "basketbol": [
+    "basketbolan"
+   ],
+   "futbol": [
+    "field"
+   ],
+   "soccer": [
+    "football"
+   ],
+   "bike": [
+    "bisikleta"
+   ],
+   "palanguyan": [
+    "languyan"
+   ],
+   "accounting": [
+    "pananalapi"
+   ],
+   "magulang": [
+    "pta"
+   ],
+   "parents": [
+    "pta"
+   ],
+   "teachers": [
+    "kawani"
+   ],
+   "impormasyon": [
+    "resepsiyon"
+   ],
+   "information": [
+    "resepsiyon"
+   ],
+   "info": [
+    "resepsiyon"
+   ],
+   "desk": [
+    "resepsiyon"
+   ],
+   "front": [
+    "resepsiyon"
+   ],
+   "french": [
+    "pranses"
+   ],
+   "english": [
+    "ingles"
+   ],
+   "esl": [
+    "ell"
+   ],
+   "high": [
+    "sekundarya"
+   ],
+   "school": [
+    "paaralan",
+    "sekundarya",
+    "primarya"
+   ]
+  }
+ }
+}

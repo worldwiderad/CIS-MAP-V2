@@ -1,0 +1,1155 @@
+{
+ "lang": "ja",
+ "strings": {
+  "title": "地図",
+  "from": "出発地",
+  "to": "目的地",
+  "chooseStart": "現在地を選択",
+  "whereTo": "どこへ行きますか？",
+  "youAreHere": "現在地",
+  "swap": "出発地と目的地を入れ替え",
+  "endTrip": "ルートを消去",
+  "showMap": "地図を表示",
+  "stepFree": "段差なし",
+  "stepFreeHint": "エレベーターとスロープのみ",
+  "searchPh": "部屋名・番号・場所で検索",
+  "noResults": "「{q}」は見つかりませんでした。KB⁠-⁠405などの部屋番号か、「図書館」「トイレ」などの場所名で検索してください。",
+  "nearest": "最寄りの{what}",
+  "nearestToilet": "最寄りのトイレ",
+  "nearestLift": "最寄りのエレベーター",
+  "nearestOf": "最寄りの{what}",
+  "nearestFor": "最寄りの{who}用トイレ",
+  "nearestAccessible": "最寄りの車いす対応トイレ",
+  "kindNear": "{place}近くの{kind}",
+  "needStart": "最寄りの場所を探すには、まず現在地を選んでください。",
+  "chipToilet": "トイレ",
+  "chipLift": "エレベーター",
+  "chipStairs": "階段",
+  "chipFood": "食堂",
+  "chipLibrary": "図書館",
+  "chipOffice": "オフィス",
+  "chipGym": "体育館",
+  "chipTheatre": "劇場",
+  "directionsHere": "ここへのルート",
+  "startHere": "ここから出発",
+  "backToRoute": "ルートに戻る",
+  "whichSide": "どちら側にいますか？",
+  "sideCancel": "今は選ばない",
+  "summary": "{dist} · 徒歩約{time}",
+  "summaryShort": "{dist} · 徒歩1分未満",
+  "min": "{n}分",
+  "sec": "{n}秒",
+  "metres": "{n}m",
+  "noRoute": "この2か所を結ぶルートはありません。",
+  "noStepFree": "この2か所を結ぶ段差のないルートはありません。",
+  "stepFreeYours": "この端末の設定に合わせて、段差のないルート（エレベーターとスロープのみ）を案内します。",
+  "same": "すでにその場所にいます。",
+  "loading": "キャンパスマップを読み込み中…",
+  "loadFail": "地図を読み込めませんでした。接続を確認して、ページを再読み込みしてください。",
+  "showFloor": "フロア全体を表示",
+  "floors": "フロア",
+  "close": "閉じる",
+  "back": "戻る",
+  "clear": "クリア",
+  "endSteps": "ルート全体を表示",
+  "popular": "よく利用される場所",
+  "arrivals": "入口・送迎場所",
+  "keepTyping": "続けて入力してください…",
+  "done": "完了",
+  "findPlace": "場所を探す",
+  "shareTitlePhone": "このルートを共有",
+  "shareSubPhone": "リンクを送るか、相手のスマートフォンでQRコードを読み取ってもらってください。",
+  "floorUp": "1つ上の階",
+  "floorDown": "1つ下の階",
+  "floorUps": "{n}つ上の階",
+  "floorDowns": "{n}つ下の階",
+  "viaFloor": "{f}経由",
+  "steps": "道順",
+  "allSteps": "すべてのステップ",
+  "hideSteps": "ステップを閉じる",
+  "start": "案内開始",
+  "stepCount": "ステップ{i}/{n}",
+  "nextStop": "次の目的地：{place}",
+  "stopOf": "{i}/{n}",
+  "prevStep": "前のステップ",
+  "nextStep": "次のステップ",
+  "stepsTip": "この地図は現在地を追跡しません。各ステップを歩き終えたら、›をタップして次へ進んでください。",
+  "docTitle": "CIS地図",
+  "language": "言語",
+  "chooseLanguage": "言語を選んでください",
+  "languageLabel": "言語",
+  "results": "検索結果",
+  "recent": "最近使った場所",
+  "share": "このルートをスマートフォンで開く",
+  "shareTitle": "このルートをスマートフォンへ",
+  "shareSub": "スマートフォンのカメラで読み取ると、そちらで開けます。",
+  "copyLink": "リンクをコピー",
+  "copied": "コピーしました",
+  "shareLink": "このルートを共有",
+  "linkCopied": "リンクをコピーしました",
+  "shareNative": "共有…",
+  "tapMapTip": "部屋がわからない場合は、戻って地図上で現在地をタップし、「ここから出発」を押してください。",
+  "pickOnMap": "地図上で選ぶ",
+  "pickFromSub": "現在地をタップ",
+  "pickToSub": "行き先をタップ",
+  "pickFromNotice": "地図上で現在地をタップしてください。",
+  "pickToNotice": "地図上で目的地をタップしてください。",
+  "floorOf": "{floor}",
+  "leave": "{place}を出ます",
+  "leaveTurn": "{place}を出て{dir}に曲がります",
+  "leaveStraight": "{place}を出てまっすぐ進みます",
+  "startAt": "{place}から出発します",
+  "startAtTurn": "{place}から{dir}へ進みます",
+  "startAtStraight": "{place}からまっすぐ進みます",
+  "startAtToward": "{place}から、{mark}の方へ進みます",
+  "leaveByStraight": "{place}を{side}から出ます",
+  "leaveByHead": "{place}を{side}から出て、{target}へ向かいます",
+  "leaveByToward": "{place}を{side}から出て、{mark}の方へ進みます",
+  "leaveHead": "{place}を出て、{target}へ向かいます",
+  "leaveTurnHead": "{place}を出て{dir}に曲がり、{target}へ向かいます",
+  "startAtHead": "{place}から{target}へ向かいます",
+  "startAtTurnHead": "{place}から{dir}へ進み、{target}へ向かいます",
+  "onHead": "{target}へ向かいます",
+  "onStraight": "まっすぐ進みます",
+  "onTurn": "{dir}に曲がります",
+  "onTurnHead": "{dir}に曲がり、{target}へ向かいます",
+  "onToward": "{mark}の方へ進みます",
+  "turn": "{dir}に曲がります",
+  "turnAt": "{mark}のところで{dir}に曲がります",
+  "turnBy": "{mark}のそばで{dir}に曲がります",
+  "turnEnd": "廊下の突き当たりを{dir}に曲がります",
+  "turnEndPath": "道の突き当たりを{dir}に曲がります",
+  "turnAgain": "次も{dir}に曲がります",
+  "bear": "斜め{dir}に進みます",
+  "bearAt": "{mark}のところで斜め{dir}に進みます",
+  "bearBy": "{mark}のそばで斜め{dir}に進みます",
+  "bearAgain": "次も斜め{dir}に進みます",
+  "turnAround": "引き返します",
+  "then": "{first}。すぐ先で{dir}に曲がります",
+  "thenAgain": "{first}。すぐ先でもう一度{dir}に曲がります",
+  "left": "左",
+  "right": "右",
+  "leftTurn": "左に曲がります",
+  "rightTurn": "右に曲がります",
+  "arrive": "{place}に到着します",
+  "arriveSide": "{dir}側の{place}に到着します",
+  "arriveAhead": "正面の{place}に到着します",
+  "arriveOn": "{dir}側",
+  "arriveAheadShort": "正面",
+  "stairsUp": "{stair}で{floor}へ上がります",
+  "stairsDown": "{stair}で{floor}へ下ります",
+  "stairsUpN": "{stair}で{floor}まで{n}フロア上がります",
+  "stairsDownN": "{stair}で{floor}まで{n}フロア下ります",
+  "liftUp": "{lift}で{floor}へ上がります",
+  "liftDown": "{lift}で{floor}へ下ります",
+  "bridge": "連絡橋を渡って{floor}へ進みます",
+  "walkway": "屋根付き通路を通って{floor}へ進みます",
+  "seam": "そのまま{floor}へ進みます",
+  "landing": "{stair}の踊り場を通って{floor}へ進みます",
+  "walkTo": "{place}まで{dist}",
+  "onFloor": "{floor}で",
+  "toFloor": "{floor}へ",
+  "fromFloor": "{floor}から",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "{n}階",
+  "ttLevel": "Toh Tuck {n}階",
+  "floorIn": "{building} {floor}",
+  "levelWord": "階",
+  "levelShort": "{n}階",
+  "ttShort": "TT {n}階",
+  "viaPlace": "{place}",
+  "about": "この地図について",
+  "staffOnly": "教職員専用",
+  "noteGym": "体育館は通り抜けできないため、迂回します。",
+  "noteStaff": "教職員専用エリアを迂回します。",
+  "noteOffice": "事務室は通り抜けできないため、迂回します。",
+  "noteLibrary": "図書館の中は通らずに迂回します。",
+  "noteBusBay": "バス乗降場を横切らずに迂回します。",
+  "noteCourts": "バスケットボールコートを横切らずに迂回します。",
+  "notePool": "プールサイドはフェンスで囲まれているため、迂回します。",
+  "noteLobby": "更衣棟のロビーは通り抜けできないため、迂回します。",
+  "noteRoads": "車道や駐車場を避け、歩道を通ります。",
+  "notePrimary": "小学部の廊下は通りません。",
+  "noteSecondary": "中高等部の廊下は通りません。",
+  "liftRef": "エレベーター",
+  "liftBy": "{mark}近くのエレベーター",
+  "liftOwn": "{name}",
+  "bridgeRef": "連絡橋",
+  "walkwayRef": "屋根付き通路",
+  "connLift": "エレベーター",
+  "connBridge": "連絡橋",
+  "connWalkway": "通路",
+  "near": "{place}付近",
+  "listSep": "・",
+  "and": "・",
+  "capSep": "・",
+  "withCode": "{name}（{code}）",
+  "capGirls": "女子",
+  "capBoys": "男子",
+  "capWomen": "女性",
+  "capMen": "男性",
+  "capAdults": "大人",
+  "capFemale": "女",
+  "capMale": "男",
+  "capAccessible": "車いす対応",
+  "whoGirls": "女子",
+  "whoBoys": "男子",
+  "whoWomen": "女性",
+  "whoMen": "男性",
+  "toiletGirls": "女子トイレ",
+  "toiletBoys": "男子トイレ",
+  "toiletWomen": "女性用トイレ",
+  "toiletMen": "男性用トイレ",
+  "toiletAdults": "大人用トイレ（男女共用）",
+  "toiletFemale": "トイレ（女）",
+  "toiletMale": "トイレ（男）",
+  "toiletAccessible": "車いす対応トイレ",
+  "toiletsOf": "トイレ（{list}）",
+  "minUnder": "1分未満",
+  "unknownPlace": "このリンクが示す「{q}」は、地図上にありません。"
+ },
+ "names": {
+  "Accessible Toilet": "車いす対応トイレ",
+  "Accessible Toilet (Swimming Complex)": "車いす対応トイレ（プール棟）",
+  "Activities and Camps Office": "アクティビティ・キャンプ事務室",
+  "Activity pod": "活動スペース",
+  "Admissions, Marketing and Communications": "入学・マーケティング・広報室",
+  "Alfresco Area": "屋外飲食エリア",
+  "Arts Room": "美術室",
+  "Arts Room (Arts Pod)": "美術室（アートスペース）",
+  "Atrium Lobby": "アトリウムロビー",
+  "atrium side": "アトリウム側",
+  "Atrium void": "吹き抜け",
+  "Bakery": "製パン室",
+  "Baking Classroom": "ベーキング教室",
+  "Basketball court": "バスケットボールコート",
+  "Basketball Courts": "バスケットボールコート",
+  "Bicycle lots": "駐輪場",
+  "Black Box Theatre": "ブラックボックス劇場",
+  "Board Room": "役員会議室",
+  "Bus and car egress lane": "バス・車両出口レーン",
+  "Bus Bay": "バス乗降場",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "スクールバス乗降場／休み時間・活動エリア",
+  "Bus egress lane": "バス出口レーン",
+  "Cafe": "カフェ",
+  "Canteen Kitchen": "厨房",
+  "Canteen Kitchen #": "厨房#",
+  "Canteen Level 1": "1階食堂",
+  "Canteen Level 2": "2階食堂",
+  "CEB Principal": "CEB校長室",
+  "CEB Vice-Principal": "CEB副校長室",
+  "Centralised Equipment": "共用機材室",
+  "Changing Room": "更衣室",
+  "Changing Rooms": "更衣室",
+  "Chiller / Plant Room": "冷凍機室／機械室",
+  "Classroom": "教室",
+  "Co-Worker Space LKS-#": "コワーキングスペースLKS-#",
+  "Coordinators office": "コーディネーター室",
+  "Costumes / Props": "衣装・小道具室",
+  "Counselling Behaviorist": "行動カウンセリング室",
+  "Counsellor Classroom": "カウンセリング教室",
+  "Covered landing": "屋根付き踊り場",
+  "Covered walkway": "屋根付き通路",
+  "Covered Walkway": "屋根付き通路",
+  "CSR": "CSR",
+  "Dance Studio": "ダンススタジオ",
+  "David Foster Theatre": "デイヴィッド・フォスター劇場",
+  "David Foster Theatre (upper part)": "デイヴィッド・フォスター劇場（上部）",
+  "Deputy Head of School": "副校長室",
+  "Digital Film Studio": "デジタル映像スタジオ",
+  "Digital Recording Studio (SW-#)": "デジタル録音スタジオ（SW-#）",
+  "Director of CEB": "CEBディレクター室",
+  "Director of Operations": "運営ディレクター室",
+  "Driveway": "車道",
+  "Drop-off": "車寄せ",
+  "ECA": "課外活動室",
+  "Electrical riser": "電気シャフト",
+  "ELL": "英語学習支援室",
+  "ELL Classroom": "英語学習支援教室",
+  "Emergency vehicles only": "緊急車両専用",
+  "Equipment Room": "器材室",
+  "Facilities": "施設管理室",
+  "Female Toilet (Swimming Complex)": "女性トイレ（プール棟）",
+  "Field deck": "グラウンドデッキ",
+  "Finance Counter": "会計窓口",
+  "Finance Department": "財務部",
+  "Fitness Centre and Gymnasium Viewing Gallery": "フィットネスセンター・体育館ギャラリー",
+  "Football pitch": "サッカー場",
+  "Footpath": "歩道",
+  "French Office (NW-#)": "フランス語教員室（NW-#）",
+  "Game Equipment Room / Storage": "体育用具室／倉庫",
+  "Gardening Space": "菜園スペース",
+  "Gate": "ゲート",
+  "Glass-topped parapet": "ガラス柵付き腰壁",
+  "Grade # to # Learning Lead": "#〜#年生学習主任室",
+  "Gross Motor Room": "運動遊び室",
+  "Gross Motor Room #": "運動遊び室#",
+  "Guard House": "守衛所",
+  "Gym Office": "体育館事務室",
+  "Gymnasium": "体育館",
+  "Head of Admissions": "入学担当責任者室",
+  "Head of Facilities": "施設管理責任者室",
+  "Head of Finance": "財務責任者室",
+  "Head of HR": "人事責任者室",
+  "Head of Inclusion": "インクルーシブ教育責任者室",
+  "Head of Innovative Learning": "イノベーション学習責任者室",
+  "Head of IT": "IT責任者室",
+  "Head of Marketing and Communication": "マーケティング・広報責任者室",
+  "Head of School": "校長室",
+  "Head of Student Support and Well-being": "生徒支援・ウェルビーイング責任者室",
+  "High linkway": "連絡通路",
+  "Hose Reel": "消火ホース",
+  "HR Meeting Room": "人事会議室",
+  "I.T. Applications": "ITアプリケーション室",
+  "Instructional Bakery": "製パン実習室",
+  "IT Closet": "IT機器室",
+  "JK Classroom": "ジュニアキンダー教室",
+  "Junior Gymnasium": "ジュニア体育館",
+  "Junior Library": "ジュニア図書館",
+  "Junior Library Office": "ジュニア図書館事務室",
+  "Junior Pool": "ジュニアプール",
+  "Kindergarten Office (Reception & Admin)": "幼稚部事務室（受付・管理）",
+  "Kitchen": "キッチン",
+  "LAN Room (BT wing)": "LAN室（BT棟）",
+  "LAN Room (KB wing)": "LAN室（KB棟）",
+  "Lawn": "芝生",
+  "Learning Support": "学習支援室",
+  "Library spiral stair": "図書館らせん階段",
+  "Library stair": "図書館階段",
+  "Library Store LKS-#-#": "図書館倉庫LKS-#-#",
+  "Library Workroom #": "図書館作業室#",
+  "Linkway Bridge": "連絡橋",
+  "Locker": "ロッカー室",
+  "LS": "学習支援室",
+  "LS Classroom": "学習支援教室",
+  "M&E": "設備室",
+  "M&E ACHI": "設備室",
+  "Main Entrance / School Entrance": "正面入口／学校入口",
+  "Main Lift": "メインエレベーター",
+  "Maintenance": "メンテナンス室",
+  "Male Toilet (Swimming Complex)": "男性トイレ（プール棟）",
+  "Meeting Room": "会議室",
+  "Meeting Room #": "会議室#",
+  "Music Academy": "音楽アカデミー",
+  "Music Practice Room": "音楽練習室",
+  "Music Practice Room #": "音楽練習室#",
+  "Music Room": "音楽室",
+  "Music Room (Secondary)": "音楽室（中高等部）",
+  "Music Room (SW-#)": "音楽室（SW-#）",
+  "Netted court": "ネット囲いのコート",
+  "North Entrance (Jurong West St #)": "北入口（Jurong West St #）",
+  "Not a through route": "通り抜け不可",
+  "Nurse Room": "保健室",
+  "Nursery and Pre-K playground": "幼児用遊び場",
+  "Nursery Room": "ナーサリー教室",
+  "Occupational Therapy": "作業療法室",
+  "Occupational Therapy Room": "作業療法室",
+  "Office": "事務室",
+  "Open Minds Office": "Open Minds事務室",
+  "Open-air courtyard": "屋外中庭",
+  "Outdoor Discovery Centre": "屋外探検センター",
+  "Outdoor Discovery garden": "屋外探検ガーデン",
+  "Passage": "通路",
+  "Passenger Lift": "エレベーター",
+  "PE Office": "体育教員室",
+  "PE Office side": "体育教員室側",
+  "Plant room": "機械室",
+  "Pod": "学習スペース",
+  "Pod A": "学習スペースA",
+  "Pod B": "学習スペースB",
+  "Pod C": "学習スペースC",
+  "Pod D": "学習スペースD",
+  "Pod E": "学習スペースE",
+  "Pod F": "学習スペースF",
+  "Pod G": "学習スペースG",
+  "Pod H": "学習スペースH",
+  "Pool deck": "プールサイド",
+  "Pool road": "プール脇の道路",
+  "Pool-side walk": "プールサイド通路",
+  "Practice Room": "練習室",
+  "Practice Room #": "練習室#",
+  "Pre-function Space": "ロビー",
+  "Pre-K Room": "プレキンダー教室",
+  "Prep Room #": "準備室#",
+  "Primary Counselling": "小学部カウンセリング室",
+  "Primary Drop-off Zone": "小学部送迎エリア",
+  "Primary Library": "小学部図書館",
+  "Primary Library LKS-#": "小学部図書館LKS-#",
+  "Primary Makerspace": "小学部メイカースペース",
+  "Primary PE Office": "小学部体育教員室",
+  "Primary Play Area": "小学部遊び場",
+  "Primary Principal": "小学部校長室",
+  "Primary School Office": "小学部事務室",
+  "Primary Vice-Principal": "小学部副校長室",
+  "Principal": "校長室",
+  "PTA Room": "PTA室",
+  "Raised platform": "小上がり",
+  "Ramp to the field": "グラウンドへのスロープ",
+  "Reception / Main Office": "受付／事務室",
+  "Red Dot Cafe": "Red Dotカフェ",
+  "Red Dot Convention Centre": "Red Dotコンベンションセンター",
+  "Riser": "シャフト",
+  "Risers and IT room": "シャフト・IT室",
+  "Road": "道路",
+  "Roof (no access)": "屋上（立入禁止）",
+  "Roof Garden": "屋上庭園",
+  "Sand play area": "砂場",
+  "School Nurse": "保健室",
+  "School Nurse (Primary)": "保健室（小学部）",
+  "Science Lab #": "理科室#",
+  "Secondary Counselling": "中高等部カウンセリング室",
+  "Secondary Drama": "中高等部演劇室",
+  "Secondary Library": "中高等部図書館",
+  "Secondary Library LKS-#": "中高等部図書館LKS-#",
+  "Secondary Music Room": "中高等部音楽室",
+  "Secondary Principal": "中高等部校長室",
+  "Secondary School Office": "中高等部事務室",
+  "Secondary Vice Principal": "中高等部副校長室",
+  "Security": "警備室",
+  "Senior Field (Upper Sports Field)": "上級生用グラウンド（上部運動場）",
+  "Senior Pool (# m)": "上級生用プール（#m）",
+  "Server Room": "サーバー室",
+  "Servery": "配膳カウンター",
+  "Service Lift": "業務用エレベーター",
+  "Sheltered Drop-off Point": "屋根付き乗降場",
+  "SK Room": "シニアキンダー教室",
+  "Sound Lock Lobby": "防音ロビー",
+  "Spectator bleachers": "観客席",
+  "Speech / OT / LS": "言語療法・作業療法室／学習支援室",
+  "Speech Pathologist": "言語聴覚士室",
+  "Staff Room": "職員室",
+  "Stairs #": "#番階段",
+  "Stairs # (no door on this floor)": "#番階段（この階に出入口なし）",
+  "Stairs # side": "#番階段側",
+  "STEAM Centre (Pod F)": "STEAMセンター（学習スペースF）",
+  "STEAM Room": "STEAM教室",
+  "Steam Store": "STEAM倉庫",
+  "Steps and ramp": "階段・スロープ",
+  "Storage": "倉庫",
+  "Store": "倉庫",
+  "Store Room": "倉庫",
+  "Student crossing": "生徒用横断歩道",
+  "Study Area (Secondary Arts Centre courtyard)": "自習エリア（中高等部アートセンター中庭）",
+  "Supply": "備品室",
+  "Swim Office": "水泳事務室",
+  "Thermal Energy Storage": "蓄熱設備室",
+  "Tiered seating": "観覧席",
+  "Toilet": "トイレ",
+  "Toilet (Men)": "トイレ（男）",
+  "Toilet (Women)": "トイレ（女）",
+  "Toilets (Junior Gym)": "トイレ（ジュニア体育館）",
+  "Transformer / Switch Room": "変圧器室／電気室",
+  "Two-way driveway": "対面通行の車道",
+  "University advisors": "大学進学指導室",
+  "Unnamed room": "名称未設定の部屋",
+  "Vice-Principal": "副校長室",
+  "Viewing Area": "観覧エリア",
+  "Visitor car park": "来客用駐車場",
+  "Visitor Car Park": "来客用駐車場",
+  "Void": "吹き抜け",
+  "Void over the Study Area courtyard": "自習エリア中庭の吹き抜け",
+  "Wading Pool": "水遊びプール",
+  "Walkway": "通路",
+  "Walkway to Toh Tuck Wing": "Toh Tuck棟への通路",
+  "Work Room": "作業室",
+  "Workroom": "作業室",
+  "Yeap Transport": "Yeap交通事務所",
+  "Zebra crossing": "横断歩道"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "トイレ",
+    "お手洗い",
+    "化粧室",
+    "洗面所",
+    "便所",
+    "wc"
+   ],
+   "lift": [
+    "エレベーター",
+    "エレベータ",
+    "リフト",
+    "昇降機"
+   ],
+   "stair": [
+    "階段",
+    "階段室"
+   ],
+   "food": [
+    "食堂",
+    "カフェテリア",
+    "学食",
+    "カフェ",
+    "レストラン",
+    "ランチ",
+    "昼食",
+    "食事",
+    "ごはん"
+   ],
+   "office": [
+    "オフィス",
+    "事務局"
+   ]
+  },
+  "who": {
+   "girls": [
+    "女子",
+    "女子生徒",
+    "女の子",
+    "女児"
+   ],
+   "boys": [
+    "男子",
+    "男子生徒",
+    "男の子",
+    "男児"
+   ],
+   "women": [
+    "女性",
+    "婦人",
+    "レディース"
+   ],
+   "men": [
+    "男性",
+    "紳士",
+    "メンズ"
+   ],
+   "adults": [
+    "大人用",
+    "大人",
+    "成人",
+    "職員用",
+    "教職員用",
+    "職員トイレ",
+    "教職員トイレ",
+    "先生用",
+    "スタッフ用",
+    "スタッフトイレ",
+    "保護者用",
+    "保護者トイレ",
+    "来客用トイレ",
+    "男女共用",
+    "オールジェンダー",
+    "ジェンダーレス"
+   ],
+   "accessible": [
+    "車いす対応",
+    "車椅子対応",
+    "車いす",
+    "車椅子",
+    "多目的",
+    "多機能",
+    "バリアフリー",
+    "障害者",
+    "ユニバーサル",
+    "だれでも",
+    "誰でも"
+   ]
+  },
+  "ignore": [
+   "の",
+   "は",
+   "へ",
+   "に",
+   "を",
+   "まで",
+   "への",
+   "までの",
+   "?",
+   "どこ",
+   "どこ?",
+   "どこですか",
+   "どこですか?",
+   "どこにありますか",
+   "どこにありますか?",
+   "はどこにありますか",
+   "はどこにありますか?",
+   "どこにある",
+   "はどこにある",
+   "はどこ",
+   "はどこ?",
+   "はどこですか",
+   "はどこですか?",
+   "どちら",
+   "どちら?",
+   "どちらですか",
+   "どちらですか?",
+   "はどちら",
+   "はどちら?",
+   "はどちらですか",
+   "はどちらですか?",
+   "にありますか",
+   "にありますか?",
+   "はありますか",
+   "はありますか?",
+   "ありますか",
+   "ありますか?",
+   "ですか",
+   "ですか?",
+   "最寄り",
+   "最寄りの",
+   "近く",
+   "近くの",
+   "近くに",
+   "近い",
+   "一番近い",
+   "いちばん近い",
+   "最も近い",
+   "付近",
+   "付近の",
+   "そば",
+   "そばの",
+   "隣の",
+   "行き方",
+   "への行き方",
+   "までの行き方",
+   "に行きたい",
+   "へ行きたい",
+   "行きたい",
+   "に行きたいです",
+   "へ行きたいです",
+   "行きたいです",
+   "を探す",
+   "探す",
+   "を探しています",
+   "探しています",
+   "を教えて",
+   "教えて",
+   "の場所",
+   "場所",
+   "用"
+  ],
+  "level": [],
+  "levelAfter": [
+   "階",
+   "f"
+  ],
+  "synonyms": {
+   "図書室": [
+    "図書館"
+   ],
+   "ライブラリー": [
+    "図書館"
+   ],
+   "ライブラリ": [
+    "図書館"
+   ],
+   "中学図書館": [
+    "中高等部図書館"
+   ],
+   "高校図書館": [
+    "中高等部図書館"
+   ],
+   "小学校図書館": [
+    "小学部図書館"
+   ],
+   "医務室": [
+    "保健室"
+   ],
+   "クリニック": [
+    "保健室"
+   ],
+   "看護師": [
+    "保健室"
+   ],
+   "ナース": [
+    "保健室"
+   ],
+   "救護室": [
+    "保健室"
+   ],
+   "ジム": [
+    "体育館"
+   ],
+   "体育室": [
+    "体育館"
+   ],
+   "出口": [
+    "入口"
+   ],
+   "入り口": [
+    "入口"
+   ],
+   "玄関": [
+    "入口"
+   ],
+   "エントランス": [
+    "入口"
+   ],
+   "正門": [
+    "正面入口"
+   ],
+   "正面玄関": [
+    "正面入口"
+   ],
+   "北門": [
+    "北入口"
+   ],
+   "北口": [
+    "北入口"
+   ],
+   "校門": [
+    "正面入口",
+    "入口"
+   ],
+   "門": [
+    "入口"
+   ],
+   "講堂": [
+    "コンベンションセンター",
+    "劇場"
+   ],
+   "ホール": [
+    "コンベンションセンター",
+    "劇場"
+   ],
+   "レッドドット": [
+    "Red Dot"
+   ],
+   "ホワイエ": [
+    "ロビー"
+   ],
+   "シアター": [
+    "劇場"
+   ],
+   "舞台": [
+    "劇場"
+   ],
+   "演劇": [
+    "演劇室",
+    "劇場"
+   ],
+   "ドラマ": [
+    "演劇室"
+   ],
+   "バンド": [
+    "音楽"
+   ],
+   "合唱": [
+    "音楽"
+   ],
+   "ピアノ": [
+    "音楽",
+    "練習室"
+   ],
+   "楽器": [
+    "音楽"
+   ],
+   "オーケストラ": [
+    "音楽"
+   ],
+   "吹奏楽": [
+    "音楽"
+   ],
+   "実験室": [
+    "理科室"
+   ],
+   "サイエンス": [
+    "理科室"
+   ],
+   "科学": [
+    "理科室"
+   ],
+   "化学": [
+    "理科室"
+   ],
+   "物理": [
+    "理科室"
+   ],
+   "生物": [
+    "理科室"
+   ],
+   "ラボ": [
+    "理科室"
+   ],
+   "コンピューター": [
+    "IT"
+   ],
+   "パソコン": [
+    "IT"
+   ],
+   "pc": [
+    "IT"
+   ],
+   "ポッド": [
+    "学習スペース"
+   ],
+   "オープンスペース": [
+    "学習スペース"
+   ],
+   "シニアプール": [
+    "上級生用プール"
+   ],
+   "50mプール": [
+    "上級生用プール"
+   ],
+   "水泳": [
+    "プール"
+   ],
+   "スイミング": [
+    "プール"
+   ],
+   "フロント": [
+    "受付"
+   ],
+   "レセプション": [
+    "受付"
+   ],
+   "警備": [
+    "警備室",
+    "守衛所"
+   ],
+   "ガードハウス": [
+    "守衛所"
+   ],
+   "セキュリティ": [
+    "警備室",
+    "守衛所"
+   ],
+   "渡り廊下": [
+    "連絡橋"
+   ],
+   "ブリッジ": [
+    "連絡橋"
+   ],
+   "リンクウェイ": [
+    "連絡橋"
+   ],
+   "連絡通路": [
+    "連絡橋",
+    "屋根付き通路"
+   ],
+   "バス停": [
+    "バス乗降場"
+   ],
+   "バス乗り場": [
+    "バス乗降場"
+   ],
+   "スクールバス": [
+    "バス乗降場",
+    "Yeap交通"
+   ],
+   "駐車場": [
+    "車寄せ",
+    "乗降場",
+    "送迎"
+   ],
+   "パーキング": [
+    "駐車場",
+    "車寄せ"
+   ],
+   "お迎え": [
+    "送迎",
+    "乗降場"
+   ],
+   "ピックアップ": [
+    "送迎",
+    "乗降場"
+   ],
+   "送迎": [
+    "乗降場"
+   ],
+   "送り迎え": [
+    "送迎",
+    "乗降場"
+   ],
+   "ドロップオフ": [
+    "送迎",
+    "乗降場"
+   ],
+   "送迎バス": [
+    "バス乗降場",
+    "Yeap交通"
+   ],
+   "タクシー": [
+    "車寄せ",
+    "乗降場"
+   ],
+   "小学校": [
+    "小学部"
+   ],
+   "初等部": [
+    "小学部"
+   ],
+   "プライマリー": [
+    "小学部"
+   ],
+   "エレメンタリー": [
+    "小学部"
+   ],
+   "pyp": [
+    "小学部"
+   ],
+   "中学": [
+    "中高等部"
+   ],
+   "中学校": [
+    "中高等部"
+   ],
+   "高校": [
+    "中高等部"
+   ],
+   "中等部": [
+    "中高等部"
+   ],
+   "セカンダリー": [
+    "中高等部"
+   ],
+   "myp": [
+    "中高等部"
+   ],
+   "dp": [
+    "中高等部"
+   ],
+   "幼稚園": [
+    "キンダー",
+    "ナーサリー",
+    "幼稚部"
+   ],
+   "キンダー": [
+    "ナーサリー",
+    "幼稚部"
+   ],
+   "年少": [
+    "プレキンダー",
+    "ナーサリー",
+    "ジュニアキンダー",
+    "シニアキンダー"
+   ],
+   "年中": [
+    "ジュニアキンダー",
+    "シニアキンダー",
+    "プレキンダー"
+   ],
+   "年長": [
+    "シニアキンダー",
+    "ジュニアキンダー"
+   ],
+   "保育": [
+    "ナーサリー"
+   ],
+   "保育園": [
+    "ナーサリー"
+   ],
+   "言語聴覚": [
+    "言語"
+   ],
+   "スピーチ": [
+    "言語"
+   ],
+   "ot": [
+    "作業療法"
+   ],
+   "ラーニングサポート": [
+    "学習支援"
+   ],
+   "ls": [
+    "学習支援"
+   ],
+   "ell": [
+    "英語学習支援"
+   ],
+   "esl": [
+    "英語学習支援"
+   ],
+   "eal": [
+    "英語学習支援"
+   ],
+   "メーカースペース": [
+    "メイカースペース"
+   ],
+   "ものづくり": [
+    "メイカースペース"
+   ],
+   "工作": [
+    "メイカースペース",
+    "美術室"
+   ],
+   "ロボット": [
+    "STEAM",
+    "メイカースペース"
+   ],
+   "プログラミング": [
+    "STEAM",
+    "IT"
+   ],
+   "アートルーム": [
+    "美術室"
+   ],
+   "図工室": [
+    "美術室"
+   ],
+   "図工": [
+    "美術室"
+   ],
+   "アート": [
+    "美術室"
+   ],
+   "遊戯室": [
+    "運動遊び室"
+   ],
+   "プレイルーム": [
+    "運動遊び室"
+   ],
+   "テラス": [
+    "屋外飲食エリア"
+   ],
+   "アルフレスコ": [
+    "屋外飲食エリア"
+   ],
+   "カウンセラー": [
+    "カウンセリング"
+   ],
+   "相談室": [
+    "カウンセリング"
+   ],
+   "スクールカウンセラー": [
+    "カウンセリング"
+   ],
+   "先生": [
+    "職員室",
+    "教員室"
+   ],
+   "教員室": [
+    "職員室"
+   ],
+   "校長先生": [
+    "校長室"
+   ],
+   "教頭": [
+    "副校長室"
+   ],
+   "教頭先生": [
+    "副校長室"
+   ],
+   "スタッフ": [
+    "職員室"
+   ],
+   "スタッフルーム": [
+    "職員室"
+   ],
+   "事務所": [
+    "事務室"
+   ],
+   "保護者": [
+    "PTA"
+   ],
+   "保護者会": [
+    "PTA"
+   ],
+   "進路": [
+    "大学進学"
+   ],
+   "進路指導": [
+    "大学進学"
+   ],
+   "進路指導室": [
+    "大学進学"
+   ],
+   "ミーティング": [
+    "会議室"
+   ],
+   "ロッカールーム": [
+    "更衣室",
+    "ロッカー"
+   ],
+   "自習室": [
+    "自習エリア"
+   ],
+   "学費": [
+    "会計窓口",
+    "財務部"
+   ],
+   "支払い": [
+    "会計窓口"
+   ],
+   "見学": [
+    "入学"
+   ],
+   "入試": [
+    "入学"
+   ],
+   "アドミッション": [
+    "入学"
+   ],
+   "アドミッションズ": [
+    "入学"
+   ],
+   "運動場": [
+    "グラウンド"
+   ],
+   "校庭": [
+    "グラウンド"
+   ],
+   "グランド": [
+    "グラウンド"
+   ],
+   "サッカー": [
+    "グラウンド"
+   ],
+   "サッカー場": [
+    "グラウンド"
+   ],
+   "フィールド": [
+    "グラウンド"
+   ],
+   "公園": [
+    "遊び場"
+   ],
+   "プレイグラウンド": [
+    "遊び場"
+   ],
+   "自転車": [
+    "駐輪場"
+   ],
+   "映画": [
+    "映像"
+   ],
+   "ビデオ": [
+    "映像"
+   ],
+   "ベーキング": [
+    "製パン"
+   ],
+   "パン": [
+    "製パン",
+    "ベーキング"
+   ],
+   "料理": [
+    "ベーキング",
+    "製パン"
+   ],
+   "調理": [
+    "ベーキング",
+    "製パン"
+   ],
+   "調理室": [
+    "ベーキング",
+    "製パン"
+   ],
+   "家庭科": [
+    "ベーキング",
+    "製パン"
+   ],
+   "家庭科室": [
+    "ベーキング",
+    "製パン"
+   ],
+   "お菓子": [
+    "ベーキング",
+    "製パン"
+   ],
+   "物置": [
+    "倉庫"
+   ],
+   "収納": [
+    "倉庫"
+   ],
+   "hr": [
+    "人事"
+   ]
+  }
+ }
+}
