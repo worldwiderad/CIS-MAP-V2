@@ -1,0 +1,766 @@
+/* CIS Map: the CIS brand (Theinhardt, CIS red on white), phone first, a side panel on wide screens. */
+
+/* Hanken Grotesk, one variable file per script (every weight), from the brand guide's own copy of
+   Google Fonts' subsets; SIL Open Font License 1.1 (fonts/README.md) */
+@font-face {
+  font-family: "Hanken Grotesk"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("fonts/hanken-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Hanken Grotesk"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("fonts/hanken-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --red: #DA291C;
+  --red-deep: #B21F15;
+  --red-tint: #FCEAE8;
+  --blue: #0057B8;               /* "you": the CIS palette's blue (brand guide) */
+  --ink: #3D3935;                /* CIS Intense Grey: text, and every selected state */
+  --ink-2: #6B6662;
+  --ink-3: #736D68;
+  --line: #E8E6E2;
+  --surface: #FFFFFF;
+  --surface-2: #F5F4F1;
+  --ground: #E6E9EC;
+  --shadow: 0 8px 28px rgba(20, 24, 30, 0.16), 0 1px 3px rgba(20, 24, 30, 0.10);
+  --red-ink: #DA291C;            /* red text (the red fills stay --red) */
+  --glass: rgba(255, 255, 255, 0.94);
+  --track: #D0D0CE; --grip: #D0D0CE; --hover: #EEECE8;
+  --contrast: #3D3935; --on-contrast: #FFFFFF;
+  /* the CIS | MAP lockup: colour on white, reversed on dark */
+  --logo-cis: #DA291C; --logo-rule: #D0D0CE; --logo-ink: #3D3935;
+  --ring: #FFFFFF;
+  color-scheme: light;
+  --radius: 16px;
+  --bar-h: 48px;
+  --panel-w: 384px;
+  /* Hanken Grotesk (brand guide 3.1; SIL Open Font License, bundled in fonts/), Chinese in the
+     phone's own (PingFang SC on Apple, Noto Sans SC or YaHei elsewhere) */
+  --font: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+          "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  /* a phone held sideways has its notch (or rounded corner) at one side */
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--ink);
+  background: var(--ground);
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* Each script in its own font on the phone, the one its readers expect first (a Japanese kanji drawn
+   from a Chinese font looks wrong to a Japanese reader); the brand's Hanken Grotesk keeps the Latin
+   letters and digits. Vietnamese is all the phone's font: the bundled Hanken files lack its letters
+   with two marks. Anything with a lang of its own (the language page's buttons) takes its own.
+   (i18n.js fontFor says the same for the map's lettering.) */
+:lang(zh-Hant) { --font: "Hanken Grotesk", "PingFang TC", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC", sans-serif; }
+:lang(ja) { --font: "Hanken Grotesk", "Hiragino Sans", "Hiragino Kaku Gothic ProN", -apple-system, BlinkMacSystemFont, "Yu Gothic UI", "Yu Gothic", Meiryo, "Noto Sans JP", "Noto Sans CJK JP", sans-serif; }
+:lang(ko) { --font: "Hanken Grotesk", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Noto Sans KR", "Noto Sans CJK KR", sans-serif; }
+:lang(hi) { --font: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Kohinoor Devanagari", "Devanagari Sangam MN", "Nirmala UI", "Noto Sans Devanagari", sans-serif; }
+:lang(ta) { --font: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Tamil Sangam MN", "Nirmala UI", "Noto Sans Tamil", Latha, sans-serif; }
+:lang(th) { --font: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Thonburi, "Leelawadee UI", "Noto Sans Thai", sans-serif; }
+:lang(vi) { --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif; }
+[lang] { font-family: var(--font); }
+/* the small capitals of headings are a Latin thing: Chinese, Japanese and Korean keep a little space
+   between characters; Hindi, Tamil and Thai none (spacing pulls their joined letters apart) */
+:is(:lang(hi), :lang(ta), :lang(th)) :is(.trip-title, .end-k, .steps-floor, .results-head, .idle-head) { letter-spacing: normal; text-transform: none; }
+:focus-visible { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
+[hidden] { display: none !important; }
+
+.app {
+  position: fixed; inset: 0;
+  display: grid;
+  /* minmax(0, …): a long list of steps scrolls inside the panel; a plain 1fr grew the row to the
+     list's height and pushed the map's controls off a short screen */
+  grid-template-rows: calc(var(--bar-h) + var(--safe-t)) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+}
+.app > * { min-height: 0; }
+
+/* ---- the bar: white with a hairline, so the route is the reddest thing on screen (brand guide) ---- */
+.bar {
+  grid-row: 1; grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: var(--safe-t) calc(12px + var(--safe-r)) 0 calc(14px + var(--safe-l));
+  background: var(--surface);
+  color: var(--ink);
+  z-index: 30;
+  box-shadow: 0 1px 0 var(--line);
+}
+/* the lockup: the CIS mark, a 1 px rule and MAP, each as tall as the mark, a third of that apart */
+.brand { display: flex; align-items: flex-start; gap: 8px; text-decoration: none; min-width: 0; }
+.brand-cis { height: 24px; width: auto; display: block; fill: var(--logo-cis); flex: none; }
+.brand-rule { width: 1px; height: 24px; background: var(--logo-rule); flex: none; }
+.brand-map { height: 24px; width: auto; display: block; flex: none; }
+.brand-letters { fill: var(--logo-ink); }
+.brand-pin { fill: #DA291C; }
+.brand-hole { fill: #FFFFFF; }
+.brand-word { display: none; font-size: 26px; line-height: 24px; font-weight: 800; color: var(--logo-ink); }
+.brand-local .brand { align-items: center; }
+.brand-local .brand-map { display: none; }
+.brand-local .brand-word { display: block; }
+.bar-btn {
+  height: 34px; min-width: 52px; padding: 0 12px;
+  border-radius: 17px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink); font-weight: 600; font-size: 14px;
+}
+.bar-btn:hover { background: var(--hover); }
+
+/* ---- the map ---- */
+.stage { grid-row: 2; grid-column: 1; position: relative; overflow: hidden; background: var(--ground); }
+#map { position: absolute; inset: 0; display: block; touch-action: none; cursor: grab; outline: none; }
+#map:active { cursor: grabbing; }
+#map:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+
+/* the floor's name, for screen readers only: the floor buttons already show it */
+.floorname {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+.floorbar {
+  position: absolute; right: calc(10px + var(--safe-r)); top: 12px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+  width: 64px;
+  z-index: 5;
+  /* never under the sheet: on a short phone the column scrolls */
+  max-height: var(--floorbar-max, none);
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  padding-bottom: 6px;
+}
+.floorbar::-webkit-scrollbar { display: none; }
+/* the column scrolls when it is short; its parts never squeeze (a building switcher, since gone,
+   once shrank to nothing under the sheet) */
+.floorbar > * { flex: none; }
+.levels {
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(20, 24, 30, 0.16);
+  overflow: hidden;
+}
+.levels button {
+  position: relative;
+  height: 46px;
+  font-size: 17px; font-weight: 600; color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.levels button + button { border-top: 1px solid var(--line); }
+.levels button[aria-current="true"] { background: var(--contrast); color: var(--on-contrast); }
+.levels button.on-route::after {
+  content: ""; position: absolute; right: 7px; top: 7px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red); box-shadow: 0 0 0 2px var(--ring);
+}
+/* the floor you are on is ink; its route dot stays red, ringed so it reads on the ink */
+.levels button[aria-current="true"].on-route::after { background: var(--red); box-shadow: 0 0 0 2px var(--on-contrast); }
+
+/* not room for every floor (a small phone, or the sheet pulled up): one pill, the current floor;
+   tapped, it opens the whole list and the sheet steps down to make room */
+.floor-pill {
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  height: 58px; border-radius: 14px; background: var(--contrast); color: var(--on-contrast); position: relative;
+  box-shadow: 0 2px 8px rgba(20, 24, 30, 0.2);
+}
+.floor-pill b { font-size: 20px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.floor-pill small { font-size: 11px; font-weight: 600; opacity: 0.92; letter-spacing: 0.02em; }
+.floor-pill.on-route::after {
+  content: ""; position: absolute; right: 6px; top: 6px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red); box-shadow: 0 0 0 2px var(--on-contrast);
+}
+.floorbar.compact .floor-pill { display: flex; }
+.floorbar.compact:not(.expanded) .levels { display: none; }
+/* open, the list alone: the pill above it said the same floor twice (owner, 1 Nov) */
+.floorbar.compact.expanded .floor-pill { display: none; }
+
+.fab {
+  align-self: center;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: grid; place-items: center;
+  margin-top: 4px;
+  background: var(--surface); color: var(--ink-2);
+  box-shadow: 0 2px 8px rgba(20, 24, 30, 0.18);
+}
+.fab svg { width: 22px; height: 22px; }
+
+/* ---- the language page: a first visit's first screen, and the header's language button ---- */
+.gate {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; flex-direction: column;
+  padding: calc(var(--safe-t) + 10px) 20px calc(var(--safe-b) + 28px);
+  background: var(--red); color: #fff;
+  transition: opacity 0.3s ease;
+}
+.gate.gone { opacity: 0; pointer-events: none; }
+.gate[data-mode="pick"] .gate-brand { visibility: hidden; }
+.gate:focus { outline: none; }
+.gate-top { display: flex; align-items: center; justify-content: space-between; min-height: 40px; }
+.gate-brand { --logo-cis: #FFFFFF; --logo-rule: rgba(255, 255, 255, 0.55); --logo-ink: #FFFFFF; gap: 7px; }
+.gate-brand .brand-cis, .gate-brand .brand-rule, .gate-brand .brand-map { height: 20px; }
+.gate-brand .brand-word { font-size: 22px; line-height: 20px; }
+.gate-close { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
+.gate-close:hover { background: rgba(255, 255, 255, 0.14); }
+.gate-body {
+  flex: 1; width: 100%; max-width: 440px; margin: 0 auto; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  /* sixteen languages: centred while they fit, scrolled on a small phone (centring by justify-content
+     would push the top out of reach) */
+  overflow-y: auto; overscroll-behavior: contain;
+  /* room for a button's focus ring (3px out, 3px off), which the scrolling box would clip at its edges */
+  padding: 6px;
+}
+.gate-body::before, .gate-body::after { content: ''; flex: 1 0 0; }
+.gate-title { display: flex; justify-content: center; }
+/* the sign for languages, white on the red: the front panel's A in the red, its edge cut in the red */
+.gate-title .gate-ico { width: 72px; height: 72px; }
+.gate-title .gate-ico .front { stroke: var(--red); }
+.gate-title .gate-ico .front-t { fill: var(--red); }
+/* its words, for screen readers only */
+.gate-said { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.gate-langs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.gate-lang {
+  min-height: 52px; padding: 8px 12px; border-radius: 14px;
+  font-size: 17px; font-weight: 600; line-height: 1.25; color: #fff; text-wrap: balance;
+  /* a light tint of white over the red: 6% keeps the white text at 4.56:1, WCAG 2.1 AA (owner, 3 Nov: the
+     14% it was gave 4.1:1; a dark fill passed but looked like a high-contrast mode) */
+  background: rgba(255, 255, 255, 0.06); border: 1.5px solid rgba(255, 255, 255, 0.42);
+}
+/* (hover brightens the edge, not the fill, so the text keeps its contrast) */
+.gate-lang:hover { border-color: rgba(255, 255, 255, 0.8); }
+/* the chosen language: the red on white, 4.87:1 */
+.gate-lang[aria-current="true"] { background: #fff; color: var(--red); border-color: #fff; }
+/* (its words still loading: the cursor says so; dimming the button would drop its contrast) */
+.gate-lang[aria-busy="true"] { cursor: progress; }
+/* sixteen languages on a short phone (an SE): a smaller sign and tighter rows, so all are in sight */
+@media (max-height: 720px) {
+  .gate-body { gap: 16px; }
+  .gate-title .gate-ico { width: 52px; height: 52px; }
+  .gate-lang { min-height: 46px; padding: 6px 10px; }
+  .gate-langs { gap: 8px; }
+}
+.gate-lang:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.gate .gate-lang:focus-visible, .gate .gate-close:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.gate-wait { display: flex; flex-direction: column; align-items: center; gap: 14px; font-size: 15px; text-align: center; }
+.gate-spin { width: 28px; height: 28px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.32); border-top-color: #fff; animation: gate-spin 0.9s linear infinite; }
+@keyframes gate-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .gate { transition: none; } .gate-spin { animation: none; } }
+
+/* the header's language button: 文 and A on two panels */
+.lang-btn { min-width: 44px; padding: 0 10px; display: grid; place-items: center; }
+.lang-ico { width: 22px; height: 22px; }
+.lang-ico .back { fill: none; stroke: currentColor; stroke-width: 1.7; }
+.lang-ico .front { fill: currentColor; stroke: var(--surface-2); stroke-width: 1.6; }
+.lang-ico text { font-family: var(--font); font-weight: 700; text-anchor: middle; }
+.lang-ico .back-t { fill: currentColor; font-size: 8.4px; }
+.lang-ico .front-t { fill: var(--surface-2); font-size: 9.8px; font-weight: 800; }
+
+/* ---- the sheet (phone) / panel (wide) ---- */
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  display: flex; flex-direction: column;
+  max-height: 64%;
+  padding: 0 12px calc(12px + var(--safe-b));
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;   /* the brand guide's sheet radius */
+  box-shadow: 0 -4px 24px rgba(20, 24, 30, 0.14);
+}
+/* open, the sheet may rise to just under the bar (owner, 1 Nov: at 64% the steps showed three at a
+   time); a short trip stops at its own height */
+.sheet.open { max-height: calc(100% - var(--bar-h) - var(--safe-t) - 8px); }
+.grip { display: flex; justify-content: center; padding: 10px 0 8px; width: 100%; touch-action: none; }
+.grip span { width: 40px; height: 5px; border-radius: 3px; background: var(--grip); }
+.sheet { overflow: hidden; transition: height 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* the sheet dragged down to a line */
+.mini {
+  display: none; width: 100%; padding: 0 8px 8px;
+  font-size: 14.5px; font-weight: 600; color: var(--ink-2); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  touch-action: none;
+}
+.sheet.min .mini { display: block; }
+.sheet.min > :not(.grip):not(.mini) { display: none !important; }
+/* step by step: the step, not the trip, has the room */
+.sheet.stepping .trip, .sheet.stepping .opts { display: none; }
+
+.trip { display: flex; align-items: center; gap: 8px; }
+/* "Directions" and the × back to the plain map, over the trip */
+.trip-head { display: flex; align-items: center; justify-content: space-between; margin: -6px -6px 4px 2px; }
+.trip-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+:is(:lang(zh), :lang(ja), :lang(ko)) .trip-title { letter-spacing: 0.02em; }
+.trip-end { width: 36px; height: 36px; }
+.sheet.stepping .trip-head { display: none; }
+.ends {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden;
+}
+.end {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px; min-height: 52px;
+  text-align: left;
+  background: var(--surface);
+}
+.end + .end { border-top: 1px solid var(--line); }
+.end:hover { background: var(--surface-2); }
+.end-text { display: flex; flex-direction: column; min-width: 0; }
+.end-k { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+:is(:lang(zh), :lang(ja), :lang(ko)) .end-k { letter-spacing: 0.02em; }
+.end-v { font-size: 15.5px; font-weight: 600; line-height: 1.25; overflow: hidden;
+  /* a long name takes a second line rather than losing its end */
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.end-v.empty { font-weight: 400; color: var(--ink-3); }
+.end-v .here { color: var(--blue); font-weight: 600; }
+/* a place found and no start yet: the From field asks for one */
+.end.invite { box-shadow: inset 3px 0 0 var(--blue); }
+.end.invite .end-v.empty { color: var(--blue); font-weight: 600; }
+.mark { width: 14px; height: 14px; flex: none; border-radius: 50%; }
+.mark-from { background: var(--blue); box-shadow: 0 0 0 3px rgba(47, 111, 228, 0.22); }
+.mark-to {
+  width: 14px; height: 18px; border-radius: 0;
+  background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 18'%3E%3Cpath d='M7 18C5 13.5 0 11 0 6.5a7 7 0 0 1 14 0C14 11 9 13.5 7 18z' fill='%23DA291C'/%3E%3Ccircle cx='7' cy='6.6' r='2.6' fill='%23fff'/%3E%3C/svg%3E");
+}
+.swap {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--ink-2);
+  background: var(--surface-2);
+}
+.swap:hover { background: var(--hover); }
+.trip-side { display: flex; flex-direction: column; gap: 8px; }
+/* the share button: the phone's share sheet on a phone, the QR card on a wide screen */
+.swap .ico-qr { display: none; }
+
+.toast {
+  position: fixed; left: 50%; top: calc(var(--bar-h) + var(--safe-t) + 14px); transform: translateX(-50%);
+  z-index: 70; padding: 9px 16px; border-radius: 20px;
+  background: var(--contrast); color: var(--on-contrast); font-size: 14px; font-weight: 600;
+  box-shadow: var(--shadow); white-space: nowrap;
+}
+
+/* the trip as a QR code, to carry it from a kiosk to a phone */
+.share {
+  position: fixed; inset: 0; z-index: 60;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(20, 24, 30, 0.45);
+  overflow-y: auto;
+}
+.share-card {
+  width: min(360px, 100%); max-height: 100%; overflow-y: auto;
+  background: var(--surface); border-radius: 20px; padding: 16px 18px 18px;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.share-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.share-head h2 { font-size: 17px; font-weight: 700; text-align: left; }
+.share-sub { font-size: 13.5px; color: var(--ink-3); align-self: flex-start; text-align: left; margin-top: 2px; }
+.share-qr { width: 220px; height: 220px; margin: 14px 0 8px; }
+.share-qr svg { width: 100%; height: 100%; }
+.share-trip { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.share-actions { width: 100%; display: flex; gap: 8px; margin-top: 14px; }
+/* on a phone the link is the share; the code, smaller, is for another phone */
+.share.phone .share-card { display: flex; flex-direction: column; }
+.share.phone .share-actions { order: 1; margin-top: 12px; }
+.share.phone .share-actions #share-native { order: -1; }
+.share.phone .share-qr { order: 2; width: 150px; height: 150px; margin: 14px 0 4px; }
+.share.phone .share-trip { order: 3; }
+@media (max-height: 560px) {
+  .share-qr { width: 150px; height: 150px; margin: 8px 0 4px; }
+  .share-actions { margin-top: 8px; }
+}
+
+/* (the summary drops under the toggle when the two do not fit side by side: a small phone in
+   Chinese once left 道 of 只走电梯和坡道 alone on a line) */
+.opts { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 10px 2px 2px; }
+/* why the route goes the long way, when a school rule sends it round something */
+.route-note { padding: 6px 2px 0; font-size: 12.5px; line-height: 1.35; color: var(--ink-2); text-align: right; }
+.sheet.stepping .route-note { display: none; }
+.toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.toggle-track { width: 38px; height: 22px; border-radius: 11px; background: var(--track); position: relative; transition: background 0.15s; flex: none; }
+.toggle-track span { position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform 0.15s; }
+.toggle input:checked + .toggle-track { background: var(--contrast); }
+.toggle input:checked + .toggle-track span { transform: translateX(16px); }
+.toggle input:focus-visible + .toggle-track { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+.toggle-text { display: flex; flex-direction: column; font-size: 14px; font-weight: 600; line-height: 1.2; }
+.toggle-text small { font-size: 11.5px; font-weight: 400; color: var(--ink-3); white-space: nowrap; }
+.summary { margin-left: auto; text-align: right; font-size: 15px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.summary small { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); }
+
+.go { display: flex; gap: 8px; margin-top: 10px; }
+.btn.btn-next { width: 100%; margin-top: 10px; flex: none; background: var(--contrast); color: var(--on-contrast); }
+.btn.btn-next:hover { opacity: 0.9; }
+.end-k .of { color: var(--red-ink); }
+/* step by step: still a strip at the foot of the screen, so the map keeps the room (owner), on a
+   quiet card (no red tint: red is the route's), with arrows you cannot miss: next is the ink
+   button, back a white one. Two rows: the step across the whole card (squeezed between the
+   arrows it wrapped to a 100 px column on a small phone, and a long room name ran under Done),
+   then back, how far and which step, next */
+.stepbar {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'main main exit' 'prev meta next';
+  align-items: center; gap: 6px 8px;
+  margin-top: 10px; padding: 8px 6px 6px 10px;
+  border-radius: 14px; background: var(--surface-2);
+}
+.stepbar #step-prev { grid-area: prev; }
+.stepbar #step-next, .stepbar #step-done { grid-area: next; justify-self: end; }
+.stepbar .step-exit { grid-area: exit; align-self: start; margin-top: -2px; }
+.stepbar-meta { grid-area: meta; text-align: center; font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.stepbar .icon-btn { color: var(--ink); }
+.stepbar #step-prev { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); width: 44px; height: 44px; }
+.stepbar #step-next { background: var(--contrast); color: var(--on-contrast); width: 44px; height: 44px; }
+.stepbar #step-next:hover { opacity: 0.9; }
+.stepbar .step-exit { color: var(--ink-3); width: 36px; }
+.stepbar .step-done { flex: none; width: auto; height: 44px; padding: 0 18px; }
+.stepbar .icon-btn:disabled { opacity: 0.35; cursor: default; }
+.stepbar-main { grid-area: main; min-width: 0; display: flex; align-items: center; gap: 10px; }
+.stepbar-main .step-ico { flex: none; background: var(--surface); }
+/* a change of level is a big stop, in red; arriving, the pin */
+.stepbar-main .step-ico.conn, .stepbar-main .step-ico.arrive { background: var(--red); color: #fff; }
+.stepbar-text { flex: 1; min-width: 0; font-size: 16px; font-weight: 800; line-height: 1.25; }
+.stepbar-text small { display: block; font-size: 12px; font-weight: 500; color: var(--ink-3); }
+/* (the first time's reminder in the quiet grey: in red it read as an error, a review found) */
+.stepbar-text .stepbar-tip { margin-top: 3px; color: var(--ink-2); }
+/* arriving: the place itself, large, the side it is on under it; a long name breaks rather than run on */
+.stepbar-text .stepbar-goal { display: block; font-size: 20px; line-height: 1.15; overflow-wrap: anywhere; }
+
+.notice {
+  display: flex; align-items: flex-start; gap: 6px;
+  margin-top: 10px; padding: 10px 6px 10px 12px;
+  border-radius: 12px; background: var(--red-tint); color: var(--red-deep);
+  font-size: 14px;
+}
+.notice span { flex: 1; min-width: 0; }
+.notice-x { width: 28px; height: 28px; margin: -4px 0; border-radius: 50%; display: grid; place-items: center; color: inherit; flex: none; }
+.notice-x svg { width: 18px; height: 18px; }
+.notice.info { background: var(--surface-2); color: var(--ink-2); }
+
+.card { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+/* a place tapped while a route is showing: the card alone, "Back to route" over it */
+.sheet.carding .trip-head, .sheet.carding .trip, .sheet.carding .opts, .sheet.carding .route-note,
+.sheet.carding .go, .sheet.carding .btn-next { display: none !important; }
+.sheet.carding .card { margin-top: 0; border: 0; padding: 0; }
+.card-back { display: inline-flex; align-items: center; gap: 6px; margin: -2px 0 10px; padding: 6px 2px;
+  font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.card-back svg { width: 18px; height: 18px; fill: currentColor; }
+.card-head { display: flex; align-items: flex-start; gap: 12px; }
+.card-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; }
+.card-ico svg { width: 22px; height: 22px; }
+.card-text { flex: 1; min-width: 0; }
+.card-title { font-size: 17px; font-weight: 700; line-height: 1.25; }
+.card-sub { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.card-actions { display: flex; gap: 8px; margin-top: 12px; }
+.card-actions[hidden], .card-sides[hidden] { display: none; }
+.card-sides { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.side-btn { display: flex; align-items: center; gap: 14px; justify-content: flex-start; text-align: left;
+  min-height: 58px; padding: 0 16px; border-radius: 14px; font-size: 17px; font-weight: 600; }
+.side-n { flex: none; display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--blue); color: #fff; font-size: 15px; font-weight: 700; }
+/* the question has the whole sheet (owner, 2 Nov 2026): its heading as large as a place card's */
+.sheet.siding .card-title { font-size: 21px; }
+.sheet.siding .card-sub { font-size: 16px; margin-top: 2px; }
+.btn {
+  flex: 1; height: 42px; border-radius: 21px;
+  font-weight: 600; font-size: 14.5px;
+  background: var(--surface-2); color: var(--ink);
+}
+.btn:hover { background: var(--hover); }
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:hover { background: var(--red-deep); }
+.icon-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); flex: none; }
+.icon-btn:hover { background: var(--surface-2); }
+.icon-btn svg { width: 22px; height: 22px; }
+
+/* directions */
+.steps { list-style: none; overflow-y: auto; margin: 10px -12px 0; padding: 0 12px; overscroll-behavior: contain; }
+.sheet:not(.open) .steps { display: none; }
+.steps-floor {
+  position: sticky; top: 0; z-index: 1;
+  padding: 10px 2px 6px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  background: var(--surface);
+}
+:is(:lang(zh), :lang(ja), :lang(ko)) .steps-floor { letter-spacing: 0.02em; text-transform: none; }
+.step {
+  position: relative; z-index: 0;
+  display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px;
+  padding: 9px 4px; border-radius: 12px; cursor: pointer;
+}
+.step:hover, .step.current { background: var(--surface-2); }
+.step-ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink-2); }
+.step-ico svg { width: 20px; height: 20px; }
+.step-text { font-size: 14.5px; line-height: 1.3; }
+.nobr { white-space: nowrap; }
+.step-dist { font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* The steps as a line (the brand guide's train line; owner, 1 Nov): one red line through the walk,
+   dashed where it climbs (stairs, a lift: a change of level, no metres); a turn a ringed stop with
+   its arrow in ink and bold, so "bear" and "turn" tell apart at arm's length; a change of level a
+   big red stop and the destination the biggest, both said in bold; the start the blue dot with its
+   halo, as in the From field (owner, 1 Nov). */
+.steps { --rail: 3px; }
+.steps-floor { padding-left: 48px; }
+.step::before, .steps-floor::before, .step.climb::after, .step.climbed::after {
+  content: ""; position: absolute; left: calc(21px - var(--rail) / 2); width: var(--rail);
+  top: 0; bottom: 0; background: var(--red); z-index: 0;
+}
+.steps-floor:first-child::before { display: none; }
+.steps-floor:first-child + .step::before, .step.climbed::before { top: 50%; }
+.step:last-child::before, .step.climb::before { bottom: 50%; }
+.step.climb::after { top: 50%; }
+.step.climbed::after { bottom: 50%; }
+.steps-floor.climb::before, .step.climb::after, .step.climbed::after {
+  background: repeating-linear-gradient(to bottom, var(--red) 0 4px, transparent 4px 8px);
+}
+.steps .step-ico { position: relative; z-index: 1; justify-self: center; width: 30px; height: 30px;
+  background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2.5px var(--red); }
+.steps .step-ico svg { width: 18px; height: 18px; }
+.steps .step:not(.conn):not(.arrive) .step-ico path { stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; }
+.steps .step.conn .step-ico { width: 32px; height: 32px; background: var(--red); color: #fff; box-shadow: 0 0 0 3px var(--surface); }
+.steps .step.conn .step-ico svg { width: 18px; height: 18px; }
+.steps .step.arrive .step-ico { width: 36px; height: 36px; background: var(--red); color: #fff; box-shadow: 0 0 0 3px var(--surface); }
+.steps .step.arrive .step-ico svg { width: 20px; height: 20px; }
+.steps .step.start:not(.conn):not(.arrive) .step-ico { width: 20px; height: 20px; background: var(--blue); color: transparent;
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 7px rgba(0, 87, 184, 0.18); }
+.step.conn .step-text, .step.arrive .step-text { font-weight: 700; }
+
+/* ---- the place picker ---- */
+.picker {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  padding: var(--safe-t) var(--safe-r) 0 var(--safe-l);
+}
+.picker-head { display: flex; align-items: center; gap: 4px; padding: 8px 8px 8px 4px; border-bottom: 1px solid var(--line); }
+.picker-head input {
+  flex: 1; min-width: 0; height: 44px;
+  border: 0; outline: none;
+  font: inherit; font-size: 17px; /* 16px or more stops iOS zooming in */
+  color: var(--ink); background: transparent;
+}
+.picker-head input::placeholder { color: var(--ink-3); }
+.picker-head input::-webkit-search-cancel-button { display: none; }
+.chips { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; scrollbar-width: none; flex: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; height: 34px; padding: 0 14px;
+  border-radius: 17px; border: 1px solid var(--line);
+  font-size: 14px; font-weight: 600; color: var(--ink-2); background: var(--surface);
+  white-space: nowrap;
+}
+.chip:hover { background: var(--surface-2); }
+.chip[aria-pressed="true"] { background: var(--contrast); border-color: var(--contrast); color: var(--on-contrast); }
+/* a chip's own choices (whose toilets), a row under it */
+.chips-sub { padding-top: 0; }
+.chips-sub[hidden] { display: none; }
+.chip-sub { height: 30px; padding: 0 12px; font-size: 13px; }
+.picker-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-bottom: calc(16px + var(--safe-b)); }
+.results { list-style: none; }
+.results-head {
+  padding: 14px 16px 6px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+}
+:is(:lang(zh), :lang(ja), :lang(ko)) .results-head { letter-spacing: 0.02em; }
+.result {
+  display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 12px;
+  width: 100%; padding: 10px 16px; text-align: left;
+}
+.result:hover, .result.active { background: var(--surface-2); }
+.result-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; }
+.result-ico svg { width: 20px; height: 20px; }
+.result-text { min-width: 0; }
+.result-title, .result-sub { display: block; }
+/* two lines before anything is cut: on a small phone one line hid whose toilet it was
+   ("Accessible Toilet …" for the boys', a review found) */
+.result-title { font-size: 15.5px; font-weight: 600; line-height: 1.25; overflow: hidden; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.result-title b { color: var(--red-ink); font-weight: 700; }
+.result-sub { font-size: 12.5px; line-height: 1.3; color: var(--ink-3); overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.result-dist { font-size: 13.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.result-dist small { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); }
+.result.nearest .result-title { color: var(--red-ink); }
+.k-map { background: var(--surface-2); color: var(--ink); }
+.results-empty { padding: 28px 20px; color: var(--ink-3); text-align: center; }
+.results-tip { margin: 12px 16px 4px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); color: var(--ink-2); font-size: 13.5px; }
+
+/* kind colours: the map's room colours, a shade deeper for the small icons */
+.k-room { background: #E9E3D6; color: #6B6150; }
+.k-special { background: #F6E0A6; color: #7E5F0E; }
+.k-library { background: #DED1F0; color: #5B4790; }
+.k-hall { background: #CBDDF2; color: #2F5A8F; }
+.k-pool { background: #BFE0F2; color: #1F6283; }
+.k-food { background: #F9D2B3; color: #8F4A16; }
+.k-care { background: #F6CDD3; color: #9B3346; }
+.k-office { background: #D9DFE8; color: #3F4C5E; }
+.k-toilet { background: #BFE4E1; color: #22706F; }
+.k-service { background: #DCE0E5; color: #4B535D; }
+.k-outdoor { background: #D3E8C6; color: #3D6B2A; }
+.k-drop, .k-bus { background: #DCE3EA; color: #3F5366; }
+.k-entrance { background: #E9E3D6; color: #6B6150; }
+.k-lift { background: #D3DAE3; color: #3E4C5C; }
+.k-stair { background: #6E7884; color: #fff; }
+.k-bridge { background: #E4E7EB; color: #4B535D; }
+.k-blank { background: #E4E7EB; color: #4B535D; }
+
+/* the wide panel before a trip: the kinds of place, and the places people look for most */
+.idle { display: flex; flex-direction: column; margin-top: 10px; min-height: 0; overflow-y: auto; }
+.idle[hidden] { display: none; }
+.idle-head {
+  padding: 10px 4px 4px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+}
+:is(:lang(zh), :lang(ja), :lang(ko)) .idle-head { letter-spacing: 0.02em; }
+.idle-chips { padding: 6px 0 8px; flex-wrap: wrap; overflow: visible; }
+.idle-list { list-style: none; margin: 0 -14px; padding: 0; }
+.idle-list .result { padding: 8px 14px; }
+
+/* ---- dark: the phone's setting. The bar stays CIS red; the rest is the same palette a step
+   down, red text lifted so it reads on dark (the map has its own dark palette, map.js) ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --red-deep: #FF9A8F; --red-tint: #4A221F; --red-ink: #FF8073;
+    --blue: #6E9BF2;
+    --ink: #ECEEF1; --ink-2: #C3C9D0; --ink-3: #9AA3AD;
+    --line: #353B43;
+    --surface: #1C1F24; --surface-2: #272B31;
+    --ground: #14171B;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.4);
+    --glass: rgba(28, 31, 36, 0.92);
+    --track: #474E57; --grip: #4A515A; --hover: #30353C;
+    --contrast: #ECEEF1; --on-contrast: #14171B;
+    --ring: #1C1F24;
+    --logo-cis: #FFFFFF; --logo-rule: rgba(255, 255, 255, 0.4); --logo-ink: #ECEEF1;
+    color-scheme: dark;
+  }
+  .k-room { background: #3A3832; color: #D9D1C0; }
+  .k-special { background: #4A4129; color: #F1D58A; }
+  .k-library { background: #3E3652; color: #CDBFF0; }
+  .k-hall { background: #2D3C52; color: #AFCBF0; }
+  .k-pool { background: #22465A; color: #9FD3EE; }
+  .k-food { background: #4E3826; color: #F5BE93; }
+  .k-care { background: #4E3036; color: #F3B3BE; }
+  .k-office { background: #333A43; color: #C3CCD8; }
+  .k-toilet { background: #244745; color: #96DCD7; }
+  .k-service { background: #2E3339; color: #B5BCC5; }
+  .k-outdoor { background: #2E3E2A; color: #B9DDA6; }
+  .k-drop, .k-bus { background: #2A333D; color: #B4C3D3; }
+  .k-entrance { background: #3A3832; color: #D9D1C0; }
+  .k-lift { background: #3B434D; color: #C9D2DC; }
+  .k-stair { background: #6E7884; color: #F2F4F6; }
+  .k-bridge, .k-blank { background: #30353C; color: #C3C9D0; }
+  .share { background: rgba(0, 0, 0, 0.6); }
+}
+
+/* ---- wide screens (an upright iPad too), and a phone held sideways: the sheet becomes a panel on
+   the left (main.js WIDE has the same query) ---- */
+@media (min-width: 768px), (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  .app { grid-template-columns: var(--panel-w) minmax(0, 1fr); }
+  .stage { grid-column: 2; }
+  .sheet {
+    position: relative; left: auto; right: auto; bottom: auto;
+    grid-row: 2; grid-column: 1;
+    max-height: none; height: 100%;
+    border-radius: 0;
+    box-shadow: 1px 0 0 var(--line);
+    padding: 14px 14px 14px;
+  }
+  .grip { display: none; }
+  .go, .stepbar { display: none !important; }
+  .swap .ico-qr { display: block; }
+  .swap .ico-share { display: none; }
+  /* a mouse wheel cannot scroll a row sideways: on a wide screen the chips wrap */
+  .chips { flex-wrap: wrap; overflow: visible; }
+  /* the map waits while the search panel is open */
+  .stage { transition: opacity 0.15s ease; }
+  .app.picking .stage { opacity: 0.5; }   /* (a dialog; the search leaves the map live: main.js behind) */
+  .sheet .steps, .sheet:not(.open) .steps { display: block; flex: 1; }
+  .picker {
+    inset: calc(var(--bar-h) + var(--safe-t)) auto 0 0;
+    width: var(--panel-w);
+    box-shadow: 1px 0 0 var(--line), 8px 0 24px rgba(20, 24, 30, 0.08);
+  }
+}
+
+/* a phone held sideways, whatever its width: the panel scrolls as one, so the steps under the trip
+   card are in reach (a 568 x 320 screen once left them a 16 px strip) */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  .sheet { overflow-y: auto; overscroll-behavior: contain; }
+  .sheet .steps, .sheet:not(.open) .steps { flex: none; overflow: visible; }
+  /* the step and its arrows stay put while the list scrolls under them */
+  .sheet .stepbar { position: sticky; top: 0; z-index: 2; box-shadow: 0 -10px 0 var(--surface); }
+}
+
+/* an upright tablet: a narrower panel, so the map keeps half the width */
+@media (min-width: 768px) and (max-width: 899px) and (orientation: portrait) {
+  :root { --panel-w: 340px; }
+}
+
+/* a phone held sideways: a narrower panel, and less air */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) and (max-width: 899px) {
+  :root { --panel-w: calc(320px + var(--safe-l)); --bar-h: 44px; }
+  .sheet { padding: 10px 10px 10px calc(10px + var(--safe-l)); }
+  .picker { padding-right: 0; }
+  .end { min-height: 46px; padding: 6px 10px; }
+  .opts { padding-top: 6px; }
+  /* walking with the phone sideways: Start, and the step with its arrows, as in portrait (a review
+     found turning the phone took them away mid-route); the steps are listed anyway */
+  .go:not([hidden]) { display: flex !important; }
+  .go #btn-list { display: none; }
+  .stepbar:not([hidden]) { display: grid !important; }
+  .swap .ico-qr { display: none; }
+  .swap .ico-share { display: block; }
+}
+
+@media (max-height: 700px) {
+  .levels button { height: 40px; font-size: 16px; }
+  .fab { width: 44px; height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* a short phone: the open sheet scrolls as one, so the steps get the screen rather than what the
+   trip card and the buttons leave them */
+@media (max-height: 640px) and (max-width: 899px) and (orientation: portrait) {
+  .sheet.open { max-height: calc(100% - var(--bar-h) - var(--safe-t) - 8px); overflow-y: auto; overscroll-behavior: contain; }
+  .sheet.open .grip { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+  .sheet.open .steps { overflow: visible; flex: none; }
+}
+
+/* a very narrow screen (a phone with its text zoomed to 200%): the wordmark gives way to the
+   language button, and the sheet scrolls, so Start and All steps are never out of reach */
+@media (max-width: 300px) {
+  .brand-sep, .brand-title { display: none; }
+  .sheet:not(.min) { overflow-y: auto; overscroll-behavior: contain; }
+  .sheet:not(.min) .grip { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+  .sheet:not(.min) .steps { overflow: visible; flex: none; }
+}
+
+/* more contrast asked for (iOS Increase Contrast, and the like): the quiet greys and hairlines darker
+   (lighter on dark); the map has its own (map.js MORE_LIGHT/MORE_DARK) */
+@media (prefers-contrast: more) {
+  :root { --ink-2: #353C44; --ink-3: #4B535D; --line: #9AA2AB; }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root { --ink-2: #DDE1E6; --ink-3: #C3C9D0; --line: #6A727B; }
+}

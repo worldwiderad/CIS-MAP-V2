@@ -1,0 +1,949 @@
+{
+ "lang": "zh-Hant",
+ "strings": {
+  "title": "地圖",
+  "from": "起點",
+  "to": "終點",
+  "chooseStart": "選擇您所在的位置",
+  "whereTo": "要去哪裡？",
+  "youAreHere": "您在這裡",
+  "swap": "交換起點和終點",
+  "endTrip": "清除路線",
+  "showMap": "顯示地圖",
+  "stepFree": "無障礙",
+  "stepFreeHint": "只用電梯和坡道",
+  "searchPh": "搜尋房間、編號或地點",
+  "noResults": "找不到「{q}」。可以試試房間編號（如 KB⁠-⁠405），或地點（如圖書館、洗手間）。",
+  "nearest": "最近的{what}",
+  "nearestToilet": "最近的洗手間",
+  "nearestLift": "最近的電梯",
+  "nearestOf": "最近的{what}",
+  "nearestFor": "最近的{who}洗手間",
+  "nearestAccessible": "最近的無障礙洗手間",
+  "kindNear": "{kind} · {place}附近",
+  "needStart": "請先選擇您所在的位置，才能找到最近的地點。",
+  "chipToilet": "洗手間",
+  "chipLift": "電梯",
+  "chipStairs": "樓梯",
+  "chipFood": "餐廳",
+  "chipLibrary": "圖書館",
+  "chipOffice": "辦公室",
+  "chipGym": "體育館",
+  "chipTheatre": "劇場",
+  "directionsHere": "前往這裡",
+  "startHere": "從這裡出發",
+  "backToRoute": "返回路線",
+  "whichSide": "您在哪一側？",
+  "sideCancel": "暫不選擇",
+  "summary": "{dist} · 約{time}",
+  "summaryShort": "{dist} · 不到1分鐘",
+  "min": "{n}分鐘",
+  "sec": "{n}秒",
+  "metres": "{n}公尺",
+  "noRoute": "這兩個地點之間沒有路線。",
+  "noStepFree": "這兩個地點之間沒有無障礙路線。",
+  "stepFreeYours": "已依本機設定使用無障礙路線：只用電梯和坡道。",
+  "same": "您已經在這裡了。",
+  "loading": "正在載入校園地圖…",
+  "loadFail": "地圖無法載入。請檢查網路連線，然後重新整理頁面。",
+  "showFloor": "顯示整層樓",
+  "floors": "樓層",
+  "close": "關閉",
+  "back": "返回",
+  "clear": "清除",
+  "endSteps": "查看完整路線",
+  "popular": "熱門地點",
+  "arrivals": "入口和下車處",
+  "keepTyping": "請繼續輸入…",
+  "done": "完成",
+  "findPlace": "尋找地點",
+  "shareTitlePhone": "分享這條路線",
+  "shareSubPhone": "傳送連結，或讓另一支手機掃描 QR 碼。",
+  "floorUp": "上一層",
+  "floorDown": "下一層",
+  "floorUps": "上 {n} 層",
+  "floorDowns": "下 {n} 層",
+  "viaFloor": "經{f}",
+  "steps": "路線指引",
+  "allSteps": "全部步驟",
+  "hideSteps": "收起步驟",
+  "start": "開始",
+  "stepCount": "第{i}步，共{n}步",
+  "nextStop": "下一站：{place}",
+  "stopOf": "第{i}站，共{n}站",
+  "prevStep": "上一步",
+  "nextStep": "下一步",
+  "stepsTip": "地圖不會追蹤您的位置：走完每一步後，點 › 看下一步。",
+  "docTitle": "CIS 地圖",
+  "language": "語言",
+  "chooseLanguage": "選擇語言",
+  "languageLabel": "語言",
+  "results": "地點",
+  "recent": "最近搜尋",
+  "share": "在手機上開啟這條路線",
+  "shareTitle": "把這條路線帶著走",
+  "shareSub": "用手機相機掃描，即可在手機上開啟。",
+  "copyLink": "複製連結",
+  "copied": "已複製",
+  "shareLink": "分享這條路線",
+  "linkCopied": "已複製連結",
+  "shareNative": "分享…",
+  "tapMapTip": "不確定是哪個房間？返回地圖，點選您所在的位置，再點「從這裡出發」。",
+  "pickOnMap": "在地圖上選擇",
+  "pickFromSub": "點選您所在的位置",
+  "pickToSub": "點選要去的地方",
+  "pickFromNotice": "請在地圖上點選您所在的位置。",
+  "pickToNotice": "請在地圖上點選要去的地方。",
+  "floorOf": "{floor}",
+  "leave": "離開{place}",
+  "leaveTurn": "離開{place}後{dirTurn}",
+  "leaveStraight": "離開{place}後直走",
+  "startAt": "從{place}出發",
+  "startAtTurn": "從{place}出發後{dirTurn}",
+  "startAtStraight": "從{place}出發後直走",
+  "startAtToward": "從{place}出發，往{mark}走",
+  "leaveByStraight": "從{side}離開{place}",
+  "leaveByHead": "從{side}離開{place}，前往{target}",
+  "leaveByToward": "從{side}離開{place}，往{mark}走",
+  "leaveHead": "離開{place}，前往{target}",
+  "leaveTurnHead": "離開{place}後{dirTurn}，前往{target}",
+  "startAtHead": "從{place}出發，前往{target}",
+  "startAtTurnHead": "從{place}出發後{dirTurn}，前往{target}",
+  "onHead": "前往{target}",
+  "onStraight": "直走",
+  "onTurn": "{dirTurn}",
+  "onTurnHead": "{dirTurn}，前往{target}",
+  "onToward": "往{mark}走",
+  "turn": "{dirTurn}",
+  "turnAt": "在{mark}處{dirTurn}",
+  "turnBy": "在{mark}旁{dirTurn}",
+  "turnEnd": "走到走廊盡頭後{dirTurn}",
+  "turnEndPath": "走到路的盡頭後{dirTurn}",
+  "turnAgain": "再{dirTurn}",
+  "bear": "稍向{dir}轉",
+  "bearAt": "在{mark}處稍向{dir}轉",
+  "bearBy": "在{mark}旁稍向{dir}轉",
+  "bearAgain": "再稍向{dir}轉",
+  "turnAround": "轉身往回走",
+  "then": "{first}，然後{dirTurn}",
+  "thenAgain": "{first}，然後再{dirTurn}",
+  "left": "左",
+  "right": "右",
+  "leftTurn": "左轉",
+  "rightTurn": "右轉",
+  "arrive": "抵達{place}",
+  "arriveSide": "抵達{place}，就在{dir}手邊",
+  "arriveAhead": "抵達{place}，就在前方",
+  "arriveOn": "在{dir}手邊",
+  "arriveAheadShort": "就在前方",
+  "stairsUp": "走{stair}上到{floor}",
+  "stairsDown": "走{stair}下到{floor}",
+  "stairsUpN": "走{stair}上 {n} 層，到{floor}",
+  "stairsDownN": "走{stair}下 {n} 層，到{floor}",
+  "liftUp": "搭{lift}上到{floor}",
+  "liftDown": "搭{lift}下到{floor}",
+  "bridge": "走連通橋到{floor}",
+  "walkway": "沿風雨走廊走到{floor}",
+  "seam": "繼續走到{floor}",
+  "landing": "穿過{stair}的平台，進入{floor}",
+  "walkTo": "走{dist}到{place}",
+  "onFloor": "在{floor}",
+  "toFloor": "前往{floor}",
+  "fromFloor": "從{floor}",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "{n}樓",
+  "ttLevel": "Toh Tuck {n}樓",
+  "floorIn": "{building} {floor}",
+  "levelWord": "樓層",
+  "levelShort": "{n}樓",
+  "ttShort": "TT {n}樓",
+  "viaPlace": "{place}",
+  "about": "關於本地圖",
+  "staffOnly": "僅限教職員",
+  "noteGym": "繞過體育館：體育館不開放穿越。",
+  "noteStaff": "繞過教職員專用區域。",
+  "noteOffice": "繞過辦公室：辦公室不開放穿越。",
+  "noteLibrary": "繞過圖書館，不從館內穿越。",
+  "noteBusBay": "繞過校車停靠區，不從中穿越。",
+  "noteCourts": "繞過籃球場，不從中穿越。",
+  "notePool": "繞過泳池平台：平台設有圍欄。",
+  "noteLobby": "繞過更衣室大樓：樓內大廳不開放穿越。",
+  "noteRoads": "沿人行道走，避開車道和停車場。",
+  "notePrimary": "避開小學部的走廊。",
+  "noteSecondary": "避開中學部的走廊。",
+  "liftRef": "電梯",
+  "liftBy": "{mark}旁的電梯",
+  "liftOwn": "{name}",
+  "bridgeRef": "連通橋",
+  "walkwayRef": "風雨走廊",
+  "connLift": "電梯",
+  "connBridge": "連通橋",
+  "connWalkway": "步道",
+  "near": "靠近{place}",
+  "listSep": "、",
+  "and": "和",
+  "capSep": " · ",
+  "withCode": "{name}（{code}）",
+  "capGirls": "女學生",
+  "capBoys": "男學生",
+  "capWomen": "女士",
+  "capMen": "男士",
+  "capAdults": "成人",
+  "capFemale": "女",
+  "capMale": "男",
+  "capAccessible": "無障礙",
+  "whoGirls": "女學生",
+  "whoBoys": "男學生",
+  "whoWomen": "女士",
+  "whoMen": "男士",
+  "toiletGirls": "女學生洗手間",
+  "toiletBoys": "男學生洗手間",
+  "toiletWomen": "女士洗手間",
+  "toiletMen": "男士洗手間",
+  "toiletAdults": "成人洗手間（不分性別）",
+  "toiletFemale": "女洗手間",
+  "toiletMale": "男洗手間",
+  "toiletAccessible": "無障礙洗手間",
+  "toiletsOf": "洗手間（{list}）",
+  "minUnder": "<1分鐘",
+  "unknownPlace": "此連結指向「{q}」，但地圖上沒有這個地點。"
+ },
+ "names": {
+  "Accessible Toilet": "無障礙洗手間",
+  "Accessible Toilet (Swimming Complex)": "無障礙洗手間（游泳館）",
+  "Activities and Camps Office": "活動及營隊辦公室",
+  "Activity pod": "活動區",
+  "Admissions, Marketing and Communications": "招生、行銷及公關處",
+  "Alfresco Area": "戶外用餐區",
+  "Arts Room": "美術教室",
+  "Arts Room (Arts Pod)": "美術教室（藝術區）",
+  "Atrium Lobby": "中庭大廳",
+  "atrium side": "中庭一側",
+  "Atrium void": "中庭挑空",
+  "Bakery": "烘焙室",
+  "Baking Classroom": "烘焙教室",
+  "Basketball court": "籃球場",
+  "Basketball Courts": "籃球場",
+  "Bicycle lots": "自行車停放區",
+  "Black Box Theatre": "黑盒子劇場",
+  "Board Room": "董事會議室",
+  "Bus and car egress lane": "校車及汽車出口車道",
+  "Bus Bay": "校車停靠區",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "校車接送區／下課活動區",
+  "Bus egress lane": "校車出口車道",
+  "Cafe": "咖啡廳",
+  "Canteen Kitchen": "餐廳廚房",
+  "Canteen Kitchen #": "餐廳廚房 #",
+  "Canteen Level 1": "1樓餐廳",
+  "Canteen Level 2": "2樓餐廳",
+  "CEB Principal": "CEB 校長室",
+  "CEB Vice-Principal": "CEB 副校長室",
+  "Centralised Equipment": "集中設備室",
+  "Changing Room": "更衣室",
+  "Changing Rooms": "更衣室",
+  "Chiller / Plant Room": "冰水機房",
+  "Classroom": "教室",
+  "Co-Worker Space LKS-#": "共享辦公空間 LKS-#",
+  "Coordinators office": "協調員辦公室",
+  "Costumes / Props": "服裝道具室",
+  "Counselling Behaviorist": "行為輔導室",
+  "Counsellor Classroom": "輔導教室",
+  "Covered landing": "有蓋平台",
+  "Covered walkway": "風雨走廊",
+  "Covered Walkway": "風雨走廊",
+  "CSR": "CSR",
+  "Dance Studio": "舞蹈教室",
+  "David Foster Theatre": "大衛·佛斯特劇院",
+  "David Foster Theatre (upper part)": "大衛·佛斯特劇院（上層）",
+  "Deputy Head of School": "副總校長室",
+  "Digital Film Studio": "數位電影工作室",
+  "Digital Recording Studio (SW-#)": "數位錄音室（SW-#）",
+  "Director of CEB": "CEB 總監室",
+  "Director of Operations": "營運總監室",
+  "Driveway": "車道",
+  "Drop-off": "下車處",
+  "ECA": "課外活動室",
+  "Electrical riser": "電氣管道間",
+  "ELL": "英語學習室",
+  "ELL Classroom": "英語學習教室",
+  "Emergency vehicles only": "僅限緊急車輛",
+  "Equipment Room": "器材室",
+  "Facilities": "設施部",
+  "Female Toilet (Swimming Complex)": "女洗手間（游泳館）",
+  "Field deck": "運動場平台",
+  "Finance Counter": "財務櫃檯",
+  "Finance Department": "財務部",
+  "Fitness Centre and Gymnasium Viewing Gallery": "健身中心及體育館觀景廊",
+  "Football pitch": "足球場",
+  "Footpath": "人行道",
+  "French Office (NW-#)": "法語辦公室（NW-#）",
+  "Game Equipment Room / Storage": "運動器材室／儲藏室",
+  "Gardening Space": "園藝區",
+  "Gate": "柵欄門",
+  "Glass-topped parapet": "玻璃矮牆",
+  "Grade # to # Learning Lead": "#至#年級學習主任室",
+  "Gross Motor Room": "大肌肉活動室",
+  "Gross Motor Room #": "大肌肉活動室 #",
+  "Guard House": "警衛室",
+  "Gym Office": "體育館辦公室",
+  "Gymnasium": "體育館",
+  "Head of Admissions": "招生主任室",
+  "Head of Facilities": "設施主管室",
+  "Head of Finance": "財務主任室",
+  "Head of HR": "人力資源主管室",
+  "Head of Inclusion": "融合教育主任室",
+  "Head of Innovative Learning": "創新學習主任室",
+  "Head of IT": "資訊科技主管室",
+  "Head of Marketing and Communication": "行銷公關主管室",
+  "Head of School": "總校長室",
+  "Head of Student Support and Well-being": "學生支援及身心健康主任室",
+  "High linkway": "高頂風雨走廊",
+  "Hose Reel": "消防捲盤",
+  "HR Meeting Room": "人力資源會議室",
+  "I.T. Applications": "資訊科技應用室",
+  "Instructional Bakery": "教學烘焙室",
+  "IT Closet": "IT 機房",
+  "JK Classroom": "中班教室",
+  "Junior Gymnasium": "兒童體育館",
+  "Junior Library": "兒童圖書館",
+  "Junior Library Office": "兒童圖書館辦公室",
+  "Junior Pool": "兒童泳池",
+  "Kindergarten Office (Reception & Admin)": "幼兒園辦公室（接待及行政）",
+  "Kitchen": "廚房",
+  "LAN Room (BT wing)": "網路機房（BT 翼）",
+  "LAN Room (KB wing)": "網路機房（KB 翼）",
+  "Lawn": "草坪",
+  "Learning Support": "學習支援室",
+  "Library spiral stair": "圖書館旋轉樓梯",
+  "Library stair": "圖書館樓梯",
+  "Library Store LKS-#-#": "圖書館儲藏室 LKS-#-#",
+  "Library Workroom #": "圖書館工作室 #",
+  "Linkway Bridge": "連通橋",
+  "Locker": "置物櫃",
+  "LS": "學習支援室",
+  "LS Classroom": "學習支援教室",
+  "M&E": "機電室",
+  "M&E ACHI": "機電室",
+  "Main Entrance / School Entrance": "正門／學校入口",
+  "Main Lift": "主電梯",
+  "Maintenance": "維修部",
+  "Male Toilet (Swimming Complex)": "男洗手間（游泳館）",
+  "Meeting Room": "會議室",
+  "Meeting Room #": "會議室 #",
+  "Music Academy": "音樂學院",
+  "Music Practice Room": "音樂練習室",
+  "Music Practice Room #": "音樂練習室 #",
+  "Music Room": "音樂教室",
+  "Music Room (Secondary)": "音樂教室（中學）",
+  "Music Room (SW-#)": "音樂教室（SW-#）",
+  "Netted court": "網圍球場",
+  "North Entrance (Jurong West St #)": "北入口（裕廊西#街）",
+  "Not a through route": "不開放穿越",
+  "Nurse Room": "保健室",
+  "Nursery and Pre-K playground": "幼兒遊戲場",
+  "Nursery Room": "幼幼班教室",
+  "Occupational Therapy": "職能治療室",
+  "Occupational Therapy Room": "職能治療室",
+  "Office": "辦公室",
+  "Open Minds Office": "Open Minds 辦公室",
+  "Open-air courtyard": "露天庭院",
+  "Outdoor Discovery Centre": "戶外探索中心",
+  "Outdoor Discovery garden": "戶外探索花園",
+  "Passage": "通道",
+  "Passenger Lift": "客用電梯",
+  "PE Office": "體育辦公室",
+  "PE Office side": "體育辦公室一側",
+  "Plant room": "機房",
+  "Pod": "學習區",
+  "Pod A": "A 學習區",
+  "Pod B": "B 學習區",
+  "Pod C": "C 學習區",
+  "Pod D": "D 學習區",
+  "Pod E": "E 學習區",
+  "Pod F": "F 學習區",
+  "Pod G": "G 學習區",
+  "Pod H": "H 學習區",
+  "Pool deck": "泳池平台",
+  "Pool road": "泳池旁道路",
+  "Pool-side walk": "泳池邊步道",
+  "Practice Room": "琴房",
+  "Practice Room #": "琴房 #",
+  "Pre-function Space": "前廳",
+  "Pre-K Room": "小班教室",
+  "Prep Room #": "準備室 #",
+  "Primary Counselling": "小學輔導室",
+  "Primary Drop-off Zone": "小學接送區",
+  "Primary Library": "小學圖書館",
+  "Primary Library LKS-#": "小學圖書館 LKS-#",
+  "Primary Makerspace": "小學創客空間",
+  "Primary PE Office": "小學體育辦公室",
+  "Primary Play Area": "小學遊戲區",
+  "Primary Principal": "小學部校長室",
+  "Primary School Office": "小學部辦公室",
+  "Primary Vice-Principal": "小學部副校長室",
+  "Principal": "校長室",
+  "PTA Room": "家長教師會室",
+  "Raised platform": "高台",
+  "Ramp to the field": "通往運動場的坡道",
+  "Reception / Main Office": "接待處／主辦公室",
+  "Red Dot Cafe": "紅點咖啡廳",
+  "Red Dot Convention Centre": "紅點會議中心",
+  "Riser": "管道間",
+  "Risers and IT room": "管道間及資訊機房",
+  "Road": "道路",
+  "Roof (no access)": "屋頂（不可進入）",
+  "Roof Garden": "屋頂花園",
+  "Sand play area": "沙坑遊戲區",
+  "School Nurse": "保健室",
+  "School Nurse (Primary)": "保健室（小學）",
+  "Science Lab #": "科學實驗室 #",
+  "Secondary Counselling": "中學輔導室",
+  "Secondary Drama": "中學戲劇教室",
+  "Secondary Library": "中學圖書館",
+  "Secondary Library LKS-#": "中學圖書館 LKS-#",
+  "Secondary Music Room": "中學音樂教室",
+  "Secondary Principal": "中學部校長室",
+  "Secondary School Office": "中學部辦公室",
+  "Secondary Vice Principal": "中學部副校長室",
+  "Security": "保全室",
+  "Senior Field (Upper Sports Field)": "高年級運動場（上層運動場）",
+  "Senior Pool (# m)": "高年級泳池（#公尺）",
+  "Server Room": "伺服器機房",
+  "Servery": "取餐區",
+  "Service Lift": "貨梯",
+  "Sheltered Drop-off Point": "有蓋下車處",
+  "SK Room": "大班教室",
+  "Sound Lock Lobby": "隔音門廳",
+  "Spectator bleachers": "觀眾看台",
+  "Speech / OT / LS": "語言及職能治療室／學習支援",
+  "Speech Pathologist": "語言治療室",
+  "Staff Room": "教職員室",
+  "Stairs #": "#號樓梯",
+  "Stairs # (no door on this floor)": "#號樓梯（本層無出入口）",
+  "Stairs # side": "#號樓梯一側",
+  "STEAM Centre (Pod F)": "STEAM 中心（F 學習區）",
+  "STEAM Room": "STEAM 教室",
+  "Steam Store": "STEAM 儲藏室",
+  "Steps and ramp": "台階及坡道",
+  "Storage": "儲藏室",
+  "Store": "儲藏室",
+  "Store Room": "儲藏室",
+  "Student crossing": "學生穿越道",
+  "Study Area (Secondary Arts Centre courtyard)": "自習區（中學藝術中心庭院）",
+  "Supply": "物料室",
+  "Swim Office": "泳池辦公室",
+  "Thermal Energy Storage": "儲熱設備室",
+  "Tiered seating": "階梯看台",
+  "Toilet": "洗手間",
+  "Toilet (Men)": "男洗手間",
+  "Toilet (Women)": "女洗手間",
+  "Toilets (Junior Gym)": "洗手間（兒童體育館）",
+  "Transformer / Switch Room": "變壓器室／配電室",
+  "Two-way driveway": "雙向車道",
+  "University advisors": "大學升學顧問室",
+  "Unnamed room": "未命名房間",
+  "Vice-Principal": "副校長室",
+  "Viewing Area": "觀景區",
+  "Visitor car park": "訪客停車場",
+  "Visitor Car Park": "訪客停車場",
+  "Void": "挑空",
+  "Void over the Study Area courtyard": "自習區庭院上方挑空",
+  "Wading Pool": "戲水池",
+  "Walkway": "步道",
+  "Walkway to Toh Tuck Wing": "通往 Toh Tuck 的步道",
+  "Work Room": "工作室",
+  "Workroom": "工作室",
+  "Yeap Transport": "Yeap 交通室",
+  "Zebra crossing": "斑馬線"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "洗手間",
+    "廁所",
+    "化妝室",
+    "衛生間",
+    "盥洗室"
+   ],
+   "lift": [
+    "電梯",
+    "升降機",
+    "昇降機",
+    "升降梯"
+   ],
+   "stair": [
+    "樓梯",
+    "樓梯間"
+   ],
+   "food": [
+    "餐廳",
+    "食堂",
+    "飯堂",
+    "學生餐廳",
+    "學餐",
+    "午餐",
+    "吃飯",
+    "福利社",
+    "小賣部",
+    "合作社"
+   ],
+   "office": [
+    "辦公室"
+   ]
+  },
+  "who": {
+   "girls": [
+    "女生",
+    "女孩",
+    "女學生",
+    "女同學"
+   ],
+   "boys": [
+    "男生",
+    "男孩",
+    "男學生",
+    "男同學"
+   ],
+   "women": [
+    "女士",
+    "女性",
+    "女賓",
+    "婦女"
+   ],
+   "men": [
+    "男士",
+    "男性",
+    "男賓"
+   ],
+   "adults": [
+    "成人",
+    "大人",
+    "不分性別",
+    "性別友善",
+    "無性別"
+   ],
+   "accessible": [
+    "無障礙",
+    "輪椅",
+    "殘障",
+    "身障",
+    "行動不便",
+    "傷殘",
+    "殘疾"
+   ]
+  },
+  "ignore": [
+   "的",
+   "在",
+   "去",
+   "到",
+   "找",
+   "嗎",
+   "呢",
+   "請問",
+   "哪裡",
+   "哪裏",
+   "哪兒",
+   "在哪",
+   "在哪裡",
+   "在哪裏",
+   "在哪兒",
+   "最近",
+   "最近的",
+   "附近",
+   "附近的",
+   "旁邊",
+   "旁邊的",
+   "靠近",
+   "怎麼走",
+   "怎麼去",
+   "怎麼到",
+   "如何前往",
+   "我要去",
+   "我想去",
+   "要去",
+   "想去",
+   "有沒有",
+   "哪邊",
+   "在哪邊",
+   "在幾樓",
+   "幾樓",
+   "我在",
+   "第"
+  ],
+  "level": [],
+  "levelAfter": [
+   "樓",
+   "層",
+   "f",
+   "/f"
+  ],
+  "synonyms": {
+   "健康中心": [
+    "保健室"
+   ],
+   "醫務室": [
+    "保健室"
+   ],
+   "醫療室": [
+    "保健室"
+   ],
+   "醫護室": [
+    "保健室"
+   ],
+   "校醫": [
+    "保健室"
+   ],
+   "校醫室": [
+    "保健室"
+   ],
+   "校護": [
+    "保健室"
+   ],
+   "護士": [
+    "保健室"
+   ],
+   "診所": [
+    "保健室"
+   ],
+   "出口": [
+    "入口",
+    "正門"
+   ],
+   "大門": [
+    "正門"
+   ],
+   "校門": [
+    "正門",
+    "入口"
+   ],
+   "禮堂": [
+    "劇院",
+    "劇場"
+   ],
+   "劇院": [
+    "劇場"
+   ],
+   "劇場": [
+    "劇院"
+   ],
+   "表演": [
+    "劇場",
+    "劇院",
+    "戲劇"
+   ],
+   "黑箱": [
+    "黑盒子"
+   ],
+   "健身房": [
+    "健身中心",
+    "體育館"
+   ],
+   "游泳": [
+    "泳池",
+    "游泳館"
+   ],
+   "游泳池": [
+    "泳池"
+   ],
+   "前台": [
+    "接待處"
+   ],
+   "服務台": [
+    "接待處"
+   ],
+   "櫃台": [
+    "櫃檯"
+   ],
+   "化學": [
+    "科學實驗室"
+   ],
+   "物理": [
+    "科學實驗室"
+   ],
+   "生物": [
+    "科學實驗室"
+   ],
+   "樂團": [
+    "音樂"
+   ],
+   "樂隊": [
+    "音樂"
+   ],
+   "合唱團": [
+    "音樂"
+   ],
+   "鋼琴": [
+    "琴房",
+    "音樂"
+   ],
+   "幼兒園": [
+    "幼幼班",
+    "小班",
+    "中班",
+    "大班",
+    "幼兒園"
+   ],
+   "幼稚園": [
+    "幼幼班",
+    "小班",
+    "中班",
+    "大班",
+    "幼兒園"
+   ],
+   "操場": [
+    "運動場"
+   ],
+   "田徑": [
+    "運動場"
+   ],
+   "足球": [
+    "足球場",
+    "運動場"
+   ],
+   "體育課": [
+    "體育館"
+   ],
+   "設計": [
+    "創客空間",
+    "STEAM"
+   ],
+   "機器人": [
+    "STEAM",
+    "創客空間"
+   ],
+   "烹飪": [
+    "烘焙"
+   ],
+   "藝術": [
+    "美術",
+    "藝術"
+   ],
+   "電腦": [
+    "資訊科技",
+    "IT"
+   ],
+   "諮商": [
+    "輔導"
+   ],
+   "心理": [
+    "輔導"
+   ],
+   "老師": [
+    "教職員室"
+   ],
+   "教師": [
+    "教職員室"
+   ],
+   "教師辦公室": [
+    "教職員室"
+   ],
+   "教員室": [
+    "教職員室"
+   ],
+   "人事": [
+    "人力資源"
+   ],
+   "人資": [
+    "人力資源"
+   ],
+   "會計": [
+    "財務"
+   ],
+   "繳費": [
+    "財務櫃檯"
+   ],
+   "入學": [
+    "招生"
+   ],
+   "市場推廣": [
+    "行銷"
+   ],
+   "傳訊": [
+    "公關"
+   ],
+   "小學部": [
+    "小學"
+   ],
+   "中學部": [
+    "中學"
+   ],
+   "國小": [
+    "小學"
+   ],
+   "國中": [
+    "中學"
+   ],
+   "初中": [
+    "中學"
+   ],
+   "高中": [
+    "中學"
+   ],
+   "圖書室": [
+    "圖書館"
+   ],
+   "天橋": [
+    "連通橋"
+   ],
+   "空橋": [
+    "連通橋"
+   ],
+   "連廊": [
+    "連通橋"
+   ],
+   "有蓋步道": [
+    "風雨走廊"
+   ],
+   "有蓋走廊": [
+    "風雨走廊"
+   ],
+   "校巴": [
+    "校車"
+   ],
+   "巴士": [
+    "校車"
+   ],
+   "公車": [
+    "校車"
+   ],
+   "交通車": [
+    "校車"
+   ],
+   "落客": [
+    "下車處",
+    "接送區"
+   ],
+   "接送": [
+    "接送區",
+    "下車處"
+   ],
+   "下車": [
+    "下車處",
+    "接送區"
+   ],
+   "下車區": [
+    "下車處",
+    "接送區"
+   ],
+   "落客區": [
+    "下車處",
+    "接送區"
+   ],
+   "停車": [
+    "停車場"
+   ],
+   "單車": [
+    "自行車"
+   ],
+   "腳踏車": [
+    "自行車"
+   ],
+   "儲物櫃": [
+    "置物櫃"
+   ],
+   "保安": [
+    "保全"
+   ],
+   "數碼": [
+    "數位"
+   ],
+   "職業治療": [
+    "職能治療"
+   ],
+   "言語治療": [
+    "語言治療"
+   ],
+   "家長會": [
+    "家長教師會"
+   ],
+   "學費": [
+    "財務櫃檯"
+   ],
+   "特教": [
+    "學習支援",
+    "融合教育"
+   ],
+   "資源班": [
+    "學習支援"
+   ],
+   "美勞": [
+    "美術"
+   ],
+   "總務處": [
+    "設施部",
+    "維修部"
+   ],
+   "校務處": [
+    "接待處",
+    "主辦公室"
+   ],
+   "醫生": [
+    "保健室"
+   ],
+   "護理室": [
+    "保健室"
+   ],
+   "遊樂場": [
+    "遊戲場",
+    "遊戲區"
+   ],
+   "升學輔導": [
+    "大學升學顧問"
+   ],
+   "幼兒": [
+    "兒童"
+   ],
+   "有蓋走道": [
+    "風雨走廊"
+   ],
+   "護理師": [
+    "保健室"
+   ],
+   "校門口": [
+    "正門",
+    "入口"
+   ],
+   "大門口": [
+    "正門"
+   ],
+   "北門": [
+    "北入口"
+   ],
+   "大禮堂": [
+    "劇院",
+    "劇場"
+   ],
+   "演藝廳": [
+    "劇院",
+    "劇場"
+   ],
+   "表演廳": [
+    "劇院",
+    "劇場"
+   ],
+   "計程車": [
+    "下車",
+    "接送區"
+   ],
+   "家長接送": [
+    "接送區",
+    "下車"
+   ],
+   "接小孩": [
+    "接送區",
+    "下車"
+   ],
+   "註冊": [
+    "招生"
+   ],
+   "足球場": [
+    "運動場"
+   ],
+   "科學教室": [
+    "科學實驗室"
+   ]
+  }
+ }
+}

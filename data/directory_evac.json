@@ -1,0 +1,5 @@
+{
+ "schema": "cis-map/directory/1",
+ "note": "Other names people search for, per place: a subject, a teacher, a club, an old room name. Keys are the app's place keys (FLOOR:ID, as in data/routing/graph_evac.json `dest`). Read by app/search.js; the map and the routing do not use it. Example: \"aliases\": {\"L3:KB-305\": [\"Biology\", \"Mr Chen\"]}. Empty until the school provides the list (owner's brief: search by teacher or subject).",
+ "aliases": {}
+}

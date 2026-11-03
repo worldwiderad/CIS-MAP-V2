@@ -1,0 +1,975 @@
+{
+ "lang": "fr",
+ "strings": {
+  "title": "Plan",
+  "from": "Départ",
+  "to": "Arrivée",
+  "chooseStart": "Indiquez où vous êtes",
+  "whereTo": "Où allez-vous ?",
+  "youAreHere": "Vous êtes ici",
+  "swap": "Inverser le départ et l’arrivée",
+  "endTrip": "Effacer l’itinéraire",
+  "showMap": "Afficher le plan",
+  "stepFree": "Sans marches",
+  "stepFreeHint": "Ascenseurs et rampes uniquement",
+  "searchPh": "Rechercher une salle, un code ou un lieu",
+  "noResults": "Aucun résultat pour « {q} ». Essayez un code de salle comme KB⁠-⁠405, ou un lieu comme bibliothèque ou toilettes.",
+  "nearest": "Le plus proche : {what}",
+  "nearestToilet": "Toilettes les plus proches",
+  "nearestLift": "Ascenseur le plus proche",
+  "nearestOf": "Le plus proche : {what}",
+  "nearestFor": "Toilettes les plus proches : {who}",
+  "nearestAccessible": "Toilettes accessibles les plus proches",
+  "kindNear": "{kind} près de {place}",
+  "needStart": "Indiquez d’abord où vous êtes pour trouver le lieu le plus proche.",
+  "chipToilet": "Toilettes",
+  "chipLift": "Ascenseurs",
+  "chipStairs": "Escaliers",
+  "chipFood": "Cafétéria",
+  "chipLibrary": "Bibliothèque",
+  "chipOffice": "Bureaux",
+  "chipGym": "Sports",
+  "chipTheatre": "Théâtres",
+  "directionsHere": "Y aller",
+  "startHere": "Partir d’ici",
+  "backToRoute": "Retour à l’itinéraire",
+  "whichSide": "De quel côté êtes-vous ?",
+  "sideCancel": "Pas maintenant",
+  "summary": "{dist} · environ {time}",
+  "summaryShort": "{dist} · moins d’une minute",
+  "min": "{n} min",
+  "sec": "{n} s",
+  "metres": "{n} m",
+  "noRoute": "Il n’y a pas d’itinéraire entre ces deux lieux.",
+  "noStepFree": "Il n’y a pas d’itinéraire sans marches entre ces deux lieux.",
+  "stepFreeYours": "Sans marches, selon le réglage de ce téléphone : l’itinéraire n’emprunte que des ascenseurs et des rampes.",
+  "same": "Vous y êtes déjà.",
+  "loading": "Chargement du campus…",
+  "loadFail": "Le plan n’a pas pu se charger. Vérifiez la connexion et rechargez la page.",
+  "showFloor": "Afficher tout le niveau",
+  "floors": "Niveaux",
+  "close": "Fermer",
+  "back": "Retour",
+  "clear": "Effacer",
+  "endSteps": "Afficher tout l’itinéraire",
+  "popular": "Destinations fréquentes",
+  "arrivals": "Entrées et points de dépose",
+  "keepTyping": "Continuez à taper…",
+  "done": "Terminé",
+  "findPlace": "Trouver un lieu",
+  "shareTitlePhone": "Partager cet itinéraire",
+  "shareSubPhone": "Envoyez le lien, ou faites scanner le code par un autre téléphone.",
+  "floorUp": "un niveau plus haut",
+  "floorDown": "un niveau plus bas",
+  "floorUps": "{n} niveaux plus haut",
+  "floorDowns": "{n} niveaux plus bas",
+  "viaFloor": "via {f}",
+  "steps": "Itinéraire",
+  "allSteps": "Toutes les étapes",
+  "hideSteps": "Masquer les étapes",
+  "start": "Démarrer",
+  "stepCount": "Étape {i} sur {n}",
+  "nextStop": "Prochain arrêt : {place}",
+  "stopOf": "{i} sur {n}",
+  "prevStep": "Étape précédente",
+  "nextStep": "Étape suivante",
+  "stepsTip": "Le plan ne vous localise pas : suivez chaque étape, puis appuyez sur › pour passer à la suivante.",
+  "docTitle": "Plan CIS",
+  "language": "Langue",
+  "chooseLanguage": "Choisissez votre langue",
+  "languageLabel": "Langue",
+  "results": "Lieux",
+  "recent": "Récents",
+  "share": "Ouvrir cet itinéraire sur votre téléphone",
+  "shareTitle": "Emportez cet itinéraire",
+  "shareSub": "Scannez ce code avec l’appareil photo d’un téléphone pour y ouvrir l’itinéraire.",
+  "copyLink": "Copier le lien",
+  "copied": "Copié",
+  "shareLink": "Partager cet itinéraire",
+  "linkCopied": "Lien copié",
+  "shareNative": "Partager…",
+  "tapMapTip": "Vous ne connaissez pas le nom de la salle ? Revenez en arrière, touchez l’endroit où vous êtes sur le plan, puis appuyez sur « Partir d’ici ».",
+  "pickOnMap": "Choisir sur le plan",
+  "pickFromSub": "Touchez l’endroit où vous êtes",
+  "pickToSub": "Touchez l’endroit où vous allez",
+  "pickFromNotice": "Touchez sur le plan l’endroit où vous êtes.",
+  "pickToNotice": "Touchez sur le plan l’endroit où vous allez.",
+  "floorOf": "{floor}",
+  "leave": "Quittez {place}",
+  "leaveTurn": "Quittez {place} et tournez à {dir}",
+  "leaveStraight": "Quittez {place} et allez tout droit",
+  "startAt": "Départ : {place}",
+  "startAtTurn": "Depuis {place}, tournez à {dir}",
+  "startAtStraight": "Depuis {place}, allez tout droit",
+  "startAtToward": "Depuis {place}, allez vers {mark}",
+  "leaveByStraight": "Quittez {place} {side}",
+  "leaveByHead": "Quittez {place} {side} et dirigez-vous vers {target}",
+  "leaveByToward": "Quittez {place} {side} et allez vers {mark}",
+  "leaveHead": "Quittez {place} et dirigez-vous vers {target}",
+  "leaveTurnHead": "Quittez {place}, tournez à {dir} et dirigez-vous vers {target}",
+  "startAtHead": "Depuis {place}, dirigez-vous vers {target}",
+  "startAtTurnHead": "Depuis {place}, tournez à {dir} et dirigez-vous vers {target}",
+  "onHead": "Dirigez-vous vers {target}",
+  "onStraight": "Continuez tout droit",
+  "onTurn": "Tournez à {dir}",
+  "onTurnHead": "Tournez à {dir} et dirigez-vous vers {target}",
+  "onToward": "Allez vers {mark}",
+  "turn": "Tournez à {dir}",
+  "turnAt": "Tournez à {dir} devant {mark}",
+  "turnBy": "Tournez à {dir} devant {mark}",
+  "turnEnd": "Au bout du couloir, tournez à {dir}",
+  "turnEndPath": "Au bout de l’allée, tournez à {dir}",
+  "turnAgain": "Tournez de nouveau à {dir}",
+  "bear": "Prenez légèrement à {dir}",
+  "bearAt": "Prenez légèrement à {dir} devant {mark}",
+  "bearBy": "Prenez légèrement à {dir} devant {mark}",
+  "bearAgain": "Prenez de nouveau légèrement à {dir}",
+  "turnAround": "Faites demi-tour",
+  "then": "{first}, puis à {dir}",
+  "thenAgain": "{first}, puis de nouveau à {dir}",
+  "left": "gauche",
+  "right": "droite",
+  "leftTurn": "gauche",
+  "rightTurn": "droite",
+  "arrive": "Arrivée : {place}",
+  "arriveSide": "Arrivée : {place}, sur votre {dir}",
+  "arriveAhead": "Arrivée : {place}, droit devant",
+  "arriveOn": "Sur votre {dir}",
+  "arriveAheadShort": "Droit devant",
+  "stairsUp": "Prenez le {stair} et montez un niveau jusqu’au {floor}",
+  "stairsDown": "Prenez le {stair} et descendez un niveau jusqu’au {floor}",
+  "stairsUpN": "Prenez le {stair} et montez {n} niveaux jusqu’au {floor}",
+  "stairsDownN": "Prenez le {stair} et descendez {n} niveaux jusqu’au {floor}",
+  "liftUp": "Prenez {lift} et montez jusqu’au {floor}",
+  "liftDown": "Prenez {lift} et descendez jusqu’au {floor}",
+  "bridge": "Traversez la passerelle jusqu’au {floor}",
+  "walkway": "Empruntez le passage couvert jusqu’au {floor}",
+  "seam": "Continuez jusqu’au {floor}",
+  "landing": "Passez par le palier de le {stair} jusqu’au {floor}",
+  "walkTo": "{dist} jusqu’à {place}",
+  "onFloor": "au {floor}",
+  "toFloor": "Vers le {floor}",
+  "fromFloor": "Depuis le {floor}",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "Niveau {n}",
+  "ttLevel": "Toh Tuck Niveau {n}",
+  "floorIn": "{floor}, {building}",
+  "levelWord": "Niveau",
+  "levelShort": "L{n}",
+  "ttShort": "TT L{n}",
+  "viaPlace": "{place}",
+  "about": "À propos de ce plan",
+  "staffOnly": "Réservé au personnel",
+  "noteGym": "Contourne le gymnase, qui n’est pas un lieu de passage.",
+  "noteStaff": "Contourne une zone réservée au personnel.",
+  "noteOffice": "Contourne le secrétariat, qui n’est pas un lieu de passage.",
+  "noteLibrary": "Contourne la bibliothèque au lieu de la traverser.",
+  "noteBusBay": "Contourne la zone des autobus au lieu de la traverser.",
+  "noteCourts": "Contourne les terrains de basketball au lieu de les traverser.",
+  "notePool": "Contourne la terrasse de la piscine, qui est clôturée.",
+  "noteLobby": "Contourne le bâtiment des vestiaires, dont les halls ne sont pas des lieux de passage.",
+  "noteRoads": "Reste sur les allées piétonnes, en évitant les voies d’accès et le parking.",
+  "notePrimary": "Évite les couloirs du primaire.",
+  "noteSecondary": "Évite les couloirs du secondaire.",
+  "liftRef": "l’ascenseur",
+  "liftBy": "l’ascenseur côté {mark}",
+  "liftOwn": "le {name}",
+  "bridgeRef": "la passerelle",
+  "walkwayRef": "le passage couvert",
+  "connLift": "Ascenseur",
+  "connBridge": "Passerelle",
+  "connWalkway": "Passage",
+  "near": "près de {place}",
+  "listSep": ", ",
+  "and": " et ",
+  "capSep": " · ",
+  "withCode": "{name} ({code})",
+  "capGirls": "Filles",
+  "capBoys": "Garçons",
+  "capWomen": "Femmes",
+  "capMen": "Hommes",
+  "capAdults": "Adultes",
+  "capFemale": "Féminines",
+  "capMale": "Masculines",
+  "capAccessible": "Accessibles",
+  "whoGirls": "filles",
+  "whoBoys": "garçons",
+  "whoWomen": "femmes",
+  "whoMen": "hommes",
+  "toiletGirls": "Toilettes des filles",
+  "toiletBoys": "Toilettes des garçons",
+  "toiletWomen": "Toilettes des femmes",
+  "toiletMen": "Toilettes des hommes",
+  "toiletAdults": "Toilettes des adultes (mixtes)",
+  "toiletFemale": "Toilettes féminines",
+  "toiletMale": "Toilettes masculines",
+  "toiletAccessible": "Toilettes accessibles",
+  "toiletsOf": "Toilettes ({list})",
+  "minUnder": "<1 min",
+  "unknownPlace": "Ce lien mène à « {q} », qui n’est pas sur le plan."
+ },
+ "names": {
+  "Accessible Toilet": "Toilettes accessibles",
+  "Accessible Toilet (Swimming Complex)": "Toilettes accessibles (complexe aquatique)",
+  "Activities and Camps Office": "Bureau des activités et des camps",
+  "Activity pod": "Espace d’activités",
+  "Admissions, Marketing and Communications": "Admissions / Marketing et communication",
+  "Alfresco Area": "Espace repas extérieur",
+  "Arts Room": "Salle d’arts plastiques",
+  "Arts Room (Arts Pod)": "Salle d’arts plastiques (Espace arts)",
+  "Atrium Lobby": "Hall de l’atrium",
+  "atrium side": "côté atrium",
+  "Atrium void": "Vide de l’atrium",
+  "Bakery": "Salle de pâtisserie",
+  "Baking Classroom": "Classe de pâtisserie",
+  "Basketball court": "Terrain de basketball",
+  "Basketball Courts": "Terrains de basketball",
+  "Bicycle lots": "Parking à vélos",
+  "Black Box Theatre": "Théâtre Black Box",
+  "Board Room": "Salle du conseil",
+  "Bus and car egress lane": "Sortie des autobus et voitures",
+  "Bus Bay": "Zone des autobus",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "Zone de dépose des autobus / Récréation et activités",
+  "Bus egress lane": "Sortie des autobus",
+  "Cafe": "Café",
+  "Canteen Kitchen": "Cuisine de la cafétéria",
+  "Canteen Kitchen #": "Cuisine de la cafétéria #",
+  "Canteen Level 1": "Cafétéria du Niveau 1",
+  "Canteen Level 2": "Cafétéria du Niveau 2",
+  "CEB Principal": "Direction du CEB",
+  "CEB Vice-Principal": "Direction adjointe du CEB",
+  "Centralised Equipment": "Équipements centralisés",
+  "Changing Room": "Vestiaire",
+  "Changing Rooms": "Vestiaires",
+  "Chiller / Plant Room": "Local des refroidisseurs / Local technique",
+  "Classroom": "Salle de classe",
+  "Co-Worker Space LKS-#": "Espace de travail partagé LKS-#",
+  "Coordinators office": "Bureau de coordination",
+  "Costumes / Props": "Costumes / Accessoires",
+  "Counselling Behaviorist": "Soutien comportemental",
+  "Counsellor Classroom": "Salle de soutien psychologique",
+  "Covered landing": "Palier couvert",
+  "Covered walkway": "Allée couverte",
+  "Covered Walkway": "Passage couvert",
+  "CSR": "CSR",
+  "Dance Studio": "Studio de danse",
+  "David Foster Theatre": "Théâtre David Foster",
+  "David Foster Theatre (upper part)": "Théâtre David Foster (partie supérieure)",
+  "Deputy Head of School": "Direction générale adjointe",
+  "Digital Film Studio": "Studio de cinéma numérique",
+  "Digital Recording Studio (SW-#)": "Studio d’enregistrement numérique (SW-#)",
+  "Director of CEB": "Direction du programme CEB",
+  "Director of Operations": "Direction des opérations",
+  "Driveway": "Voie d’accès",
+  "Drop-off": "Zone de dépose",
+  "ECA": "Activités parascolaires",
+  "Electrical riser": "Gaine électrique",
+  "ELL": "Soutien en anglais",
+  "ELL Classroom": "Classe de soutien en anglais",
+  "Emergency vehicles only": "Véhicules d’urgence uniquement",
+  "Equipment Room": "Salle du matériel",
+  "Facilities": "Services techniques",
+  "Female Toilet (Swimming Complex)": "Toilettes féminines (complexe aquatique)",
+  "Field deck": "Plateforme du terrain",
+  "Finance Counter": "Guichet des finances",
+  "Finance Department": "Service des finances",
+  "Fitness Centre and Gymnasium Viewing Gallery": "Salle de remise en forme / Tribune du gymnase",
+  "Football pitch": "Terrain de football",
+  "Footpath": "Allée piétonne",
+  "French Office (NW-#)": "Bureau de français (NW-#)",
+  "Game Equipment Room / Storage": "Salle du matériel de sport / Rangement",
+  "Gardening Space": "Espace jardinage",
+  "Gate": "Portail",
+  "Glass-topped parapet": "Muret vitré",
+  "Grade # to # Learning Lead": "Coordination pédagogique, #e à #e année",
+  "Gross Motor Room": "Salle de motricité",
+  "Gross Motor Room #": "Salle de motricité #",
+  "Guard House": "Poste de garde",
+  "Gym Office": "Bureau du gymnase",
+  "Gymnasium": "Gymnase",
+  "Head of Admissions": "Direction des admissions",
+  "Head of Facilities": "Direction des services techniques",
+  "Head of Finance": "Direction financière",
+  "Head of HR": "Direction des RH",
+  "Head of Inclusion": "Direction de l’inclusion",
+  "Head of Innovative Learning": "Direction de l’apprentissage innovant",
+  "Head of IT": "Direction informatique",
+  "Head of Marketing and Communication": "Direction marketing et communication",
+  "Head of School": "Direction générale",
+  "Head of Student Support and Well-being": "Direction du soutien aux élèves et du bien-être",
+  "High linkway": "Allée couverte haute",
+  "Hose Reel": "Robinet d’incendie armé",
+  "HR Meeting Room": "Salle de réunion RH",
+  "I.T. Applications": "Applications informatiques",
+  "Instructional Bakery": "Atelier de pâtisserie",
+  "IT Closet": "Local informatique",
+  "JK Classroom": "Classe de maternelle JK",
+  "Junior Gymnasium": "Gymnase des petits",
+  "Junior Library": "Bibliothèque des petits",
+  "Junior Library Office": "Bureau de la bibliothèque des petits",
+  "Junior Pool": "Piscine des petits",
+  "Kindergarten Office (Reception & Admin)": "Bureau de la maternelle (accueil et administration)",
+  "Kitchen": "Cuisine",
+  "LAN Room (BT wing)": "Salle réseau (aile BT)",
+  "LAN Room (KB wing)": "Salle réseau (aile KB)",
+  "Lawn": "Pelouse",
+  "Learning Support": "Soutien pédagogique",
+  "Library spiral stair": "Escalier en colimaçon",
+  "Library stair": "Escalier de la bibliothèque",
+  "Library Store LKS-#-#": "Réserve de la bibliothèque LKS-#-#",
+  "Library Workroom #": "Salle de travail de la bibliothèque #",
+  "Linkway Bridge": "Passerelle",
+  "Locker": "Casiers",
+  "LS": "Soutien pédagogique",
+  "LS Classroom": "Classe de soutien pédagogique",
+  "M&E": "Local technique",
+  "M&E ACHI": "Local technique ACHI",
+  "Main Entrance / School Entrance": "Entrée principale / Entrée de l’école",
+  "Main Lift": "Ascenseur principal",
+  "Maintenance": "Entretien",
+  "Male Toilet (Swimming Complex)": "Toilettes masculines (complexe aquatique)",
+  "Meeting Room": "Salle de réunion",
+  "Meeting Room #": "Salle de réunion #",
+  "Music Academy": "Académie de musique",
+  "Music Practice Room": "Salle de pratique musicale",
+  "Music Practice Room #": "Salle de pratique musicale #",
+  "Music Room": "Salle de musique",
+  "Music Room (Secondary)": "Salle de musique (secondaire)",
+  "Music Room (SW-#)": "Salle de musique (SW-#)",
+  "Netted court": "Terrain grillagé",
+  "North Entrance (Jurong West St #)": "Entrée nord (Jurong West St #)",
+  "Not a through route": "Pas de passage",
+  "Nurse Room": "Infirmerie",
+  "Nursery and Pre-K playground": "Aire de jeux des tout-petits",
+  "Nursery Room": "Classe des tout-petits",
+  "Occupational Therapy": "Ergothérapie",
+  "Occupational Therapy Room": "Salle d’ergothérapie",
+  "Office": "Bureau",
+  "Open Minds Office": "Bureau Open Minds",
+  "Open-air courtyard": "Cour à ciel ouvert",
+  "Outdoor Discovery Centre": "Centre de découverte en plein air",
+  "Outdoor Discovery garden": "Jardin de découverte",
+  "Passage": "Passage",
+  "Passenger Lift": "Ascenseur",
+  "PE Office": "Bureau d’EPS (éducation physique)",
+  "PE Office side": "côté bureau d’EPS",
+  "Plant room": "Local technique",
+  "Pod": "Espace pédagogique",
+  "Pod A": "Espace pédagogique A",
+  "Pod B": "Espace pédagogique B",
+  "Pod C": "Espace pédagogique C",
+  "Pod D": "Espace pédagogique D",
+  "Pod E": "Espace pédagogique E",
+  "Pod F": "Espace pédagogique F",
+  "Pod G": "Espace pédagogique G",
+  "Pod H": "Espace pédagogique H",
+  "Pool deck": "Terrasse de la piscine",
+  "Pool road": "Voie de la piscine",
+  "Pool-side walk": "Allée le long de la piscine",
+  "Practice Room": "Salle de répétition",
+  "Practice Room #": "Salle de répétition #",
+  "Pre-function Space": "Foyer",
+  "Pre-K Room": "Classe de prématernelle",
+  "Prep Room #": "Salle de préparation #",
+  "Primary Counselling": "Soutien psychologique du primaire",
+  "Primary Drop-off Zone": "Zone de dépose du primaire",
+  "Primary Library": "Bibliothèque du primaire",
+  "Primary Library LKS-#": "Bibliothèque du primaire LKS-#",
+  "Primary Makerspace": "Atelier créatif du primaire",
+  "Primary PE Office": "Bureau d’EPS du primaire (éducation physique)",
+  "Primary Play Area": "Aire de jeux du primaire",
+  "Primary Principal": "Direction du primaire",
+  "Primary School Office": "Secrétariat du primaire",
+  "Primary Vice-Principal": "Direction adjointe du primaire",
+  "Principal": "Direction",
+  "PTA Room": "Salle des parents",
+  "Raised platform": "Plateforme surélevée",
+  "Ramp to the field": "Rampe vers le terrain",
+  "Reception / Main Office": "Accueil / Secrétariat",
+  "Red Dot Cafe": "Café Red Dot",
+  "Red Dot Convention Centre": "Centre de congrès Red Dot",
+  "Riser": "Gaine technique",
+  "Risers and IT room": "Gaines techniques et salle informatique",
+  "Road": "Route",
+  "Roof (no access)": "Toit (accès interdit)",
+  "Roof Garden": "Jardin sur le toit",
+  "Sand play area": "Bac à sable",
+  "School Nurse": "Infirmerie",
+  "School Nurse (Primary)": "Infirmerie (primaire)",
+  "Science Lab #": "Laboratoire de sciences #",
+  "Secondary Counselling": "Soutien psychologique du secondaire",
+  "Secondary Drama": "Salle d’art dramatique du secondaire",
+  "Secondary Library": "Bibliothèque du secondaire",
+  "Secondary Library LKS-#": "Bibliothèque du secondaire LKS-#",
+  "Secondary Music Room": "Salle de musique du secondaire",
+  "Secondary Principal": "Direction du secondaire",
+  "Secondary School Office": "Secrétariat du secondaire",
+  "Secondary Vice Principal": "Direction adjointe du secondaire",
+  "Security": "Sécurité",
+  "Senior Field (Upper Sports Field)": "Terrain des grands (terrain supérieur)",
+  "Senior Pool (# m)": "Piscine des grands (# m)",
+  "Server Room": "Salle des serveurs",
+  "Servery": "Comptoir de service",
+  "Service Lift": "Ascenseur de service",
+  "Sheltered Drop-off Point": "Point de dépose couvert",
+  "SK Room": "Classe de maternelle SK",
+  "Sound Lock Lobby": "Sas acoustique",
+  "Spectator bleachers": "Gradins",
+  "Speech / OT / LS": "Orthophonie / Ergothérapie / Soutien pédagogique",
+  "Speech Pathologist": "Salle d’orthophonie",
+  "Staff Room": "Salle du personnel",
+  "Stairs #": "Escalier #",
+  "Stairs # (no door on this floor)": "Escalier # (sans accès à ce niveau)",
+  "Stairs # side": "côté Escalier #",
+  "STEAM Centre (Pod F)": "Centre STEAM (Espace pédagogique F)",
+  "STEAM Room": "Salle STEAM",
+  "Steam Store": "Réserve STEAM",
+  "Steps and ramp": "Marches et rampe",
+  "Storage": "Rangement",
+  "Store": "Réserve",
+  "Store Room": "Réserve",
+  "Student crossing": "Passage pour élèves",
+  "Study Area (Secondary Arts Centre courtyard)": "Espace d’étude (cour du centre des arts du secondaire)",
+  "Supply": "Fournitures",
+  "Swim Office": "Bureau de natation",
+  "Thermal Energy Storage": "Stockage d’énergie thermique",
+  "Tiered seating": "Gradins",
+  "Toilet": "Toilettes",
+  "Toilet (Men)": "Toilettes (Hommes)",
+  "Toilet (Women)": "Toilettes (Femmes)",
+  "Toilets (Junior Gym)": "Toilettes (gymnase des petits)",
+  "Transformer / Switch Room": "Local transformateur / Local électrique",
+  "Two-way driveway": "Voie à double sens",
+  "University advisors": "Orientation universitaire",
+  "Unnamed room": "Salle sans nom",
+  "Vice-Principal": "Direction adjointe",
+  "Viewing Area": "Espace d’observation",
+  "Visitor car park": "Parking des visiteurs",
+  "Visitor Car Park": "Parking des visiteurs",
+  "Void": "Vide",
+  "Void over the Study Area courtyard": "Vide sur la cour de l’espace d’étude",
+  "Wading Pool": "Pataugeoire",
+  "Walkway": "Allée",
+  "Walkway to Toh Tuck Wing": "Allée menant à l’aile Toh Tuck",
+  "Work Room": "Salle de travail",
+  "Workroom": "Salle de travail",
+  "Yeap Transport": "Transports Yeap",
+  "Zebra crossing": "Passage piéton"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "toilettes",
+    "toilette",
+    "wc",
+    "w c",
+    "cabinets",
+    "sanitaires",
+    "salle de bain",
+    "salle de bains",
+    "salles de bain",
+    "salles de bains",
+    "salle de toilette",
+    "salle de toilettes",
+    "petit coin",
+    "lavabos",
+    "toilettes visiteurs",
+    "toilettes des visiteurs",
+    "toilettes pour visiteurs",
+    "wc visiteurs",
+    "toilettes parents",
+    "toilettes des parents",
+    "toilettes pour parents",
+    "wc parents"
+   ],
+   "lift": [
+    "ascenseur",
+    "ascenseurs",
+    "élévateur",
+    "élévateurs",
+    "monte-charge"
+   ],
+   "stair": [
+    "escalier",
+    "escaliers",
+    "marches"
+   ],
+   "food": [
+    "cafétéria",
+    "cafétérias",
+    "cafet",
+    "cafèt",
+    "cantine",
+    "réfectoire",
+    "restaurant",
+    "café",
+    "manger",
+    "repas",
+    "déjeuner",
+    "dîner",
+    "collation",
+    "goûter",
+    "snack"
+   ],
+   "office": [
+    "bureau",
+    "bureaux"
+   ]
+  },
+  "who": {
+   "girls": [
+    "filles",
+    "fille"
+   ],
+   "boys": [
+    "garçons",
+    "garçon"
+   ],
+   "women": [
+    "femmes",
+    "femme",
+    "dames",
+    "dame"
+   ],
+   "men": [
+    "hommes",
+    "homme",
+    "messieurs",
+    "monsieur"
+   ],
+   "adults": [
+    "adultes",
+    "adulte",
+    "mixte",
+    "mixtes",
+    "unisexe",
+    "neutre",
+    "neutres",
+    "non genré",
+    "non genrées",
+    "toilettes personnel",
+    "toilettes du personnel",
+    "toilettes enseignants",
+    "toilettes des enseignants",
+    "toilettes profs",
+    "wc personnel",
+    "wc du personnel"
+   ],
+   "accessible": [
+    "accessible",
+    "accessibles",
+    "handicapé",
+    "handicapés",
+    "handicapée",
+    "handicapées",
+    "handicap",
+    "fauteuil",
+    "fauteuil roulant",
+    "chaise roulante",
+    "pmr",
+    "mobilité réduite"
+   ]
+  },
+  "ignore": [
+   "le",
+   "la",
+   "les",
+   "l",
+   "un",
+   "une",
+   "des",
+   "du",
+   "de",
+   "d",
+   "à",
+   "au",
+   "aux",
+   "où",
+   "est",
+   "sont",
+   "se",
+   "trouve",
+   "trouver",
+   "cherche",
+   "chercher",
+   "aller",
+   "comment",
+   "je",
+   "j",
+   "ai",
+   "c",
+   "plus",
+   "proche",
+   "proches",
+   "près",
+   "côté",
+   "vers",
+   "pour",
+   "mon",
+   "ma",
+   "mes",
+   "y",
+   "il",
+   "en",
+   "quel",
+   "quelle",
+   "svp",
+   "merci",
+   "veux",
+   "voudrais",
+   "aimerais",
+   "dois",
+   "faut",
+   "besoin",
+   "me",
+   "rendre",
+   "chemin",
+   "enfant",
+   "enfants",
+   "personne",
+   "personnes",
+   "rez-de-chaussée",
+   "rdc"
+  ],
+  "level": [
+   "niveau",
+   "niv"
+  ],
+  "levelAfter": [],
+  "synonyms": {
+   "infirmière": [
+    "infirmerie"
+   ],
+   "infirmier": [
+    "infirmerie"
+   ],
+   "clinique": [
+    "infirmerie"
+   ],
+   "médecin": [
+    "infirmerie"
+   ],
+   "santé": [
+    "infirmerie"
+   ],
+   "malade": [
+    "infirmerie"
+   ],
+   "sortie": [
+    "entrée"
+   ],
+   "portail": [
+    "entrée"
+   ],
+   "porte": [
+    "entrée"
+   ],
+   "gym": [
+    "gymnase"
+   ],
+   "eps": [
+    "gymnase"
+   ],
+   "sport": [
+    "gymnase",
+    "terrain",
+    "piscine",
+    "eps",
+    "remise"
+   ],
+   "sports": [
+    "gymnase",
+    "terrain",
+    "piscine",
+    "eps",
+    "remise"
+   ],
+   "fitness": [
+    "remise"
+   ],
+   "musculation": [
+    "remise"
+   ],
+   "natation": [
+    "piscine"
+   ],
+   "nager": [
+    "piscine"
+   ],
+   "bassin": [
+    "piscine"
+   ],
+   "auditorium": [
+    "théâtre",
+    "congrès"
+   ],
+   "amphithéâtre": [
+    "théâtre",
+    "congrès"
+   ],
+   "amphi": [
+    "théâtre",
+    "congrès"
+   ],
+   "spectacle": [
+    "théâtre"
+   ],
+   "scène": [
+    "théâtre"
+   ],
+   "conférence": [
+    "congrès"
+   ],
+   "salle": [
+    "studio",
+    "théâtre",
+    "gymnase",
+    "centre"
+   ],
+   "musique": [
+    "musicale"
+   ],
+   "orchestre": [
+    "musique",
+    "musicale"
+   ],
+   "chorale": [
+    "musique",
+    "musicale"
+   ],
+   "piano": [
+    "musique",
+    "musicale",
+    "répétition"
+   ],
+   "labo": [
+    "laboratoire"
+   ],
+   "chimie": [
+    "sciences"
+   ],
+   "physique": [
+    "sciences"
+   ],
+   "biologie": [
+    "sciences"
+   ],
+   "ordinateur": [
+    "informatique"
+   ],
+   "wifi": [
+    "informatique"
+   ],
+   "réception": [
+    "accueil"
+   ],
+   "administration": [
+    "secrétariat",
+    "accueil",
+    "direction"
+   ],
+   "directeur": [
+    "direction"
+   ],
+   "directrice": [
+    "direction"
+   ],
+   "proviseur": [
+    "direction"
+   ],
+   "secrétaire": [
+    "secrétariat"
+   ],
+   "inscription": [
+    "admissions"
+   ],
+   "inscriptions": [
+    "admissions"
+   ],
+   "cdi": [
+    "bibliothèque"
+   ],
+   "médiathèque": [
+    "bibliothèque"
+   ],
+   "livres": [
+    "bibliothèque"
+   ],
+   "makerspace": [
+    "atelier",
+    "créatif"
+   ],
+   "fablab": [
+    "atelier",
+    "créatif"
+   ],
+   "robotique": [
+    "steam",
+    "créatif"
+   ],
+   "orthophoniste": [
+    "orthophonie"
+   ],
+   "ergothérapeute": [
+    "ergothérapie"
+   ],
+   "psychologue": [
+    "psychologique"
+   ],
+   "conseiller": [
+    "soutien",
+    "orientation"
+   ],
+   "conseillère": [
+    "soutien",
+    "orientation"
+   ],
+   "université": [
+    "universitaire"
+   ],
+   "lycée": [
+    "secondaire"
+   ],
+   "collège": [
+    "secondaire",
+    "universitaire"
+   ],
+   "sécurité": [
+    "garde"
+   ],
+   "gardien": [
+    "garde"
+   ],
+   "bus": [
+    "autobus"
+   ],
+   "car": [
+    "autobus"
+   ],
+   "autocar": [
+    "autobus"
+   ],
+   "navette": [
+    "autobus"
+   ],
+   "stationnement": [
+    "parking"
+   ],
+   "voiture": [
+    "parking",
+    "dépose"
+   ],
+   "taxi": [
+    "dépose"
+   ],
+   "maternelle": [
+    "tout-petits",
+    "prématernelle"
+   ],
+   "garderie": [
+    "tout-petits",
+    "prématernelle"
+   ],
+   "parc": [
+    "jeux",
+    "parking"
+   ],
+   "pod": [
+    "espace"
+   ],
+   "foot": [
+    "terrain",
+    "football"
+   ],
+   "football": [
+    "terrain"
+   ],
+   "soccer": [
+    "terrain",
+    "football"
+   ],
+   "dessin": [
+    "arts"
+   ],
+   "peinture": [
+    "arts"
+   ],
+   "boulangerie": [
+    "pâtisserie"
+   ],
+   "cuisine": [
+    "pâtisserie"
+   ],
+   "film": [
+    "cinéma"
+   ],
+   "vidéo": [
+    "cinéma"
+   ],
+   "théâtre": [
+    "dramatique"
+   ],
+   "vélo": [
+    "vélos"
+   ],
+   "bicyclette": [
+    "vélos"
+   ],
+   "paiement": [
+    "finances"
+   ],
+   "payer": [
+    "finances"
+   ],
+   "comptabilité": [
+    "finances"
+   ],
+   "ressources": [
+    "rh"
+   ],
+   "humaines": [
+    "rh"
+   ],
+   "caisse": [
+    "finances"
+   ],
+   "frais": [
+    "finances"
+   ],
+   "scolarité": [
+    "finances",
+    "admissions"
+   ],
+   "arrêt": [
+    "autobus",
+    "dépose"
+   ],
+   "débarcadère": [
+    "dépose",
+    "autobus"
+   ],
+   "dépose-minute": [
+    "dépose"
+   ],
+   "profs": [
+    "personnel"
+   ],
+   "professeurs": [
+    "personnel"
+   ],
+   "enseignants": [
+    "personnel"
+   ],
+   "maîtres": [
+    "personnel"
+   ],
+   "association": [
+    "parents"
+   ],
+   "ape": [
+    "parents"
+   ]
+  }
+ }
+}

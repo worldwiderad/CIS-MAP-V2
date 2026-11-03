@@ -1,0 +1,922 @@
+{
+ "lang": "ko",
+ "strings": {
+  "title": "지도",
+  "from": "출발",
+  "to": "도착",
+  "chooseStart": "지금 있는 곳을 선택하세요",
+  "whereTo": "어디로 갈까요?",
+  "youAreHere": "현재 위치",
+  "swap": "출발지와 도착지 바꾸기",
+  "endTrip": "경로 지우기",
+  "showMap": "지도 보기",
+  "stepFree": "계단 없는 경로",
+  "stepFreeHint": "엘리베이터와 경사로만 이용",
+  "searchPh": "장소 이름이나 방 번호로 검색",
+  "noResults": "“{q}”에 대한 검색 결과가 없어요. KB⁠-⁠405 같은 방 번호나 도서관, 화장실 같은 장소를 검색해 보세요.",
+  "nearest": "가장 가까운 {what}",
+  "nearestToilet": "가장 가까운 화장실",
+  "nearestLift": "가장 가까운 엘리베이터",
+  "nearestOf": "가장 가까운 {what}",
+  "nearestFor": "가장 가까운 {who}용 화장실",
+  "nearestAccessible": "가장 가까운 장애인 화장실",
+  "kindNear": "{place} 근처 {kind}",
+  "needStart": "가장 가까운 곳을 찾으려면 먼저 지금 있는 곳을 선택하세요.",
+  "chipToilet": "화장실",
+  "chipLift": "엘리베이터",
+  "chipStairs": "계단",
+  "chipFood": "식당",
+  "chipLibrary": "도서관",
+  "chipOffice": "사무실",
+  "chipGym": "체육관",
+  "chipTheatre": "극장",
+  "directionsHere": "여기로 가기",
+  "startHere": "여기서 출발",
+  "backToRoute": "경로로 돌아가기",
+  "whichSide": "어느 쪽에 계세요?",
+  "sideCancel": "나중에",
+  "summary": "{dist} · 약 {time}",
+  "summaryShort": "{dist} · 1분 이내",
+  "min": "{n}분",
+  "sec": "{n}초",
+  "metres": "{n}m",
+  "noRoute": "이 두 장소 사이에는 경로가 없어요.",
+  "noStepFree": "이 두 장소 사이에는 계단 없는 경로가 없어요.",
+  "stepFreeYours": "이 휴대폰에서 “계단 없는 경로”가 켜져 있어요. 엘리베이터와 경사로만 이용해요.",
+  "same": "출발지와 도착지가 같아요.",
+  "loading": "캠퍼스 지도를 불러오는 중…",
+  "loadFail": "지도를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 페이지를 새로고침하세요.",
+  "showFloor": "층 전체 보기",
+  "floors": "층",
+  "close": "닫기",
+  "back": "뒤로",
+  "clear": "지우기",
+  "endSteps": "전체 경로 보기",
+  "popular": "자주 찾는 곳",
+  "arrivals": "출입구와 승하차 장소",
+  "keepTyping": "계속 입력하세요…",
+  "done": "완료",
+  "findPlace": "장소 찾기",
+  "shareTitlePhone": "이 경로 공유하기",
+  "shareSubPhone": "링크를 보내거나, 다른 휴대폰으로 QR 코드를 스캔하세요.",
+  "floorUp": "한 층 위",
+  "floorDown": "한 층 아래",
+  "floorUps": "{n}개 층 위",
+  "floorDowns": "{n}개 층 아래",
+  "viaFloor": "{f} 경유",
+  "steps": "길 안내",
+  "allSteps": "전체 단계 보기",
+  "hideSteps": "단계 숨기기",
+  "start": "안내 시작",
+  "stepCount": "{n}단계 중 {i}단계",
+  "nextStop": "다음 목적지: {place}",
+  "stopOf": "{n}곳 중 {i}번째",
+  "prevStep": "이전 단계",
+  "nextStep": "다음 단계",
+  "stepsTip": "이 지도는 내 위치를 추적하지 않아요. 한 단계씩 따라 걸은 뒤 › 버튼을 눌러 다음 단계를 보세요.",
+  "docTitle": "CIS 지도",
+  "language": "언어",
+  "chooseLanguage": "언어를 선택하세요",
+  "languageLabel": "언어",
+  "results": "장소",
+  "recent": "최근 검색",
+  "share": "휴대폰으로 이 경로 보기",
+  "shareTitle": "휴대폰에서 이어 보기",
+  "shareSub": "휴대폰 카메라로 스캔하면 휴대폰에서 열려요.",
+  "copyLink": "링크 복사",
+  "copied": "복사됨",
+  "shareLink": "이 경로 공유하기",
+  "linkCopied": "링크를 복사했어요",
+  "shareNative": "공유…",
+  "tapMapTip": "어느 방인지 모르겠다면 뒤로 가서 지도에서 지금 있는 곳을 누른 뒤 “여기서 출발”을 누르세요.",
+  "pickOnMap": "지도에서 선택",
+  "pickFromSub": "지금 있는 곳을 누르세요",
+  "pickToSub": "가려는 곳을 누르세요",
+  "pickFromNotice": "지도에서 지금 있는 곳을 누르세요.",
+  "pickToNotice": "지도에서 가려는 곳을 누르세요.",
+  "floorOf": "{floor}",
+  "leave": "{place}에서 나오세요",
+  "leaveTurn": "{place}에서 나와 {dir}으로 가세요",
+  "leaveStraight": "{place}에서 나와 직진하세요",
+  "startAt": "{place}에서 출발하세요",
+  "startAtTurn": "{place}에서 {dir}으로 가세요",
+  "startAtStraight": "{place}에서 직진하세요",
+  "startAtToward": "{place}에서 {mark} 쪽으로 걸어가세요",
+  "leaveByStraight": "{place}에서 {side} 출입구로 나오세요",
+  "leaveByHead": "{place}에서 {side} 출입구로 나와 {target}까지 가세요",
+  "leaveByToward": "{place}에서 {side} 출입구로 나와 {mark} 쪽으로 걸어가세요",
+  "leaveHead": "{place}에서 나와 {target}까지 가세요",
+  "leaveTurnHead": "{place}에서 나와 {dir}으로 돌아 {target}까지 가세요",
+  "startAtHead": "{place}에서 {target}까지 가세요",
+  "startAtTurnHead": "{place}에서 {dir}으로 돌아 {target}까지 가세요",
+  "onHead": "{target}까지 가세요",
+  "onStraight": "직진하세요",
+  "onTurn": "{dir}으로 도세요",
+  "onTurnHead": "{dir}으로 돌아 {target}까지 가세요",
+  "onToward": "{mark} 쪽으로 걸어가세요",
+  "turn": "{dir}으로 도세요",
+  "turnAt": "{mark} 앞에서 {dir}으로 도세요",
+  "turnBy": "{mark} 옆에서 {dir}으로 도세요",
+  "turnEnd": "복도 끝에서 {dir}으로 도세요",
+  "turnEndPath": "길 끝에서 {dir}으로 도세요",
+  "turnAgain": "다시 {dir}으로 도세요",
+  "bear": "살짝 {dir}으로 가세요",
+  "bearAt": "{mark} 앞에서 살짝 {dir}으로 가세요",
+  "bearBy": "{mark} 옆에서 살짝 {dir}으로 가세요",
+  "bearAgain": "다시 살짝 {dir}으로 가세요",
+  "turnAround": "뒤로 돌아서 가세요",
+  "then": "{first}. 이어서 {dir}으로 도세요",
+  "thenAgain": "{first}. 이어서 다시 {dir}으로 도세요",
+  "left": "왼쪽",
+  "right": "오른쪽",
+  "leftTurn": "왼쪽",
+  "rightTurn": "오른쪽",
+  "arrive": "{place}에 도착해요",
+  "arriveSide": "{dir}에 있는 {place}에 도착해요",
+  "arriveAhead": "바로 앞에 있는 {place}에 도착해요",
+  "arriveOn": "{dir}에 있어요",
+  "arriveAheadShort": "바로 앞에 있어요",
+  "stairsUp": "{stair}에서 {floor}까지 올라가세요",
+  "stairsDown": "{stair}에서 {floor}까지 내려가세요",
+  "stairsUpN": "{stair}에서 {floor}까지 {n}개 층을 올라가세요",
+  "stairsDownN": "{stair}에서 {floor}까지 {n}개 층을 내려가세요",
+  "liftUp": "{lift} 타고 {floor}까지 올라가세요",
+  "liftDown": "{lift} 타고 {floor}까지 내려가세요",
+  "bridge": "연결 다리를 건너 {floor}까지 가세요",
+  "walkway": "지붕 있는 통로를 따라 {floor}까지 가세요",
+  "seam": "{floor}까지 계속 가세요",
+  "landing": "{stair} 층계참을 지나 {floor}까지 가세요",
+  "walkTo": "{place}까지 {dist}",
+  "onFloor": "{floor}에",
+  "toFloor": "{floor}까지",
+  "fromFloor": "{floor}에서",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "{n}층",
+  "ttLevel": "Toh Tuck {n}층",
+  "floorIn": "{building} {floor}",
+  "levelWord": "층",
+  "levelShort": "{n}층",
+  "ttShort": "TT {n}층",
+  "viaPlace": "{place}",
+  "about": "이 지도에 대해",
+  "staffOnly": "교직원 전용",
+  "noteGym": "체육관은 지나갈 수 없어서 둘러 가요.",
+  "noteStaff": "교직원 전용 구역을 둘러 가요.",
+  "noteOffice": "사무실은 지나갈 수 없어서 둘러 가요.",
+  "noteLibrary": "도서관 안을 지나지 않고 둘러 가요.",
+  "noteBusBay": "버스 승하차장을 가로지르지 않고 둘러 가요.",
+  "noteCourts": "농구장을 가로지르지 않고 둘러 가요.",
+  "notePool": "울타리가 있는 수영장 데크를 둘러 가요.",
+  "noteLobby": "탈의실 건물의 로비는 지나갈 수 없어서 건물을 둘러 가요.",
+  "noteRoads": "차도와 주차장을 피해 보행로로 가요.",
+  "notePrimary": "초등부 복도를 피해서 가요.",
+  "noteSecondary": "중등부 복도를 피해서 가요.",
+  "liftRef": "엘리베이터",
+  "liftBy": "{mark} 옆 엘리베이터",
+  "liftOwn": "{name}",
+  "bridgeRef": "연결 다리",
+  "walkwayRef": "지붕 있는 통로",
+  "connLift": "엘리베이터",
+  "connBridge": "연결 다리",
+  "connWalkway": "통로",
+  "near": "{place} 근처",
+  "listSep": ", ",
+  "and": " 및 ",
+  "capSep": " · ",
+  "withCode": "{name}({code})",
+  "capGirls": "여학생",
+  "capBoys": "남학생",
+  "capWomen": "여성",
+  "capMen": "남성",
+  "capAdults": "성인",
+  "capFemale": "여자",
+  "capMale": "남자",
+  "capAccessible": "장애인용",
+  "whoGirls": "여학생",
+  "whoBoys": "남학생",
+  "whoWomen": "여성",
+  "whoMen": "남성",
+  "toiletGirls": "여학생 화장실",
+  "toiletBoys": "남학생 화장실",
+  "toiletWomen": "여성 화장실",
+  "toiletMen": "남성 화장실",
+  "toiletAdults": "성인 화장실(남녀 공용)",
+  "toiletFemale": "여자 화장실",
+  "toiletMale": "남자 화장실",
+  "toiletAccessible": "장애인 화장실",
+  "toiletsOf": "화장실({list})",
+  "minUnder": "<1분",
+  "unknownPlace": "이 링크의 “{q}”에 해당하는 장소가 지도에 없어요."
+ },
+ "names": {
+  "Accessible Toilet": "장애인 화장실",
+  "Accessible Toilet (Swimming Complex)": "장애인 화장실(수영장동)",
+  "Activities and Camps Office": "활동 및 캠프 사무실",
+  "Activity pod": "활동 공간",
+  "Admissions, Marketing and Communications": "입학·마케팅·홍보실",
+  "Alfresco Area": "야외 식사 공간",
+  "Arts Room": "미술실",
+  "Arts Room (Arts Pod)": "미술실(예술 학습 공간)",
+  "Atrium Lobby": "아트리움 로비",
+  "atrium side": "아트리움 쪽",
+  "Atrium void": "아트리움 상부",
+  "Bakery": "제빵실",
+  "Baking Classroom": "제빵 교실",
+  "Basketball court": "농구장",
+  "Basketball Courts": "농구장",
+  "Bicycle lots": "자전거 보관소",
+  "Black Box Theatre": "블랙박스 극장",
+  "Board Room": "이사회 회의실",
+  "Bus and car egress lane": "버스·차량 출구 차로",
+  "Bus Bay": "버스 승하차장",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "버스 승하차 구역 / 쉬는 시간 활동 구역",
+  "Bus egress lane": "버스 출구 차로",
+  "Cafe": "카페",
+  "Canteen Kitchen": "식당 주방",
+  "Canteen Kitchen #": "식당 주방 #",
+  "Canteen Level 1": "1층 식당",
+  "Canteen Level 2": "2층 식당",
+  "CEB Principal": "CEB 교장실",
+  "CEB Vice-Principal": "CEB 교감실",
+  "Centralised Equipment": "중앙 장비실",
+  "Changing Room": "탈의실",
+  "Changing Rooms": "탈의실",
+  "Chiller / Plant Room": "냉동기실 / 기계실",
+  "Classroom": "교실",
+  "Co-Worker Space LKS-#": "공유 업무 공간 LKS-#",
+  "Coordinators office": "코디네이터 사무실",
+  "Costumes / Props": "의상·소품실",
+  "Counselling Behaviorist": "행동 상담실",
+  "Counsellor Classroom": "상담 교실",
+  "Covered landing": "지붕 있는 플랫폼",
+  "Covered walkway": "지붕 있는 통로",
+  "Covered Walkway": "지붕 있는 통로",
+  "CSR": "CSR",
+  "Dance Studio": "무용실",
+  "David Foster Theatre": "데이비드 포스터 극장",
+  "David Foster Theatre (upper part)": "데이비드 포스터 극장(상부)",
+  "Deputy Head of School": "부교장실",
+  "Digital Film Studio": "디지털 영화 스튜디오",
+  "Digital Recording Studio (SW-#)": "디지털 녹음 스튜디오(SW-#)",
+  "Director of CEB": "CEB 책임자실",
+  "Director of Operations": "운영 책임자실",
+  "Driveway": "차도",
+  "Drop-off": "하차 구역",
+  "ECA": "방과후 활동실",
+  "Electrical riser": "전기 샤프트",
+  "ELL": "영어 학습 지원실",
+  "ELL Classroom": "영어 학습 지원 교실",
+  "Emergency vehicles only": "긴급 차량 전용",
+  "Equipment Room": "장비실",
+  "Facilities": "시설팀",
+  "Female Toilet (Swimming Complex)": "여자 화장실(수영장동)",
+  "Field deck": "운동장 데크",
+  "Finance Counter": "재무 창구",
+  "Finance Department": "재무팀",
+  "Fitness Centre and Gymnasium Viewing Gallery": "피트니스 센터 및 체육관 관람석",
+  "Football pitch": "축구장",
+  "Footpath": "보행로",
+  "French Office (NW-#)": "프랑스어과 사무실(NW-#)",
+  "Game Equipment Room / Storage": "체육 기구실 / 창고",
+  "Gardening Space": "텃밭",
+  "Gate": "출입문",
+  "Glass-topped parapet": "유리 난간",
+  "Grade # to # Learning Lead": "#~#학년 학습 책임자실",
+  "Gross Motor Room": "대근육 활동실",
+  "Gross Motor Room #": "대근육 활동실 #",
+  "Guard House": "경비실",
+  "Gym Office": "체육관 사무실",
+  "Gymnasium": "체육관",
+  "Head of Admissions": "입학 책임자실",
+  "Head of Facilities": "시설 책임자실",
+  "Head of Finance": "재무 책임자실",
+  "Head of HR": "인사 책임자실",
+  "Head of Inclusion": "통합교육 책임자실",
+  "Head of Innovative Learning": "혁신 학습 책임자실",
+  "Head of IT": "IT 책임자실",
+  "Head of Marketing and Communication": "마케팅·홍보 책임자실",
+  "Head of School": "총교장실",
+  "Head of Student Support and Well-being": "학생 지원·웰빙 책임자실",
+  "High linkway": "지붕 높은 연결 통로",
+  "Hose Reel": "소방 호스릴",
+  "HR Meeting Room": "인사팀 회의실",
+  "I.T. Applications": "IT 애플리케이션실",
+  "Instructional Bakery": "제빵 실습실",
+  "IT Closet": "IT 장비실",
+  "JK Classroom": "JK 교실",
+  "Junior Gymnasium": "주니어 체육관",
+  "Junior Library": "주니어 도서관",
+  "Junior Library Office": "주니어 도서관 사무실",
+  "Junior Pool": "주니어 수영장",
+  "Kindergarten Office (Reception & Admin)": "유치부 사무실(안내 및 행정)",
+  "Kitchen": "주방",
+  "LAN Room (BT wing)": "네트워크실(BT동)",
+  "LAN Room (KB wing)": "네트워크실(KB동)",
+  "Lawn": "잔디밭",
+  "Learning Support": "학습 지원실",
+  "Library spiral stair": "도서관 나선형 계단",
+  "Library stair": "도서관 계단",
+  "Library Store LKS-#-#": "도서관 창고 LKS-#-#",
+  "Library Workroom #": "도서관 작업실 #",
+  "Linkway Bridge": "연결 다리",
+  "Locker": "사물함",
+  "LS": "학습 지원실",
+  "LS Classroom": "학습 지원 교실",
+  "M&E": "기계·전기실",
+  "M&E ACHI": "기계·전기실",
+  "Main Entrance / School Entrance": "정문 / 학교 입구",
+  "Main Lift": "메인 엘리베이터",
+  "Maintenance": "유지보수실",
+  "Male Toilet (Swimming Complex)": "남자 화장실(수영장동)",
+  "Meeting Room": "회의실",
+  "Meeting Room #": "회의실 #",
+  "Music Academy": "음악 아카데미",
+  "Music Practice Room": "음악 연습실",
+  "Music Practice Room #": "음악 연습실 #",
+  "Music Room": "음악실",
+  "Music Room (Secondary)": "음악실(중등부)",
+  "Music Room (SW-#)": "음악실(SW-#)",
+  "Netted court": "그물망 코트",
+  "North Entrance (Jurong West St #)": "북쪽 입구(Jurong West St #)",
+  "Not a through route": "통과 불가",
+  "Nurse Room": "보건실",
+  "Nursery and Pre-K playground": "너서리·프리케이 놀이터",
+  "Nursery Room": "너서리 교실",
+  "Occupational Therapy": "작업치료실",
+  "Occupational Therapy Room": "작업치료실",
+  "Office": "사무실",
+  "Open Minds Office": "Open Minds 사무실",
+  "Open-air courtyard": "야외 안뜰",
+  "Outdoor Discovery Centre": "야외 탐구 센터",
+  "Outdoor Discovery garden": "야외 탐구 정원",
+  "Passage": "통로",
+  "Passenger Lift": "엘리베이터",
+  "PE Office": "체육 사무실",
+  "PE Office side": "체육 사무실 쪽",
+  "Plant room": "기계실",
+  "Pod": "학습 공간",
+  "Pod A": "A 학습 공간",
+  "Pod B": "B 학습 공간",
+  "Pod C": "C 학습 공간",
+  "Pod D": "D 학습 공간",
+  "Pod E": "E 학습 공간",
+  "Pod F": "F 학습 공간",
+  "Pod G": "G 학습 공간",
+  "Pod H": "H 학습 공간",
+  "Pool deck": "수영장 데크",
+  "Pool road": "수영장 옆 도로",
+  "Pool-side walk": "수영장 옆 보행로",
+  "Practice Room": "연습실",
+  "Practice Room #": "연습실 #",
+  "Pre-function Space": "대기 로비",
+  "Pre-K Room": "프리케이 교실",
+  "Prep Room #": "준비실 #",
+  "Primary Counselling": "초등부 상담실",
+  "Primary Drop-off Zone": "초등부 하차 구역",
+  "Primary Library": "초등부 도서관",
+  "Primary Library LKS-#": "초등부 도서관 LKS-#",
+  "Primary Makerspace": "초등부 메이커 스페이스",
+  "Primary PE Office": "초등부 체육 사무실",
+  "Primary Play Area": "초등부 놀이 공간",
+  "Primary Principal": "초등부 교장실",
+  "Primary School Office": "초등부 사무실",
+  "Primary Vice-Principal": "초등부 교감실",
+  "Principal": "교장실",
+  "PTA Room": "학부모회실",
+  "Raised platform": "높은 단",
+  "Ramp to the field": "운동장 경사로",
+  "Reception / Main Office": "안내 데스크 / 행정실",
+  "Red Dot Cafe": "Red Dot 카페",
+  "Red Dot Convention Centre": "Red Dot 컨벤션 센터",
+  "Riser": "설비 샤프트",
+  "Risers and IT room": "설비 샤프트 및 IT실",
+  "Road": "도로",
+  "Roof (no access)": "지붕(출입 불가)",
+  "Roof Garden": "옥상 정원",
+  "Sand play area": "모래 놀이터",
+  "School Nurse": "보건실",
+  "School Nurse (Primary)": "보건실(초등부)",
+  "Science Lab #": "과학 실험실 #",
+  "Secondary Counselling": "중등부 상담실",
+  "Secondary Drama": "중등부 연극실",
+  "Secondary Library": "중등부 도서관",
+  "Secondary Library LKS-#": "중등부 도서관 LKS-#",
+  "Secondary Music Room": "중등부 음악실",
+  "Secondary Principal": "중등부 교장실",
+  "Secondary School Office": "중등부 사무실",
+  "Secondary Vice Principal": "중등부 교감실",
+  "Security": "보안실",
+  "Senior Field (Upper Sports Field)": "시니어 운동장(위쪽 운동장)",
+  "Senior Pool (# m)": "시니어 수영장(#m)",
+  "Server Room": "서버실",
+  "Servery": "배식대",
+  "Service Lift": "화물용 엘리베이터",
+  "Sheltered Drop-off Point": "지붕 있는 하차 지점",
+  "SK Room": "SK 교실",
+  "Sound Lock Lobby": "방음 로비",
+  "Spectator bleachers": "관중석",
+  "Speech / OT / LS": "언어·작업치료·학습 지원실",
+  "Speech Pathologist": "언어치료실",
+  "Staff Room": "교무실",
+  "Stairs #": "#번 계단",
+  "Stairs # (no door on this floor)": "#번 계단(이 층 출입문 없음)",
+  "Stairs # side": "#번 계단 쪽",
+  "STEAM Centre (Pod F)": "STEAM 센터(F 학습 공간)",
+  "STEAM Room": "STEAM 교실",
+  "Steam Store": "STEAM 창고",
+  "Steps and ramp": "계단 및 경사로",
+  "Storage": "창고",
+  "Store": "창고",
+  "Store Room": "창고",
+  "Student crossing": "학생 횡단보도",
+  "Study Area (Secondary Arts Centre courtyard)": "자습 공간(중등부 예술 센터 안뜰)",
+  "Supply": "비품실",
+  "Swim Office": "수영 사무실",
+  "Thermal Energy Storage": "축열 설비실",
+  "Tiered seating": "계단식 관람석",
+  "Toilet": "화장실",
+  "Toilet (Men)": "화장실(남성)",
+  "Toilet (Women)": "화장실(여성)",
+  "Toilets (Junior Gym)": "화장실(주니어 체육관)",
+  "Transformer / Switch Room": "변압기실 / 배전실",
+  "Two-way driveway": "양방향 차도",
+  "University advisors": "대학 진학 상담실",
+  "Unnamed room": "이름 없는 방",
+  "Vice-Principal": "교감실",
+  "Viewing Area": "관람 공간",
+  "Visitor car park": "방문객 주차장",
+  "Visitor Car Park": "방문객 주차장",
+  "Void": "뚫린 공간",
+  "Void over the Study Area courtyard": "자습 공간 안뜰 상부",
+  "Wading Pool": "유아용 수영장",
+  "Walkway": "보행 통로",
+  "Walkway to Toh Tuck Wing": "Toh Tuck 연결 통로",
+  "Work Room": "작업실",
+  "Workroom": "작업실",
+  "Yeap Transport": "Yeap 스쿨버스 사무실",
+  "Zebra crossing": "횡단보도"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "화장실",
+    "토일렛",
+    "레스트룸",
+    "변소"
+   ],
+   "lift": [
+    "엘리베이터",
+    "엘레베이터",
+    "엘베",
+    "승강기",
+    "리프트"
+   ],
+   "stair": [
+    "계단",
+    "층계",
+    "계단실"
+   ],
+   "food": [
+    "식당",
+    "구내식당",
+    "급식실",
+    "카페테리아",
+    "매점",
+    "카페",
+    "점심"
+   ],
+   "office": [
+    "사무실",
+    "오피스"
+   ]
+  },
+  "who": {
+   "girls": [
+    "여학생",
+    "여학생용",
+    "여학생화장실",
+    "여아"
+   ],
+   "boys": [
+    "남학생",
+    "남학생용",
+    "남학생화장실",
+    "남아"
+   ],
+   "women": [
+    "여성",
+    "여자",
+    "숙녀",
+    "여성용",
+    "여자화장실",
+    "여성화장실"
+   ],
+   "men": [
+    "남성",
+    "남자",
+    "신사",
+    "남성용",
+    "남자화장실",
+    "남성화장실"
+   ],
+   "adults": [
+    "성인",
+    "어른",
+    "교직원용",
+    "교직원 화장실",
+    "교직원화장실",
+    "직원",
+    "남녀공용",
+    "남녀 공용",
+    "공용",
+    "성인화장실"
+   ],
+   "accessible": [
+    "장애인",
+    "장애인용",
+    "휠체어",
+    "무장애",
+    "배리어프리",
+    "장애인화장실"
+   ]
+  },
+  "ignore": [
+   "어디",
+   "어디에",
+   "어디야",
+   "어디예요",
+   "어디에요",
+   "어딘가요",
+   "어디있어요",
+   "어디인가요",
+   "어디죠",
+   "어딨어요",
+   "어딨나요",
+   "있어요",
+   "있나요",
+   "있습니까",
+   "위치",
+   "알려주세요",
+   "어디로",
+   "어떻게",
+   "가요",
+   "가나요",
+   "가려면",
+   "가는길",
+   "가장",
+   "제일",
+   "가까운",
+   "근처",
+   "근처의",
+   "주변",
+   "옆",
+   "있는",
+   "곳",
+   "찾기",
+   "가는",
+   "길",
+   "에",
+   "의",
+   "에서",
+   "에는",
+   "은",
+   "는",
+   "이",
+   "가",
+   "을",
+   "를",
+   "좀"
+  ],
+  "level": [],
+  "levelAfter": [
+   "층"
+  ],
+  "synonyms": {
+   "도서실": [
+    "도서관"
+   ],
+   "양호실": [
+    "보건실"
+   ],
+   "의무실": [
+    "보건실"
+   ],
+   "보건": [
+    "보건실"
+   ],
+   "간호사": [
+    "보건실"
+   ],
+   "클리닉": [
+    "보건실"
+   ],
+   "출구": [
+    "입구",
+    "정문"
+   ],
+   "교문": [
+    "정문"
+   ],
+   "북문": [
+    "북쪽"
+   ],
+   "후문": [
+    "북쪽"
+   ],
+   "강당": [
+    "극장"
+   ],
+   "공연장": [
+    "극장"
+   ],
+   "무대": [
+    "극장"
+   ],
+   "오디토리움": [
+    "극장"
+   ],
+   "수영": [
+    "수영장"
+   ],
+   "풀": [
+    "수영장"
+   ],
+   "헬스장": [
+    "피트니스"
+   ],
+   "헬스": [
+    "피트니스"
+   ],
+   "짐": [
+    "체육관",
+    "피트니스"
+   ],
+   "과학실": [
+    "과학",
+    "실험실"
+   ],
+   "화학": [
+    "과학"
+   ],
+   "물리": [
+    "과학"
+   ],
+   "생물": [
+    "과학"
+   ],
+   "밴드": [
+    "음악"
+   ],
+   "오케스트라": [
+    "음악"
+   ],
+   "합창": [
+    "음악"
+   ],
+   "피아노": [
+    "음악",
+    "연습실"
+   ],
+   "악기": [
+    "음악"
+   ],
+   "컴퓨터": [
+    "IT"
+   ],
+   "전산실": [
+    "IT"
+   ],
+   "컴퓨터실": [
+    "IT"
+   ],
+   "와이파이": [
+    "IT"
+   ],
+   "주차": [
+    "주차장",
+    "하차",
+    "승하차"
+   ],
+   "주차장": [
+    "주차장",
+    "하차",
+    "승하차"
+   ],
+   "택시": [
+    "하차",
+    "승하차"
+   ],
+   "픽업": [
+    "승하차",
+    "하차"
+   ],
+   "스쿨버스": [
+    "버스"
+   ],
+   "통학버스": [
+    "버스"
+   ],
+   "셔틀": [
+    "버스"
+   ],
+   "셔틀버스": [
+    "버스"
+   ],
+   "등원": [
+    "하차",
+    "승하차"
+   ],
+   "하원": [
+    "하차",
+    "승하차"
+   ],
+   "등교": [
+    "하차",
+    "승하차"
+   ],
+   "하교": [
+    "하차",
+    "승하차"
+   ],
+   "방문자": [
+    "방문객"
+   ],
+   "손님": [
+    "방문객"
+   ],
+   "선생님": [
+    "교무실"
+   ],
+   "교사": [
+    "교무실"
+   ],
+   "교직원실": [
+    "교무실"
+   ],
+   "유치원": [
+    "유치부",
+    "JK",
+    "SK",
+    "너서리",
+    "프리케이"
+   ],
+   "킨더": [
+    "유치부",
+    "JK",
+    "SK",
+    "너서리",
+    "프리케이"
+   ],
+   "카운슬러": [
+    "상담"
+   ],
+   "카운슬링": [
+    "상담"
+   ],
+   "접수": [
+    "안내"
+   ],
+   "리셉션": [
+    "안내"
+   ],
+   "안내데스크": [
+    "안내"
+   ],
+   "프런트": [
+    "안내"
+   ],
+   "프론트": [
+    "안내"
+   ],
+   "커피": [
+    "카페"
+   ],
+   "급식": [
+    "식당"
+   ],
+   "요리": [
+    "제빵"
+   ],
+   "베이킹": [
+    "제빵"
+   ],
+   "연극": [
+    "연극실",
+    "극장"
+   ],
+   "드라마": [
+    "연극"
+   ],
+   "댄스": [
+    "무용실"
+   ],
+   "춤": [
+    "무용실"
+   ],
+   "로봇": [
+    "STEAM",
+    "메이커"
+   ],
+   "코딩": [
+    "STEAM",
+    "메이커"
+   ],
+   "스팀": [
+    "STEAM"
+   ],
+   "디자인": [
+    "메이커",
+    "STEAM"
+   ],
+   "축구": [
+    "축구장",
+    "운동장"
+   ],
+   "축구장": [
+    "운동장"
+   ],
+   "놀이터": [
+    "놀이"
+   ],
+   "운동": [
+    "체육관",
+    "운동장"
+   ],
+   "배드민턴": [
+    "체육관"
+   ],
+   "배구": [
+    "체육관"
+   ],
+   "중학교": [
+    "중등부"
+   ],
+   "고등학교": [
+    "중등부"
+   ],
+   "고등부": [
+    "중등부"
+   ],
+   "중고등부": [
+    "중등부"
+   ],
+   "초등학교": [
+    "초등부"
+   ],
+   "입학처": [
+    "입학"
+   ],
+   "입학사무실": [
+    "입학"
+   ],
+   "입학상담": [
+    "입학"
+   ],
+   "진로": [
+    "진학"
+   ],
+   "esl": [
+    "영어"
+   ],
+   "수납": [
+    "재무"
+   ],
+   "학비": [
+    "재무"
+   ],
+   "구름다리": [
+    "연결",
+    "다리"
+   ],
+   "브리지": [
+    "연결",
+    "다리"
+   ],
+   "브릿지": [
+    "연결",
+    "다리"
+   ],
+   "링크웨이": [
+    "연결",
+    "다리"
+   ],
+   "락커": [
+    "사물함"
+   ],
+   "라커": [
+    "사물함"
+   ],
+   "로커": [
+    "사물함"
+   ],
+   "레드닷": [
+    "red",
+    "dot"
+   ],
+   "포드": [
+    "학습"
+   ]
+  }
+ }
+}

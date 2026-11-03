@@ -1,0 +1,856 @@
+{
+ "lang": "id",
+ "strings": {
+  "title": "Peta",
+  "from": "Dari",
+  "to": "Ke",
+  "chooseStart": "Pilih lokasi Anda",
+  "whereTo": "Mau ke mana?",
+  "youAreHere": "Anda di sini",
+  "swap": "Tukar titik awal dan tujuan",
+  "endTrip": "Hapus rute",
+  "showMap": "Tampilkan peta",
+  "stepFree": "Tanpa tangga",
+  "stepFreeHint": "Hanya lift dan jalur landai",
+  "searchPh": "Cari ruangan, kode, atau tempat",
+  "noResults": "Tidak ada hasil untuk “{q}”. Coba kode ruangan seperti KB⁠-⁠405, atau tempat seperti perpustakaan atau toilet.",
+  "nearest": "{what} terdekat",
+  "nearestToilet": "Toilet terdekat",
+  "nearestLift": "Lift terdekat",
+  "nearestOf": "Terdekat: {what}",
+  "nearestFor": "Terdekat untuk {who}",
+  "nearestAccessible": "Toilet disabilitas terdekat",
+  "kindNear": "{kind} di dekat {place}",
+  "needStart": "Pilih lokasi Anda terlebih dahulu untuk menemukan yang terdekat.",
+  "chipToilet": "Toilet",
+  "chipLift": "Lift",
+  "chipStairs": "Tangga",
+  "chipFood": "Kantin",
+  "chipLibrary": "Perpustakaan",
+  "chipOffice": "Kantor",
+  "chipGym": "Olahraga",
+  "chipTheatre": "Teater",
+  "directionsHere": "Rute ke sini",
+  "startHere": "Mulai dari sini",
+  "backToRoute": "Kembali ke rute",
+  "whichSide": "Anda berada di sisi mana?",
+  "sideCancel": "Nanti saja",
+  "summary": "{dist} · sekitar {time}",
+  "summaryShort": "{dist} · kurang dari semenit",
+  "min": "{n} mnt",
+  "sec": "{n} dtk",
+  "metres": "{n} m",
+  "noRoute": "Tidak ada rute antara kedua tempat ini.",
+  "noStepFree": "Tidak ada rute tanpa tangga antara kedua tempat ini.",
+  "stepFreeYours": "Tanpa tangga, sesuai pengaturan ponsel ini: rutenya hanya melalui lift dan jalur landai.",
+  "same": "Anda sudah berada di sini.",
+  "loading": "Memuat peta kampus…",
+  "loadFail": "Peta tidak dapat dimuat. Periksa koneksi internet, lalu muat ulang halaman.",
+  "showFloor": "Tampilkan seluruh lantai",
+  "floors": "Lantai",
+  "close": "Tutup",
+  "back": "Kembali",
+  "clear": "Hapus",
+  "endSteps": "Lihat seluruh rute",
+  "popular": "Tempat populer",
+  "arrivals": "Pintu masuk dan titik antar-jemput",
+  "keepTyping": "Lanjutkan mengetik…",
+  "done": "Selesai",
+  "findPlace": "Cari tempat",
+  "shareTitlePhone": "Bagikan rute ini",
+  "shareSubPhone": "Kirim tautannya, atau pindai kodenya dengan ponsel lain.",
+  "floorUp": "naik satu lantai",
+  "floorDown": "turun satu lantai",
+  "floorUps": "naik {n} lantai",
+  "floorDowns": "turun {n} lantai",
+  "viaFloor": "lewat {f}",
+  "steps": "Petunjuk arah",
+  "allSteps": "Semua langkah",
+  "hideSteps": "Sembunyikan langkah",
+  "start": "Mulai",
+  "stepCount": "Langkah {i} dari {n}",
+  "nextStop": "Tujuan berikutnya: {place}",
+  "stopOf": "{i} dari {n}",
+  "prevStep": "Langkah sebelumnya",
+  "nextStep": "Langkah berikutnya",
+  "stepsTip": "Peta ini tidak melacak posisi Anda: ikuti setiap langkah, lalu ketuk › untuk langkah berikutnya.",
+  "docTitle": "Peta CIS",
+  "language": "Bahasa",
+  "chooseLanguage": "Pilih bahasa Anda",
+  "languageLabel": "Bahasa",
+  "results": "Tempat",
+  "recent": "Baru-baru ini",
+  "share": "Buka rute ini di ponsel Anda",
+  "shareTitle": "Bawa rute ini",
+  "shareSub": "Pindai dengan kamera ponsel untuk membukanya di ponsel.",
+  "copyLink": "Salin tautan",
+  "copied": "Disalin",
+  "shareLink": "Bagikan rute ini",
+  "linkCopied": "Tautan disalin",
+  "shareNative": "Bagikan…",
+  "tapMapTip": "Tidak yakin ruangannya? Kembali dan ketuk lokasi Anda di peta, lalu pilih “Mulai dari sini”.",
+  "pickOnMap": "Pilih di peta",
+  "pickFromSub": "Ketuk lokasi Anda",
+  "pickToSub": "Ketuk tempat tujuan Anda",
+  "pickFromNotice": "Ketuk lokasi Anda di peta.",
+  "pickToNotice": "Ketuk tempat tujuan di peta.",
+  "floorOf": "{floor}",
+  "leave": "Keluar dari {place}",
+  "leaveTurn": "Keluar dari {place}, lalu belok {dir}",
+  "leaveStraight": "Keluar dari {place}, lalu jalan lurus",
+  "startAt": "Mulai dari {place}",
+  "startAtTurn": "Dari {place}, belok {dir}",
+  "startAtStraight": "Dari {place}, jalan lurus",
+  "startAtToward": "Dari {place}, jalan ke arah {mark}",
+  "leaveByStraight": "Keluar dari {place} lewat {side}",
+  "leaveByHead": "Keluar dari {place} lewat {side}, lalu menuju {target}",
+  "leaveByToward": "Keluar dari {place} lewat {side}, lalu jalan ke arah {mark}",
+  "leaveHead": "Keluar dari {place}, lalu menuju {target}",
+  "leaveTurnHead": "Keluar dari {place}, belok {dir}, lalu menuju {target}",
+  "startAtHead": "Dari {place}, jalan menuju {target}",
+  "startAtTurnHead": "Dari {place}, belok {dir}, lalu menuju {target}",
+  "onHead": "Jalan menuju {target}",
+  "onStraight": "Jalan lurus",
+  "onTurn": "Belok {dir}",
+  "onTurnHead": "Belok {dir}, lalu menuju {target}",
+  "onToward": "Jalan ke arah {mark}",
+  "turn": "Belok {dir}",
+  "turnAt": "Belok {dir} di depan {mark}",
+  "turnBy": "Belok {dir} di dekat {mark}",
+  "turnEnd": "Di ujung koridor, belok {dir}",
+  "turnEndPath": "Di ujung jalan, belok {dir}",
+  "turnAgain": "Belok {dir} lagi",
+  "bear": "Belok sedikit ke {dir}",
+  "bearAt": "Belok sedikit ke {dir} di depan {mark}",
+  "bearBy": "Belok sedikit ke {dir} di dekat {mark}",
+  "bearAgain": "Belok sedikit ke {dir} lagi",
+  "turnAround": "Putar balik",
+  "then": "{first}, kemudian {dirTurn}",
+  "thenAgain": "{first}, kemudian {dirTurn} lagi",
+  "left": "kiri",
+  "right": "kanan",
+  "leftTurn": "belok kiri",
+  "rightTurn": "belok kanan",
+  "arrive": "Tiba di {place}",
+  "arriveSide": "Tiba di {place}, di sebelah {dir} Anda",
+  "arriveAhead": "Tiba di {place}, tepat di depan Anda",
+  "arriveOn": "Di sebelah {dir} Anda",
+  "arriveAheadShort": "Tepat di depan Anda",
+  "stairsUp": "Naik {stair} ke {floor}",
+  "stairsDown": "Turun {stair} ke {floor}",
+  "stairsUpN": "Naik {n} lantai lewat {stair} ke {floor}",
+  "stairsDownN": "Turun {n} lantai lewat {stair} ke {floor}",
+  "liftUp": "Naik {lift} ke {floor}",
+  "liftDown": "Turun dengan {lift} ke {floor}",
+  "bridge": "Seberangi Jembatan Penghubung ke {floor}",
+  "walkway": "Ikuti selasar beratap ke {floor}",
+  "seam": "Jalan terus ke {floor}",
+  "landing": "Lewati area {stair} ke {floor}",
+  "walkTo": "{dist} ke {place}",
+  "onFloor": "di {floor}",
+  "toFloor": "Ke {floor}",
+  "fromFloor": "Dari {floor}",
+  "lakeside": "Lakeside",
+  "tohtuck": "Toh Tuck",
+  "level": "Lantai {n}",
+  "ttLevel": "Toh Tuck Lantai {n}",
+  "floorIn": "{floor}, {building}",
+  "levelWord": "Lantai",
+  "levelShort": "L{n}",
+  "ttShort": "TT L{n}",
+  "viaPlace": "{place}",
+  "about": "Tentang peta ini",
+  "staffOnly": "Khusus staf",
+  "noteGym": "Memutari gimnasium, yang bukan jalan tembus.",
+  "noteStaff": "Memutari area khusus staf.",
+  "noteOffice": "Memutari kantor, yang bukan jalan tembus.",
+  "noteLibrary": "Memutari perpustakaan, bukan melintasinya.",
+  "noteBusBay": "Memutari area parkir bus, bukan melintasinya.",
+  "noteCourts": "Memutari lapangan basket, bukan melintasinya.",
+  "notePool": "Memutari dek kolam renang, yang berpagar.",
+  "noteLobby": "Memutari gedung ruang ganti: lobinya bukan jalan tembus.",
+  "noteRoads": "Tetap di jalur pejalan kaki, menjauhi jalur kendaraan dan tempat parkir.",
+  "notePrimary": "Menghindari koridor sekolah dasar.",
+  "noteSecondary": "Menghindari koridor sekolah menengah.",
+  "liftRef": "lift",
+  "liftBy": "lift dekat {mark}",
+  "liftOwn": "{name}",
+  "bridgeRef": "Jembatan Penghubung",
+  "walkwayRef": "selasar beratap",
+  "connLift": "Lift",
+  "connBridge": "Jembatan",
+  "connWalkway": "Selasar",
+  "near": "dekat {place}",
+  "listSep": ", ",
+  "and": " dan ",
+  "capSep": " · ",
+  "withCode": "{name} ({code})",
+  "capGirls": "Siswi",
+  "capBoys": "Siswa",
+  "capWomen": "Wanita",
+  "capMen": "Pria",
+  "capAdults": "Dewasa",
+  "capFemale": "Perempuan",
+  "capMale": "Laki-laki",
+  "capAccessible": "Disabilitas",
+  "whoGirls": "siswi",
+  "whoBoys": "siswa",
+  "whoWomen": "wanita",
+  "whoMen": "pria",
+  "toiletGirls": "Toilet Siswi",
+  "toiletBoys": "Toilet Siswa",
+  "toiletWomen": "Toilet Wanita",
+  "toiletMen": "Toilet Pria",
+  "toiletAdults": "Toilet Dewasa (uniseks)",
+  "toiletFemale": "Toilet Perempuan",
+  "toiletMale": "Toilet Laki-laki",
+  "toiletAccessible": "Toilet Disabilitas",
+  "toiletsOf": "Toilet ({list})",
+  "minUnder": "<1 mnt",
+  "unknownPlace": "Tautan ini mengarah ke “{q}”, yang tidak ada di peta."
+ },
+ "names": {
+  "Accessible Toilet": "Toilet Disabilitas",
+  "Accessible Toilet (Swimming Complex)": "Toilet Disabilitas (Kolam Renang)",
+  "Activities and Camps Office": "Kantor Kegiatan dan Kemah",
+  "Activity pod": "Area Kegiatan",
+  "Admissions, Marketing and Communications": "Kantor Penerimaan Siswa / Pemasaran & Komunikasi",
+  "Alfresco Area": "Area Makan Terbuka",
+  "Arts Room": "Ruang Seni",
+  "Arts Room (Arts Pod)": "Ruang Seni (Area Seni)",
+  "Atrium Lobby": "Lobi Atrium",
+  "atrium side": "sisi atrium",
+  "Atrium void": "Void atrium",
+  "Bakery": "Dapur Roti",
+  "Baking Classroom": "Kelas Tata Boga",
+  "Basketball court": "Lapangan basket",
+  "Basketball Courts": "Lapangan Basket",
+  "Bicycle lots": "Parkir sepeda",
+  "Black Box Theatre": "Teater Black Box",
+  "Board Room": "Ruang Rapat Dewan",
+  "Bus and car egress lane": "Jalur keluar bus dan mobil",
+  "Bus Bay": "Area Parkir Bus",
+  "Bus Drop-off & Pick-up / Recess & Activities Area": "Area Antar-Jemput Bus / Area Istirahat & Kegiatan",
+  "Bus egress lane": "Jalur keluar bus",
+  "Cafe": "Kafe",
+  "Canteen Kitchen": "Dapur Kantin",
+  "Canteen Kitchen #": "Dapur Kantin #",
+  "Canteen Level 1": "Kantin Lantai 1",
+  "Canteen Level 2": "Kantin Lantai 2",
+  "CEB Principal": "Ruang Kepala Sekolah CEB",
+  "CEB Vice-Principal": "Ruang Wakil Kepala Sekolah CEB",
+  "Centralised Equipment": "Ruang Peralatan Terpusat",
+  "Changing Room": "Ruang Ganti",
+  "Changing Rooms": "Ruang Ganti",
+  "Chiller / Plant Room": "Ruang Chiller / Ruang Mesin",
+  "Classroom": "Ruang Kelas",
+  "Co-Worker Space LKS-#": "Ruang Kerja Bersama LKS-#",
+  "Coordinators office": "Kantor Koordinator",
+  "Costumes / Props": "Ruang Kostum / Properti",
+  "Counselling Behaviorist": "Ruang Konseling Perilaku",
+  "Counsellor Classroom": "Kelas Konseling",
+  "Covered landing": "Pelataran beratap",
+  "Covered walkway": "Selasar beratap",
+  "Covered Walkway": "Selasar Beratap",
+  "CSR": "CSR",
+  "Dance Studio": "Studio Tari",
+  "David Foster Theatre": "Teater David Foster",
+  "David Foster Theatre (upper part)": "Teater David Foster (bagian atas)",
+  "Deputy Head of School": "Ruang Wakil Kepala Sekolah",
+  "Digital Film Studio": "Studio Film Digital",
+  "Digital Recording Studio (SW-#)": "Studio Rekaman Digital (SW-#)",
+  "Director of CEB": "Ruang Direktur CEB",
+  "Director of Operations": "Ruang Direktur Operasional",
+  "Driveway": "Jalur kendaraan",
+  "Drop-off": "Area antar-jemput",
+  "ECA": "Kantor Ekstrakurikuler",
+  "Electrical riser": "Shaft listrik",
+  "ELL": "Ruang Bahasa Inggris (ELL)",
+  "ELL Classroom": "Kelas Bahasa Inggris (ELL)",
+  "Emergency vehicles only": "Khusus kendaraan darurat",
+  "Equipment Room": "Ruang Peralatan",
+  "Facilities": "Kantor Fasilitas",
+  "Female Toilet (Swimming Complex)": "Toilet Perempuan (Kolam Renang)",
+  "Field deck": "Dek lapangan",
+  "Finance Counter": "Loket Keuangan",
+  "Finance Department": "Bagian Keuangan",
+  "Fitness Centre and Gymnasium Viewing Gallery": "Pusat Kebugaran dan Tribun Gimnasium",
+  "Football pitch": "Lapangan sepak bola",
+  "Footpath": "Jalur pejalan kaki",
+  "French Office (NW-#)": "Kantor Bahasa Prancis (NW-#)",
+  "Game Equipment Room / Storage": "Ruang Peralatan Olahraga / Gudang",
+  "Gardening Space": "Area Berkebun",
+  "Gate": "Gerbang",
+  "Glass-topped parapet": "Dinding pembatas berkaca",
+  "Grade # to # Learning Lead": "Ruang Koordinator Pembelajaran Kelas #–#",
+  "Gross Motor Room": "Ruang Motorik Kasar",
+  "Gross Motor Room #": "Ruang Motorik Kasar #",
+  "Guard House": "Pos Satpam",
+  "Gym Office": "Kantor Gimnasium",
+  "Gymnasium": "Gimnasium",
+  "Head of Admissions": "Ruang Kepala Penerimaan Siswa",
+  "Head of Facilities": "Ruang Kepala Fasilitas",
+  "Head of Finance": "Ruang Kepala Keuangan",
+  "Head of HR": "Ruang Kepala SDM",
+  "Head of Inclusion": "Ruang Kepala Pendidikan Inklusi",
+  "Head of Innovative Learning": "Ruang Kepala Pembelajaran Inovatif",
+  "Head of IT": "Ruang Kepala TI",
+  "Head of Marketing and Communication": "Ruang Kepala Pemasaran dan Komunikasi",
+  "Head of School": "Ruang Kepala Sekolah",
+  "Head of Student Support and Well-being": "Ruang Kepala Dukungan dan Kesejahteraan Siswa",
+  "High linkway": "Selasar beratap tinggi",
+  "Hose Reel": "Selang Pemadam",
+  "HR Meeting Room": "Ruang Rapat SDM",
+  "I.T. Applications": "Ruang Aplikasi TI",
+  "Instructional Bakery": "Dapur Roti Praktik",
+  "IT Closet": "Ruang TI",
+  "JK Classroom": "Kelas TK Junior (JK)",
+  "Junior Gymnasium": "Gimnasium Junior",
+  "Junior Library": "Perpustakaan Junior",
+  "Junior Library Office": "Kantor Perpustakaan Junior",
+  "Junior Pool": "Kolam Renang Junior",
+  "Kindergarten Office (Reception & Admin)": "Kantor TK (Resepsionis & Administrasi)",
+  "Kitchen": "Dapur",
+  "LAN Room (BT wing)": "Ruang LAN (sayap BT)",
+  "LAN Room (KB wing)": "Ruang LAN (sayap KB)",
+  "Lawn": "Halaman rumput",
+  "Learning Support": "Ruang Dukungan Belajar",
+  "Library spiral stair": "Tangga spiral perpustakaan",
+  "Library stair": "Tangga perpustakaan",
+  "Library Store LKS-#-#": "Gudang Perpustakaan LKS-#-#",
+  "Library Workroom #": "Ruang Kerja Perpustakaan #",
+  "Linkway Bridge": "Jembatan Penghubung",
+  "Locker": "Loker",
+  "LS": "Ruang Dukungan Belajar (LS)",
+  "LS Classroom": "Kelas Dukungan Belajar",
+  "M&E": "Ruang Mesin & Listrik",
+  "M&E ACHI": "Ruang Mesin & Listrik",
+  "Main Entrance / School Entrance": "Pintu Masuk Utama / Pintu Masuk Sekolah",
+  "Main Lift": "Lift Utama",
+  "Maintenance": "Bagian Pemeliharaan",
+  "Male Toilet (Swimming Complex)": "Toilet Laki-laki (Kolam Renang)",
+  "Meeting Room": "Ruang Rapat",
+  "Meeting Room #": "Ruang Rapat #",
+  "Music Academy": "Akademi Musik",
+  "Music Practice Room": "Ruang Latihan Musik",
+  "Music Practice Room #": "Ruang Latihan Musik #",
+  "Music Room": "Ruang Musik",
+  "Music Room (Secondary)": "Ruang Musik (Sekolah Menengah)",
+  "Music Room (SW-#)": "Ruang Musik (SW-#)",
+  "Netted court": "Lapangan berjaring",
+  "North Entrance (Jurong West St #)": "Pintu Masuk Utara (Jurong West St #)",
+  "Not a through route": "Bukan jalan tembus",
+  "Nurse Room": "Ruang UKS",
+  "Nursery and Pre-K playground": "Taman bermain balita",
+  "Nursery Room": "Ruang Kelompok Bermain",
+  "Occupational Therapy": "Ruang Terapi Okupasi",
+  "Occupational Therapy Room": "Ruang Terapi Okupasi",
+  "Office": "Kantor",
+  "Open Minds Office": "Kantor Open Minds",
+  "Open-air courtyard": "Halaman terbuka",
+  "Outdoor Discovery Centre": "Pusat Eksplorasi Luar Ruang",
+  "Outdoor Discovery garden": "Taman eksplorasi",
+  "Passage": "Lorong",
+  "Passenger Lift": "Lift Penumpang",
+  "PE Office": "Kantor Olahraga",
+  "PE Office side": "sisi Kantor Olahraga",
+  "Plant room": "Ruang mesin",
+  "Pod": "Area Belajar (Pod)",
+  "Pod A": "Area Belajar A (Pod A)",
+  "Pod B": "Area Belajar B (Pod B)",
+  "Pod C": "Area Belajar C (Pod C)",
+  "Pod D": "Area Belajar D (Pod D)",
+  "Pod E": "Area Belajar E (Pod E)",
+  "Pod F": "Area Belajar F (Pod F)",
+  "Pod G": "Area Belajar G (Pod G)",
+  "Pod H": "Area Belajar H (Pod H)",
+  "Pool deck": "Dek kolam renang",
+  "Pool road": "Jalan Kolam Renang",
+  "Pool-side walk": "Jalan tepi kolam",
+  "Practice Room": "Ruang Latihan Musik",
+  "Practice Room #": "Ruang Latihan Musik #",
+  "Pre-function Space": "Lobi Acara",
+  "Pre-K Room": "Ruang Pra-TK",
+  "Prep Room #": "Ruang Persiapan #",
+  "Primary Counselling": "Ruang Konseling SD",
+  "Primary Drop-off Zone": "Area Antar-Jemput SD",
+  "Primary Library": "Perpustakaan SD",
+  "Primary Library LKS-#": "Perpustakaan SD LKS-#",
+  "Primary Makerspace": "Bengkel Kreatif SD",
+  "Primary PE Office": "Kantor Olahraga SD",
+  "Primary Play Area": "Area Bermain SD",
+  "Primary Principal": "Ruang Kepala Sekolah SD",
+  "Primary School Office": "Kantor SD",
+  "Primary Vice-Principal": "Ruang Wakil Kepala Sekolah SD",
+  "Principal": "Ruang Kepala Sekolah",
+  "PTA Room": "Ruang PTA (Persatuan Orang Tua dan Guru)",
+  "Raised platform": "Platform tinggi",
+  "Ramp to the field": "Jalur landai ke lapangan",
+  "Reception / Main Office": "Resepsionis / Kantor Utama",
+  "Red Dot Cafe": "Kafe Red Dot",
+  "Red Dot Convention Centre": "Pusat Konvensi Red Dot",
+  "Riser": "Shaft",
+  "Risers and IT room": "Shaft dan ruang TI",
+  "Road": "Jalan",
+  "Roof (no access)": "Atap (tidak dapat diakses)",
+  "Roof Garden": "Taman Atap",
+  "Sand play area": "Area bermain pasir",
+  "School Nurse": "Ruang UKS",
+  "School Nurse (Primary)": "Ruang UKS (SD)",
+  "Science Lab #": "Laboratorium Sains #",
+  "Secondary Counselling": "Ruang Konseling Sekolah Menengah",
+  "Secondary Drama": "Ruang Drama Sekolah Menengah",
+  "Secondary Library": "Perpustakaan Sekolah Menengah",
+  "Secondary Library LKS-#": "Perpustakaan Sekolah Menengah LKS-#",
+  "Secondary Music Room": "Ruang Musik Sekolah Menengah",
+  "Secondary Principal": "Ruang Kepala Sekolah Menengah",
+  "Secondary School Office": "Kantor Sekolah Menengah",
+  "Secondary Vice Principal": "Ruang Wakil Kepala Sekolah Menengah",
+  "Security": "Kantor Keamanan",
+  "Senior Field (Upper Sports Field)": "Lapangan Senior (Lapangan Olahraga Atas)",
+  "Senior Pool (# m)": "Kolam Renang Senior (# m)",
+  "Server Room": "Ruang Server",
+  "Servery": "Konter makanan",
+  "Service Lift": "Lift Barang",
+  "Sheltered Drop-off Point": "Titik Antar-Jemput Beratap",
+  "SK Room": "Kelas TK Senior (SK)",
+  "Sound Lock Lobby": "Lobi Kedap Suara",
+  "Spectator bleachers": "Tribun penonton",
+  "Speech / OT / LS": "Terapi Wicara / Okupasi / Dukungan Belajar",
+  "Speech Pathologist": "Ruang Terapis Wicara",
+  "Staff Room": "Ruang Guru",
+  "Stairs #": "Tangga #",
+  "Stairs # (no door on this floor)": "Tangga # (tidak ada pintu di lantai ini)",
+  "Stairs # side": "sisi Tangga #",
+  "STEAM Centre (Pod F)": "Pusat STEAM (Area Belajar F)",
+  "STEAM Room": "Ruang STEAM",
+  "Steam Store": "Gudang STEAM",
+  "Steps and ramp": "Undakan dan jalur landai",
+  "Storage": "Gudang",
+  "Store": "Gudang",
+  "Store Room": "Gudang",
+  "Student crossing": "Penyeberangan siswa",
+  "Study Area (Secondary Arts Centre courtyard)": "Area Belajar Mandiri (halaman Pusat Seni Sekolah Menengah)",
+  "Supply": "Ruang Persediaan",
+  "Swim Office": "Kantor Kolam Renang",
+  "Thermal Energy Storage": "Ruang Penyimpanan Energi Termal",
+  "Tiered seating": "Tribun",
+  "Toilet": "Toilet",
+  "Toilet (Men)": "Toilet (Pria)",
+  "Toilet (Women)": "Toilet (Wanita)",
+  "Toilets (Junior Gym)": "Toilet (Gimnasium Junior)",
+  "Transformer / Switch Room": "Ruang Trafo / Ruang Panel",
+  "Two-way driveway": "Jalur kendaraan dua arah",
+  "University advisors": "Ruang Konselor Universitas",
+  "Unnamed room": "Ruang tanpa nama",
+  "Vice-Principal": "Ruang Wakil Kepala Sekolah",
+  "Viewing Area": "Area Penonton",
+  "Visitor car park": "Parkir tamu",
+  "Visitor Car Park": "Tempat Parkir Tamu",
+  "Void": "Void",
+  "Void over the Study Area courtyard": "Void di atas halaman Area Belajar Mandiri",
+  "Wading Pool": "Kolam Dangkal",
+  "Walkway": "Selasar",
+  "Walkway to Toh Tuck Wing": "Selasar ke Sayap Toh Tuck",
+  "Work Room": "Ruang Kerja",
+  "Workroom": "Ruang Kerja",
+  "Yeap Transport": "Kantor Transportasi Yeap",
+  "Zebra crossing": "Zebra cross"
+ },
+ "search": {
+  "kinds": {
+   "toilet": [
+    "toilet",
+    "wc",
+    "kamar kecil",
+    "kamar mandi",
+    "toilet umum"
+   ],
+   "lift": [
+    "lift",
+    "elevator"
+   ],
+   "stair": [
+    "tangga"
+   ],
+   "food": [
+    "kantin",
+    "kafe",
+    "kafetaria",
+    "makan",
+    "makanan",
+    "tempat makan",
+    "makan siang"
+   ],
+   "office": [
+    "kantor",
+    "tata usaha"
+   ]
+  },
+  "who": {
+   "girls": [
+    "siswi",
+    "anak perempuan"
+   ],
+   "boys": [
+    "anak laki-laki"
+   ],
+   "women": [
+    "wanita",
+    "perempuan",
+    "ibu"
+   ],
+   "men": [
+    "pria",
+    "laki-laki",
+    "bapak"
+   ],
+   "adults": [
+    "dewasa",
+    "uniseks",
+    "unisex"
+   ],
+   "accessible": [
+    "disabilitas",
+    "difabel",
+    "kursi roda",
+    "penyandang disabilitas"
+   ]
+  },
+  "ignore": [
+   "di",
+   "ke",
+   "dari",
+   "yang",
+   "mana",
+   "dimana",
+   "manakah",
+   "terdekat",
+   "dekat",
+   "paling",
+   "sekitar",
+   "ada",
+   "adalah",
+   "cari",
+   "lokasi",
+   "letak",
+   "untuk",
+   "dan",
+   "atau",
+   "saya",
+   "tolong",
+   "siswa",
+   "murid",
+   "anak",
+   "gedung",
+   "nomor",
+   "putri",
+   "putra"
+  ],
+  "level": [
+   "lantai",
+   "lt",
+   "lt."
+  ],
+  "levelAfter": [],
+  "synonyms": {
+   "klinik": [
+    "uks"
+   ],
+   "dokter": [
+    "uks"
+   ],
+   "perawat": [
+    "uks"
+   ],
+   "suster": [
+    "uks"
+   ],
+   "sakit": [
+    "uks"
+   ],
+   "kesehatan": [
+    "uks"
+   ],
+   "p3k": [
+    "uks"
+   ],
+   "gym": [
+    "gimnasium",
+    "kebugaran"
+   ],
+   "gor": [
+    "gimnasium"
+   ],
+   "fitness": [
+    "kebugaran"
+   ],
+   "olahraga": [
+    "gimnasium",
+    "lapangan",
+    "kolam"
+   ],
+   "renang": [
+    "kolam"
+   ],
+   "berenang": [
+    "kolam",
+    "renang"
+   ],
+   "sepakbola": [
+    "atas"
+   ],
+   "bola": [
+    "atas",
+    "basket",
+    "gimnasium"
+   ],
+   "futsal": [
+    "lapangan"
+   ],
+   "atletik": [
+    "atas"
+   ],
+   "badminton": [
+    "gimnasium"
+   ],
+   "bulutangkis": [
+    "gimnasium"
+   ],
+   "voli": [
+    "gimnasium"
+   ],
+   "auditorium": [
+    "teater"
+   ],
+   "aula": [
+    "teater",
+    "konvensi"
+   ],
+   "panggung": [
+    "teater"
+   ],
+   "pentas": [
+    "teater"
+   ],
+   "band": [
+    "musik"
+   ],
+   "orkestra": [
+    "musik"
+   ],
+   "piano": [
+    "musik"
+   ],
+   "gitar": [
+    "musik"
+   ],
+   "lab": [
+    "laboratorium"
+   ],
+   "ipa": [
+    "sains"
+   ],
+   "kimia": [
+    "sains"
+   ],
+   "fisika": [
+    "sains"
+   ],
+   "biologi": [
+    "sains"
+   ],
+   "komputer": [
+    "ti"
+   ],
+   "it": [
+    "ti"
+   ],
+   "wifi": [
+    "ti"
+   ],
+   "kopi": [
+    "kafe"
+   ],
+   "perpus": [
+    "perpustakaan"
+   ],
+   "pustaka": [
+    "perpustakaan"
+   ],
+   "buku": [
+    "perpustakaan"
+   ],
+   "keluar": [
+    "masuk",
+    "gerbang"
+   ],
+   "gerbang": [
+    "masuk"
+   ],
+   "jemput": [
+    "antar-jemput"
+   ],
+   "penjemputan": [
+    "antar-jemput"
+   ],
+   "antar": [
+    "antar-jemput"
+   ],
+   "drop": [
+    "antar-jemput"
+   ],
+   "dropoff": [
+    "antar-jemput"
+   ],
+   "mobil": [
+    "parkir",
+    "antar-jemput"
+   ],
+   "konselor": [
+    "konseling"
+   ],
+   "bk": [
+    "konseling"
+   ],
+   "psikolog": [
+    "konseling"
+   ],
+   "dasar": [
+    "sd"
+   ],
+   "sekolah": [
+    "sd"
+   ],
+   "smp": [
+    "menengah"
+   ],
+   "sma": [
+    "menengah"
+   ],
+   "paud": [
+    "tk",
+    "balita",
+    "pra-tk",
+    "kelompok"
+   ],
+   "playgroup": [
+    "kelompok"
+   ],
+   "wakasek": [
+    "wakil"
+   ],
+   "staf": [
+    "guru"
+   ],
+   "tamu": [
+    "resepsionis"
+   ],
+   "informasi": [
+    "resepsionis"
+   ],
+   "satpam": [
+    "keamanan"
+   ],
+   "keamanan": [
+    "satpam"
+   ],
+   "masak": [
+    "boga",
+    "dapur"
+   ],
+   "memasak": [
+    "boga",
+    "dapur"
+   ],
+   "kue": [
+    "roti",
+    "boga"
+   ],
+   "baking": [
+    "roti",
+    "boga"
+   ],
+   "robotik": [
+    "steam",
+    "kreatif"
+   ],
+   "makerspace": [
+    "kreatif"
+   ],
+   "desain": [
+    "kreatif",
+    "steam"
+   ],
+   "lukis": [
+    "seni"
+   ],
+   "menggambar": [
+    "seni"
+   ],
+   "dansa": [
+    "tari"
+   ],
+   "kuliah": [
+    "universitas"
+   ],
+   "bayar": [
+    "keuangan"
+   ],
+   "pembayaran": [
+    "keuangan"
+   ],
+   "kasir": [
+    "keuangan"
+   ],
+   "hrd": [
+    "sdm"
+   ],
+   "pendaftaran": [
+    "penerimaan"
+   ],
+   "admisi": [
+    "penerimaan"
+   ],
+   "sepak": [
+    "atas"
+   ],
+   "kanak-kanak": [
+    "tk"
+   ],
+   "taman": [
+    "tk"
+   ],
+   "ruangan": [
+    "ruang"
+   ],
+   "bis": [
+    "bus"
+   ],
+   "halte": [
+    "bus"
+   ],
+   "kesenian": [
+    "seni"
+   ],
+   "spp": [
+    "keuangan"
+   ],
+   "menari": [
+    "tari"
+   ],
+   "bulu": [
+    "gimnasium"
+   ],
+   "tangkis": [
+    "gimnasium"
+   ],
+   "komite": [
+    "pta"
+   ],
+   "pomg": [
+    "pta"
+   ]
+  }
+ }
+}
