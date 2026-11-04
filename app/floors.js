@@ -135,7 +135,8 @@ export function roomKind(id, en) {
   if (/^STAIR-/.test(id)) return 'stair';
   if (/UNNAMED/.test(id) || !id) return 'blank';
   const s = en || '';
-  if (/toilet|\bwc\b|washroom|changing|shower|restroom|dressing/i.test(s)) return 'toilet';
+  // (a theatre's dressing room is a back room, below: the Black Box's, which the CAD names DRESSING ROOM)
+  if (/toilet|\bwc\b|washroom|changing|shower|restroom/i.test(s)) return 'toilet';
   // where you arrive: by bus, by car, on foot (a tree said "outdoors", which is not what a bus bay is)
   if (/\bbus (bay|drop|pick|stop)/i.test(s)) return 'bus';
   if (/drop-?off|pick-?up|car park|driveway|taxi/i.test(s)) return 'drop';
@@ -143,7 +144,7 @@ export function roomKind(id, en) {
   // what people go to, by what it is for; the back rooms after
   if (/kitchen|pantry|servery|\bprep\b/i.test(s) && !/classroom|bakery|baking/i.test(s)) return 'service';
   if (/canteen|caf[eé]|dining|alfresco/i.test(s)) return 'food';
-  if (/store|storage|plant|riser|switch|transformer|electrical|generator|pump|tank|server|\blan\b|closet|janitor|cleaner|refuse|\btes\b|\bahu\b|substation|meter|sprinkler|fire control|hose reel|locker|m&e|equipment|costume|props|maintenance|supply|thermal|chiller|bicycle/i.test(s)) return 'service';
+  if (/store|storage|plant|riser|switch|transformer|electrical|generator|pump|tank|server|\blan\b|closet|janitor|cleaner|refuse|\btes\b|\bahu\b|substation|meter|sprinkler|fire control|hose reel|locker|m&e|equipment|costume|props|dressing room|maintenance|supply|thermal|chiller|bicycle/i.test(s)) return 'service';
   if (/\bpool\b/i.test(s)) return 'pool';
   if (/librar|study area/i.test(s) && !/office|workroom/i.test(s)) return 'library';
   if (/theatre|auditorium|black ?box|gymnasium|\bgym\b|fitness|convention|viewing gallery|sound lock/i.test(s) && !/office/i.test(s)) return 'hall';
@@ -166,6 +167,17 @@ export function splitLabel(id, label) {
   return { code, name: { en: strip(label && label.en), zh: strip(label && label.zh) } };
 }
 
+// Feature kinds that are out of doors (tools/app/footprints.py OUTDOOR): no building wall round them.
+const OUTDOOR = new Set(['deck', 'garden', 'playground', 'play-equipment', 'road', 'crossing', 'walkway', 'parking', 'planter',
+  'divider', 'floor-marking', 'parapet', 'gate', 'ramp']);
+
+// The order features are drawn in where they overlap: ground, then what is laid on it, then planting, then what is
+// built (a kerb, a fence, a counter), so the built thing shows whole. Kinds not listed are 0.
+const FEATURE_Z = { road: -3, parking: -3, crossing: -2, walkway: -2, 'bridge-deck': -2, deck: -2, court: -2, playground: -2,
+  courtyard: -2, 'open-air': -2, ramp: -1, garden: -1, planter: 1, 'play-equipment': 1, seating: 1, 'seating-bank': 1,
+  platform: 1, counter: 2, fixture: 2, service: 2, store: 2, shaft: 2, 'back-of-house': 2, divider: 3, parapet: 3, gate: 3,
+  'floor-marking': 3 };
+
 class Floor {
   constructor(meta, data, drawn, fixes) {
     this.meta = meta;
@@ -175,6 +187,7 @@ class Floor {
     this.walkDrawn = (drawn && drawn.walk) || null;
     this.pocketRings = (drawn && drawn.pockets) || null;
     this.groundRings = (drawn && drawn.ground) || null;
+    this.grownRings = (drawn && drawn.rooms) || null;
     // (on a floor the CAD's corrections move, tools/app/footprints.py works these out where they are
     // drawn, in campus metres: frame "campus")
     this.drawnOnMap = !!(drawn && drawn.frame === 'campus');
@@ -360,11 +373,17 @@ class Floor {
       this.rooms.push(room);
       roomById.set(s.id, room);
     }
+    // Each room as drawn: grown into the gap round it to meet its walls (tools/app/footprints.py rooms_grown),
+    // so every wall is the same band; its traced outline stays for taps, labels and routes.
+    for (const r of this.rooms) {
+      const g = this.grownRings && this.grownRings[r.id];
+      if (g) { r.block = this.drawnRing(g); r.blockPath = pathOf([r.block]); }
+    }
     this.features = [];
     for (const f of d.features || []) {
       if (!f.vertices || f.vertices.length < 3) continue;
       const sh = this.makeShape(f.id, f.label, this.ring(f.vertices));
-      sh.kind = f.kind; sh.walkable = !!f.walkable;
+      sh.kind = f.kind; sh.walkable = !!f.walkable; sh.outdoor = OUTDOOR.has(f.kind);
       this.features.push(sh);
     }
     for (const b of d.blocked || []) {
@@ -443,7 +462,24 @@ class Floor {
     this.pockets = this.pocketRings && this.pocketRings.length ? pathOf(this.pocketRings.map(rg => this.drawnRing(rg))) : null;
     // ...and those out among the site's outdoor features (the field deck, the car park): open ground
     this.ground = this.groundRings && this.groundRings.length ? pathOf(this.groundRings.map(rg => this.drawnRing(rg))) : null;
-    this.outline = pathOf([...drawOuters, ...drawHoles.filter(h => !shafts.has(h)), ...solid.map(r => r.block || r.ring)]);
+    // (not round what is out of doors: a road or a garden has no wall, and the outline drew one along every kerb)
+    this.outline = pathOf([...drawOuters, ...drawHoles.filter(h => !shafts.has(h)), ...solid.filter(r => !OUTDOOR.has(r.kind)).map(r => r.block || r.ring)]);
+    // the walkable area's own edges, for the wall band outside them (app/map.js): not round a hole drawn as floor
+    this.walkEdge = pathOf([...drawOuters, ...drawHoles.filter(h => !shafts.has(h))]);
+    // A feature half over a room or stair (a garden over Stairs 8's corner, a parapet over Stairs 11) is drawn
+    // clipped out of it: green over a stair read as a drawing error (owner, 4 Nov 2026). One wholly inside a room
+    // (a counter, the stair's own flight) is its furniture and stays. Then the features in a set order by kind,
+    // ground first, so two that overlap meet edge to edge whichever the data lists first.
+    for (const ft of this.features) {
+      const cut = this.rooms.filter(r => {
+        const b = r.bbox, fb = ft.bbox;
+        if (fb.x0 >= b.x1 || fb.x1 <= b.x0 || fb.y0 >= b.y1 || fb.y1 <= b.y0) return false;
+        const rg = r.block || r.ring, n = ft.ring.filter(([x, y]) => inside(rg, x, y)).length;
+        return (n > 0 && n < ft.ring.length) || (n === 0 && rg.some(([x, y]) => inside(ft.ring, x, y)));
+      });
+      if (cut.length) ft.clipOut = pathOf(cut.map(r => r.block || r.ring));
+    }
+    this.features.sort((a, b) => (FEATURE_Z[a.kind] || 0) - (FEATURE_Z[b.kind] || 0));
     // every room's edge, all one way round so that, as a clip, rooms that overlap make one area
     this.roomEdges = pathOf(this.rooms.map(r => r.block || r.ring).map(rg => (ringArea(rg) < 0 ? [...rg].reverse() : rg)));
 
@@ -465,15 +501,17 @@ class Floor {
     // A door: where a room's portal meets its outline, and which way that wall runs. A room
     // reached through another (L3's practice rooms, off the music room) has its door where the
     // labels' doorAt put it, on the wall the two share; any other portal more than a couple of
-    // metres off its room gets none.
+    // metres off its room gets none. A room's second door (a classroom's back door, from the CAD:
+    // an entrance of the room, tools/audit/doorpins.mjs) is cut in its wall as well.
     this.doors = [];
     for (const p of this.portals) {
-      const r = p.room;
+      const r = p.room || (p.entranceOf && roomById.get(p.entranceOf)) || null;
       if (!r || p.type === 'elevator') continue;
-      const [ax, ay] = p.door || [p.x, p.y], q = nearestOnRing(r.ring, ax, ay);
+      // (on the room as drawn, grown to its wall: a door on the traced outline sat inside the room, behind the wall)
+      const ring = r.block || r.ring, [ax, ay] = p.door || [p.x, p.y], q = nearestOnRing(ring, ax, ay);
       if (!p.door && q.d > 2.5) continue;
       // (ix, iy: square to the wall, into the room, for the cut through the room's wall band)
-      const inward = inside(r.ring, q.x - q.dy * 0.3, q.y + q.dx * 0.3) ? 1 : -1, ix = -q.dy * inward, iy = q.dx * inward;
+      const inward = inside(ring, q.x - q.dy * 0.3, q.y + q.dx * 0.3) ? 1 : -1, ix = -q.dy * inward, iy = q.dx * inward;
       // (via: the room on the wall's other side, whose wall band the door cuts too, gap metres off)
       const via = p.door ? this.rooms.find(o => o !== r && inside(o.ring, q.x - ix * 0.4, q.y - iy * 0.4)) || null : null;
       this.doors.push({ x: p.x, y: p.y, qx: q.x, qy: q.y, dx: q.dx, dy: q.dy, ix, iy, room: r,

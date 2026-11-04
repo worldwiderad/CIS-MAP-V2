@@ -1,6 +1,6 @@
 {
  "schema": "cis-map/toilets/1",
- "note": "What each toilet block on the map holds, read off the door signs in the school's virtual tour (tools/tourkit; read 31 October 2026). The signs: girls' and boys' toilets say 'Students only'; men's, women's and all-gender ('adults') toilets 'Adults only'; neither may use the other's. Older plates show only a woman or a man ('female', 'male'). 'accessible' is a wheelchair toilet (in Toh Tuck signed 'Adults only'). Keys are the app's place keys. confidence: 'read' = the words or plates were read; 'likely' = the pictograms and colours were seen, the words too far to read; 'signs' = not seen, from the direction signs; 'map' = the map's own name. Read by app/search.js (names, the Toilets choices) and drawn on the map.",
+ "note": "What each toilet block on the map holds, read off the door signs in the school's virtual tour (tools/tourkit; read 31 October 2026). The signs: girls' and boys' toilets say 'Students only'; men's, women's and all-gender ('adults') toilets 'Adults only'; neither may use the other's. Older plates show only a woman or a man ('female', 'male'). 'accessible' is a wheelchair toilet (in Toh Tuck signed 'Adults only'). Keys are the app's place keys. confidence: 'read' = the words or plates were read; 'likely' = the pictograms and colours were seen, the words too far to read; 'signs' = not seen, from the direction signs; 'map' = the map's own name; 'cad' = the architect's CAD: its fixtures (urinals, cubicles, a turning circle) and its room words -- male or female, students or adults only where it says STAFF (3 Nov 2026). Read by app/search.js (names, the Toilets choices) and drawn on the map.",
  "kinds": [
   "girls",
   "boys",
@@ -246,27 +246,125 @@
    ],
    "confidence": "read",
    "seen": "'Gender neutral' plate with man/woman, child and wheelchair figures on the passage door (pano 11191712 yaw 262, Jan 2020); no 'Adults only' or 'Students only' words; a wheelchair arrow sign at the south lobby (11191709 yaw 146)."
+  },
+  "L3:TOILET-KB-N": {
+   "has": [
+    "women",
+    "girls"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 03): \"FEMALE STAFF\" (2 cubicles) and \"FEMALE\" (3 cubicles), no urinals; crops in the 3 Nov session scratchpad (toilets/L3_KBN_z.png)"
+  },
+  "L3:TOILET-KB-S": {
+   "has": [
+    "men",
+    "boys"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 03): \"MALE STAFF\" (4 urinals) and \"MALE\" (2 urinals); a one-WC \"HT\" room too, whose kind is open; crops in the 3 Nov session scratchpad (toilets/L3_KBS_z.png)"
+  },
+  "L2:TOILET-KB-N": {
+   "has": [
+    "women",
+    "girls"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 02): L3's plan unlettered: 2 + 3 cubicles, no urinals; the L2 atrium sign (pano 11191870, yaw -156) points all five kinds up this corridor; crops in the 3 Nov session scratchpad (toilets/L2_KBN_cad_z.png)"
+  },
+  "L5:TOILET-KB-N": {
+   "has": [
+    "women",
+    "girls"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 05): L3's plan unlettered: 2 + 3 cubicles, no urinals; crops in the 3 Nov session scratchpad (toilets/L2_KBN_cad_z.png)"
+  },
+  "L2:TOILET-KB-S": {
+   "has": [
+    "men",
+    "boys"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 02): urinals 3 + 1 and 2, and the one-WC room; crops in the 3 Nov session scratchpad (toilets/L2_KBS_cad_z.png)"
+  },
+  "L5:TOILET-KB-S": {
+   "has": [
+    "men",
+    "boys"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 05): urinals 3 + 1 and 2, and the one-WC room; crops in the 3 Nov session scratchpad (toilets/L2_KBS_cad_z.png)"
+  },
+  "L3:TOILET-LKS": {
+   "has": [
+    "female",
+    "male",
+    "accessible"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 03): \"MALE\" (5 urinals), \"HT\" (1.8 x 1.8 m, a 1.05 m door opening out) and \"FEMALE\"; crops in the 3 Nov session scratchpad (toilets/L3_LKS_z.png)"
+  },
+  "L3:TOILET-TK-W": {
+   "has": [
+    "female",
+    "accessible"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 03): \"FEMALE TOILET\" (9 cubicles) and an \"HT\" room off the passage; crops in the 3 Nov session scratchpad (toilets/L3_TKW.png)"
+  },
+  "L3:TOILET-TK-E": {
+   "has": [
+    "male"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 03): \"MALE TOILET\" (11 cubicles, 4 urinals); a sign (pano 11191961, yaw -140) points girls/boys this way, so its plates may say boys; crops in the 3 Nov session scratchpad (toilets/L3_TKE.png)"
+  },
+  "L4:TOILET-ADMIN": {
+   "has": [
+    "female",
+    "male",
+    "accessible"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 04): 1 urinal + 2 cubicles; a WC behind an outward door with a 1500 turning space; 3 cubicles. The CAD puts the block about 5 m east of the map's, across the passage; crops in the 3 Nov session scratchpad (toilets/L4_ADMIN_real.png)"
+  },
+  "L4:TOILET-BT-S": {
+   "has": [
+    "female",
+    "male"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 04): 7 cubicles and no urinals; 7 cubicles and 7 urinals; crops in the 3 Nov session scratchpad (toilets/L4_BTS_wide.png)"
+  },
+  "L4:TOILET-BT-E": {
+   "has": [
+    "female",
+    "male",
+    "accessible"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 04): 2 cubicles; a WC and a urinal; a WC with a grab rail and a 1.5 m turning circle (the map's room is the lobby they open off); crops in the 3 Nov session scratchpad (toilets/L4_BTE_z.png)"
+  },
+  "L5:TOILET-BT-N": {
+   "has": [
+    "female",
+    "male",
+    "accessible"
+   ],
+   "confidence": "cad",
+   "seen": "the architect's CAD (sheet 05): 7 cubicles, no urinals; 6 urinals; a one-WC room; and the sign \"TOILET\" with the wheelchair (pano 3071097, yaw 44); crops in the 3 Nov session scratchpad (toilets/L5_BTN.png)"
+  },
+  "TT_L1:TOILET-TT-CH1": {
+   "has": [
+    "adults"
+   ],
+   "confidence": "likely",
+   "seen": "The last door on the deck's east wall (pano 39877765, yaw 80): a purple flag like CH2's all-gender one; the words too far to read."
   }
  },
  "unknown": {
-  "L2:TOILET-KB-N": "No photo within sight (the nearest is in the auditorium).",
-  "L2:TOILET-KB-S": "No photo within sight.",
-  "L3:TOILET-LKS": "Behind the library wall from the nearest photos.",
-  "L3:TOILET-TK-E": "Behind the makerspace wall from the nearest photos.",
-  "L3:TOILET-TK-W": "Behind the makerspace wall from the nearest photos.",
-  "L3:TOILET-KB-N": "No photo near it.",
-  "L3:TOILET-KB-S": "No photo near it.",
-  "L4:TOILET-ADMIN": "No photo near it.",
-  "L4:TOILET-BT-S": "No photo near it.",
-  "L5:TOILET-BT-N": "Behind the counselling suite from the nearest photos; a sign points '← TOILET ♿' towards it.",
-  "TT_L1:TOILET-TT-CH1": "The nearest photos (2020) show the pool deck still being built.",
-  "TT_L1:TT-CHANGING-1": "Not in view of the nearest photos.",
-  "TT_L1:TT-CHANGING-2": "Not in view of the nearest photos.",
-  "TT_L2:TOILET-TT-N": "No photo within sight; a wayfinding sign shows three toilet symbols this way.",
-  "TT_L4:TT-CHANGE-1": "Inside the Black Box Theatre's back rooms, out of the photos' sight (probably dressing rooms).",
-  "TT_L4:TT-CHANGE-2": "Inside the Black Box Theatre's back rooms, out of the photos' sight.",
-  "L5:TOILET-KB-N": "Not photographed; the CAD (sheet 05) draws WC cubicles and basins (app review 31 Oct 2026).",
-  "L5:TOILET-KB-S": "Not photographed; the CAD (sheet 05) draws WC cubicles and basins (app review 31 Oct 2026).",
-  "L4:TOILET-BT-E": "The CAD's toilet group east of BT-405, its doors on the BT-TK link; no photo in sight (app review 31 Oct 2026)."
+  "TT_L1:TT-CHANGING-1": "The junior pool's changing block, west face onto the walkway; the CAD says only 'TOILET (MV)' with benches, the plaza sign (pano 39877739) lists men's, women's, boys' -- check the door plates (owner's walk).",
+  "TT_L1:TT-CHANGING-2": "The same block's other big room (the lockers between them, the Swim Office south of it) -- check the plates.",
+  "TT_L2:TOILET-TT-N": "At the north end beside Stairs 19 (open-air) and the CAD's LACTATION ROOM; a sign seen through the library glass (pano 39877724) shows men, women and the wheelchair -- check the plates."
  }
 }

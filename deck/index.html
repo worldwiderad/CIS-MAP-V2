@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>CIS Map — the presentation</title>
+<link rel="icon" href="../app/icons/favicon.svg" type="image/svg+xml">
+<style>
+@font-face { font-family: "Hanken Grotesk"; font-weight: 100 900; font-display: swap;
+  src: url("../app/fonts/hanken-grotesk-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+2190-2199; }
+@font-face { font-family: "Hanken Grotesk"; font-weight: 100 900; font-display: swap;
+  src: url("../app/fonts/hanken-grotesk-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02FF, U+1E00-1EFF; }
+/* The app's own tokens (app/app.css) and its brand guide: ink for text and anything selected, warm greys,
+   white surfaces, CIS red only for the route, the destination, a change of level and the one main action.
+   One light world on purpose: a projector in a lit room. */
+:root {
+  --red: #DA291C; --blue: #0057B8;
+  --ink: #3D3935; --ink-2: #6B6662; --ink-3: #736D68; --line: #E8E6E2;
+  --surface: #FFFFFF; --surface-2: #F5F4F1; --ground: #E6E9EC; --wall: #8895A4;
+  --radius: 16px;
+  --font: "Hanken Grotesk", -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans", sans-serif;
+  --ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #1E2024; color: var(--ink); font-family: var(--font); overflow: hidden; }
+.stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; background: var(--surface);
+  transform: translate(-50%, -50%) scale(var(--s, 1)); transform-origin: 50% 50%; overflow: hidden; }
+.slide { position: absolute; inset: 0; padding: 96px 120px 110px; opacity: 0; visibility: hidden;
+  transition: opacity .5s var(--ease), visibility 0s linear .5s; }
+.slide.on { opacity: 1; visibility: visible; transition: opacity .5s var(--ease); }
+.slide.seq [data-a] { opacity: 0; transition: opacity .6s var(--ease); transition-delay: calc(var(--i, 0) * 260ms + 150ms); }
+.slide.seq.on [data-a] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .slide, .slide [data-a] { transition: none !important; } }
+
+/* type: 112 / 64 / 30 / 24 */
+h1 { font-size: 112px; line-height: .98; font-weight: 800; letter-spacing: -.035em; margin: 0; text-wrap: balance; }
+h2 { font-size: 64px; line-height: 1.04; font-weight: 800; letter-spacing: -.028em; margin: 0 0 28px; text-wrap: balance; max-width: 1300px; }
+h3 { font-size: 30px; font-weight: 700; margin: 0 0 8px; letter-spacing: -.01em; }
+p, li { font-size: 30px; line-height: 1.4; color: var(--ink-2); margin: 0; }
+.lead { font-size: 34px; line-height: 1.36; max-width: 1080px; color: var(--ink-2); text-wrap: pretty; }
+.small { font-size: 22px; color: var(--ink-3); }
+b, strong { color: var(--ink); font-weight: 700; }
+.code.big { font-size: .92em; padding: 0 16px; border-radius: 14px; }
+.code { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); background: var(--surface-2); border-radius: 10px; padding: 2px 12px; white-space: nowrap; }
+
+.chrome { position: absolute; left: 120px; right: 120px; bottom: 44px; display: flex; align-items: center; gap: 24px;
+  font-size: 18px; color: var(--ink-3); pointer-events: none; transition: opacity .4s var(--ease); }
+.chrome img { height: 26px; }
+.chrome .n { margin-left: auto; font-variant-numeric: tabular-nums; }
+.bar { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--ink); opacity: .85; transition: width .5s var(--ease), opacity .4s var(--ease); }
+.stage.bare .chrome, .stage.bare .bar { opacity: 0; }
+
+/* the opening: the lockup alone, then the title */
+.cover { display: grid; place-items: center; }
+.cover img { height: 132px; }
+
+/* the title: the map is the whole slide (deck/titlemap.js), the words on a white fade at its left */
+.title { background: radial-gradient(70% 80% at 68% 52%, #F4F6F8 0%, #E9ECEF 62%, #E1E5E9 100%); }
+.title::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, #fff 0%, #fff 34%, rgba(255,255,255,.82) 43%, rgba(255,255,255,0) 58%); }
+.title > div:not(.mapbox) { position: relative; z-index: 2; width: 780px; }
+.title > div:not(.mapbox) { padding-top: 150px; }
+.title h1 img { height: 104px; display: block; }
+.title .sub { font-size: 46px; line-height: 1.2; font-weight: 600; letter-spacing: -.015em; color: var(--ink); margin: 48px 0 0; max-width: 700px; text-wrap: balance; }
+.title .who { margin-top: 72px; font-size: 24px; color: var(--ink-3); line-height: 1.5; }
+.mapbox { --zoom: 1.4; position: absolute; left: 0; top: 0; width: calc(100% / var(--zoom)); height: calc(100% / var(--zoom));
+  transform: scale(var(--zoom)); transform-origin: 0 0; z-index: 0; pointer-events: none; }
+.mapbox canvas { position: absolute; inset: 0; }
+
+/* the campus today: words beside the plan on the wall */
+.split { display: grid; grid-template-columns: 1fr 900px; gap: 72px; align-items: center; height: 100%; }
+.plate { margin: 0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 0 var(--line), 0 18px 50px rgba(20,24,30,.12); background: #fff; }
+.plate img { display: block; width: 100%; }
+
+/* a phone, as it looks in a hand: the frame, iOS's status bar with the time now, Safari's bar with the address */
+.demo { display: grid; grid-template-columns: 1fr 420px; gap: 96px; align-items: center; height: 100%; }
+.iphone-box { width: 420px; height: 874px; justify-self: end; }
+.iphone { width: 436px; height: 908px; transform: scale(.9626); transform-origin: 0 0; position: relative; border-radius: 72px; padding: 4px;
+  background: linear-gradient(145deg, #4A4D52, #1B1C1F 40%, #2C2E32 70%, #121314);
+  box-shadow: 0 34px 80px rgba(18,20,24,.30), 0 6px 18px rgba(18,20,24,.18), inset 0 0 0 1px rgba(255,255,255,.10); }
+.iphone::before, .iphone::after, .iphone i { content: ""; position: absolute; width: 5px; border-radius: 3px; background: linear-gradient(90deg, #17181A, #3A3C40); }
+.iphone::before { left: -4px; top: 178px; height: 34px; }
+.iphone i.vu { left: -4px; top: 240px; height: 66px; } .iphone i.vd { left: -4px; top: 322px; height: 66px; }
+.iphone::after { right: -4px; top: 268px; height: 104px; background: linear-gradient(270deg, #17181A, #3A3C40); }
+.iphone .bezel { width: 100%; height: 100%; border-radius: 68px; background: #050505; padding: 13px; }
+.iphone .screen { position: relative; width: 402px; height: 874px; border-radius: 56px; overflow: hidden; background: #fff; isolation: isolate; }
+.ios-bar { position: absolute; left: 0; right: 0; top: 0; height: 60px; display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 34px 0 50px; font: 600 17px/1 var(--ios); color: #000; z-index: 2; background: #fff; }
+.ios-bar .island { position: absolute; left: 50%; top: 11px; width: 124px; height: 36px; margin-left: -62px; border-radius: 20px; background: #000; }
+.ios-bar .icons { display: flex; gap: 7px; align-items: center; }
+.ios-bar svg { display: block; fill: currentColor; }
+.iphone iframe { position: absolute; left: 0; top: 60px; width: 402px; height: 716px; border: 0; background: #fff; }
+.safari { position: absolute; left: 0; right: 0; bottom: 0; height: 98px; background: #fff; display: flex; align-items: flex-start;
+  justify-content: center; gap: 10px; padding-top: 12px; z-index: 2; }
+.safari .pill { height: 48px; border-radius: 24px; background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,.10), 0 0 0 .5px rgba(0,0,0,.08); color: #1C1C1E; font: 500 17px/1 var(--ios); }
+.safari .arrows { width: 100px; gap: 24px; } .safari .url { width: 228px; gap: 10px; padding: 0 16px 0 22px; } .safari .more { width: 46px; }
+.safari .url span { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; letter-spacing: -.01em; }
+.safari svg { display: block; flex: none; fill: currentColor; }
+.hint { margin-top: 28px; font-size: 22px; color: var(--ink-3); }
+
+/* the app's own pieces: its search chips and its step rows (app.css .step) */
+.chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.chips span { font-size: 26px; padding: 10px 20px; border-radius: 99px; background: var(--surface-2); color: var(--ink); }
+.steps { list-style: none; padding: 0; margin: 40px 0 0; display: grid; gap: 6px; max-width: 900px; }
+.steps li { display: grid; grid-template-columns: 56px 1fr; gap: 20px; align-items: center; font-size: 28px; color: var(--ink); padding: 10px 0; }
+.ico { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink-2); }
+.ico svg { width: 30px; height: 30px; fill: currentColor; }
+.ico.red { background: var(--red); color: #fff; }
+
+/* the languages, each in its own script and in English */
+.langs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 40px; max-width: 1060px; }
+.langs span { padding: 12px 18px; border-radius: var(--radius); background: var(--surface-2); font-size: 26px; color: var(--ink); line-height: 1.15; }
+.langs small { display: block; font-size: 17px; color: var(--ink-3); margin-top: 3px; }
+
+/* two plain columns */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; margin-top: 56px; max-width: 1560px; }
+.cols.labels { grid-template-columns: 1fr 600px; gap: 120px; align-items: center; height: 100%; margin: 0; max-width: none; }
+.labels2 { position: relative; width: 600px; height: 760px; }
+.label { position: absolute; width: 420px; border-radius: 12px; box-shadow: 0 2px 0 var(--line), 0 24px 60px rgba(20,24,30,.16); }
+.label.a { left: 0; top: 0; transform: rotate(-2.5deg); } .label.b { left: 170px; top: 300px; transform: rotate(2deg); }
+
+/* the small things: the app's own list rows (icon, name, a line), two columns */
+.qol { list-style: none; padding: 0; margin: 64px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 54px 88px; max-width: 1680px; }
+.qol li { display: grid; grid-template-columns: 72px 1fr; gap: 26px; align-items: start; }
+.qol .ico { width: 72px; height: 72px; } .qol .ico svg { width: 36px; height: 36px; }
+.qol h3 { font-size: 31px; margin: 6px 0 6px; } .qol p { font-size: 24px; line-height: 1.38; }
+
+/* how it is built: a flow chart, sources to phone, in a fixed 1680 x 830 frame so the arrows meet the boxes */
+.build { padding-top: 64px; }
+.build h2 { font-size: 52px; margin-bottom: 16px; max-width: none; }
+.fc { position: relative; width: 1680px; height: 830px; }
+.fc-arrows { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fc-arrows path { fill: none; stroke: #9BA4AF; stroke-width: 2.2; marker-end: url(#head); }
+.colh { position: absolute; top: 0; font-size: 17px; font-weight: 700; color: var(--ink-3); }
+.node { position: absolute; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 6px 22px rgba(20,24,30,.07); }
+.node h4 { font-size: 19px; line-height: 1.2; margin: 0 0 3px; color: var(--ink); }
+.node p { font-size: 15px; line-height: 1.38; color: var(--ink-2); margin: 4px 0 0; }
+.node .tool { display: block; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+.node.src { width: 290px; height: 225px; } .node.src img { display: block; width: 100%; height: 132px; object-fit: cover; } .node.src > div { padding: 10px 14px; }
+.node.step { width: 300px; height: 150px; padding: 14px 16px; }
+.node.dat { width: 310px; } .node.dat img, .node.dat .mini { display: block; width: 100%; height: 120px; object-fit: cover; background: #F3F4F6; } .node.dat > div { padding: 10px 14px; }
+.node.bundle { width: 220px; padding: 16px; } .node.bundle svg { display: block; width: 100%; height: auto; margin-bottom: 10px; }
+.node.phone1 { width: 400px; height: 353px; } .node.phone1 svg { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--line); } .node.phone1 > div { padding: 10px 16px 14px; }
+.node.phone2 { width: 400px; padding: 12px 16px 14px; }
+.node .steps { margin: 0 0 10px; gap: 0; } .node .steps li { font-size: 16px; grid-template-columns: 32px 1fr; gap: 10px; padding: 4px 0; }
+.node .ico { width: 32px; height: 32px; } .node .ico svg { width: 18px; height: 18px; }
+.g-ground { fill: #EEF0F2; } .g-walk { fill: #fff; } .g-room { fill: #F6F3EC; stroke: #CDD3DA; stroke-width: 2.5; } .g-stair { fill: #C9CFD6; }
+.g-edge { fill: none; stroke: #9BA4AF; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+.g-node { fill: #9BA4AF; transition: fill .25s, r .25s; }
+.g-node.seen { fill: var(--ink); r: 6.5; }
+.g-tag { font: 700 40px var(--font); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 10px; stroke-linejoin: round; }
+.g-path { fill: none; stroke: var(--red); stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; }
+.g-casing { fill: none; stroke: #fff; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
+
+/* inside the route search: the flow chart's search, zoomed in, the engine's work unfolding beside it */
+.engine { padding-top: 64px; }
+.engine h2 { font-size: 52px; margin-bottom: 22px; max-width: none; }
+.eng-panel { position: absolute; left: 120px; top: 168px; width: 1120px; height: 560px; border-radius: 16px; overflow: hidden; background: #fff;
+  box-shadow: 0 1px 0 var(--line), 0 14px 40px rgba(20,24,30,.12); transform-origin: 0 0; }
+.eng-panel svg { display: block; width: 100%; height: 100%; }
+.engine.on .eng-panel { animation: zoomin 1.1s var(--ease) both; }
+@keyframes zoomin { from { transform: translate(1280px, 12px) scale(.357); } to { transform: none; } }
+.eng-note { position: absolute; padding: 6px 12px; border-radius: 10px; background: rgba(255,255,255,.94); box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font-size: 17px; font-weight: 700; color: var(--ink); opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
+.eng-count { position: absolute; right: 18px; top: 16px; padding: 8px 14px; border-radius: 12px; background: rgba(255,255,255,.94);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12); font-size: 18px; color: var(--ink-2); opacity: 0; transition: opacity .4s var(--ease); font-variant-numeric: tabular-nums; }
+.eng-count b { color: var(--ink); font-size: 22px; }
+.eng-cards { position: absolute; left: 1290px; top: 168px; width: 510px; list-style: none; padding: 0; margin: 0; counter-reset: c; display: grid; gap: 12px; }
+.eng-cards > li { counter-increment: c; position: relative; padding: 12px 16px 12px 58px; border-radius: 14px; background: var(--surface-2);
+  opacity: .0; transform: translateY(8px); transition: opacity .5s var(--ease), transform .5s var(--ease), background .4s; }
+.eng-cards > li::before { content: counter(c); position: absolute; left: 16px; top: 13px; width: 28px; height: 28px; border-radius: 50%; background: #fff;
+  color: var(--ink); font-size: 16px; font-weight: 800; display: grid; place-items: center; }
+.eng-cards > li.on { opacity: 1; transform: none; }
+.eng-cards > li.now { background: #fff; box-shadow: 0 0 0 2px var(--ink) inset; }
+.eng-cards h4 { font-size: 19px; margin: 2px 0 3px; color: var(--ink); }
+.eng-cards p { font-size: 15px; line-height: 1.38; color: var(--ink-2); }
+.eng-cards .tool { font-size: 13px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
+.eng-cards .steps { margin: 4px 0 0; gap: 0; } .eng-cards .steps li { font-size: 15px; grid-template-columns: 26px 1fr; gap: 9px; padding: 2px 0; color: var(--ink); }
+.eng-cards .ico { width: 26px; height: 26px; } .eng-cards .ico svg { width: 15px; height: 15px; }
+.eng-time { position: absolute; left: 120px; top: 752px; width: 1120px; font-size: 22px; color: var(--ink-2); opacity: 0; transition: opacity .6s var(--ease); }
+.eng-time b { color: var(--ink); }
+.e-edge { fill: none; stroke: #9BA4AF; stroke-width: 2.6; stroke-linecap: round; opacity: 0; transition: opacity .6s; }
+.e-node { fill: #9BA4AF; opacity: 0; transition: opacity .6s, fill .25s; }
+.on-graph .e-edge { opacity: .6; } .on-graph .e-node { opacity: 1; }
+.e-edge.wall { stroke: #C9883A; } .on-prices .e-edge.wall { opacity: .95; stroke-width: 4.5; }
+.e-node.seen { fill: var(--ink); }
+.e-raw { fill: none; stroke: #6B6662; stroke-width: 5; stroke-dasharray: 10 9; stroke-linecap: round; stroke-linejoin: round; }
+.e-line { fill: none; stroke: var(--red); stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; }
+.e-casing { fill: none; stroke: #fff; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the phone rule */
+.issue { max-width: 1240px; }
+.options { list-style: none; padding: 0; margin: 44px 0 0; display: grid; max-width: 1200px; }
+.options li { display: grid; grid-template-columns: 340px 1fr; gap: 28px; font-size: 28px; padding: 18px 0; border-top: 1px solid var(--line); }
+.options li:last-child { border-bottom: 1px solid var(--line); }
+
+/* the asks */
+.asks { list-style: none; padding: 0; margin: 40px 0 0; }
+.asks li { display: grid; grid-template-columns: 200px 1fr; gap: 32px; padding: 24px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.asks li:last-child { border-bottom: 1px solid var(--line); }
+.asks .who { font-size: 22px; font-weight: 700; letter-spacing: .02em; color: var(--ink-3); }
+.asks .what { font-size: 32px; color: var(--ink); font-weight: 700; }
+.asks .why { display: block; font-size: 24px; color: var(--ink-2); font-weight: 400; margin-top: 6px; }
+
+/* the last slide: the asks, and the code to try it */
+.askwrap { display: grid; grid-template-columns: 1fr 360px; gap: 96px; align-items: center; height: 100%; }
+.tryit { text-align: center; }
+.qr { width: 360px; height: 360px; background: #fff; border-radius: 24px; box-shadow: 0 16px 48px rgba(0,0,0,.14); padding: 14px; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.tryit p { margin-top: 22px; font-size: 26px; font-weight: 700; color: var(--ink); }
+.tryit .url { margin-top: 6px; font-size: 19px; font-weight: 500; color: var(--ink-2); word-break: break-all; }
+
+/* speaker notes (n) */
+.notes { display: none; }
+.notepad { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; background: rgba(20,22,25,.94);
+  color: #EDEBE8; font: 18px/1.5 var(--font); padding: 18px 26px; display: none; z-index: 5; }
+.notepad.on { display: block; }
+.nav { position: fixed; top: 0; bottom: 0; width: 5vw; z-index: 3; background: transparent; border: 0; cursor: pointer; }
+.nav.prev { left: 0; } .nav.next { right: 0; }
+.nav:focus-visible { outline: 3px solid var(--ink); outline-offset: -6px; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- the lockup alone, so the next click opens the title with its route drawing -->
+  <section class="slide cover" aria-label="CIS Map">
+    <img src="../app/icons/cis-map-logo-large.svg" alt="CIS Map">
+    <aside class="notes">Click when ready: the title comes up and its route draws itself.</aside>
+  </section>
+
+  <section class="slide title seq" aria-label="CIS Map, the title">
+    <div>
+      <h1 data-a style="--i:0"><img src="../app/icons/cis-map-logo-large.svg" alt="CIS Map"></h1>
+      <p class="sub" data-a style="--i:1">Find any room at Lakeside, starting from wherever you're standing</p>
+      <p class="who" data-a style="--i:2">Radek Green<br>12 November 2026</p>
+    </div>
+    <div class="mapbox"><canvas id="titlemap" role="img" aria-label="Level 3, with a route from KB-305 to the Secondary Library"></canvas></div>
+    <aside class="notes">This is Level 3, drawn by the app's own code. The red line is a route it worked out when the slide loaded, from KB-305 to the Secondary Library.</aside>
+  </section>
+
+  <section class="slide" aria-label="The campus today">
+    <div class="split">
+      <div>
+        <h2><span class="code big">BT-206-2</span> is a real room</h2>
+        <p class="lead">So are TK-218 and KB-305, among 606 rooms and places on six floors. If you're new here, the map you'll find is the evacuation plan by the stairs, and that was drawn to get people out of the building in a fire.</p>
+      </div>
+      <figure class="plate" data-a style="--i:2"><img src="img/build-evac.jpg" alt="Part of the Level 3 evacuation plan: the theatre and Pod A"></figure>
+    </div>
+    <aside class="notes">BT-206-2 is a room inside BT-206. The plan on the right is part of the Level 3 evacuation plan, the theatre and Pod A. Ask who here has walked a lost visitor to a room.</aside>
+  </section>
+
+  <section class="slide" aria-label="Live: search">
+    <div class="demo">
+      <div>
+        <h2>Type it however you'd say it</h2>
+        <p class="lead">Codes work with or without the dash, and so do names. Type "girls toilet" and you get the nearest one. It forgives typos, so "libary" still finds the library.</p>
+        <div class="chips" data-a style="--i:2"><span>KB 305</span><span>library</span><span>girls toilet</span><span>libary</span></div>
+        <p class="hint" data-a style="--i:3">The real app, running inside the slide.</p>
+      </div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="search" data-src="../app/?lang=en" data-title="CIS Map, live"></div></div>
+    </div>
+    <aside class="notes">Search "305" and pick KB-305. Then "girls toilet". Then the typo, "libary". Click the slide's edge to get the arrow keys back.</aside>
+  </section>
+
+  <section class="slide" aria-label="Live: directions">
+    <div class="demo">
+      <div>
+        <h2>Directions that point at things you can see</h2>
+        <p class="lead">Each step names a landmark on the way. This is what the app says for the walk on the title slide, from KB-305 to the Secondary Library:</p>
+        <ol class="steps">
+          <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right at the lift, then left</li>
+          <li><span class="ico red"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span>Arrive at the Secondary Library (LKS-304), straight ahead</li>
+        </ol>
+      </div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="steps" data-src="../app/?from=L3:KB-305&amp;to=L3:LKS-304&amp;lang=en" data-title="CIS Map, a route from KB-305 to the Secondary Library"></div></div>
+    </div>
+    <aside class="notes">Open the steps, tap one to see it on the map, and switch floors with the level buttons.</aside>
+  </section>
+
+  <section class="slide" aria-label="Sixteen languages">
+    <div class="demo">
+      <div>
+        <h2>Sixteen languages, Tamil and Thai included</h2>
+        <p class="lead">A family who doesn't read English gets the room names, the search and the directions in their own language. The 文A button changes it at any time.</p>
+        <div class="langs" data-a style="--i:2">
+          <span>English</span><span>简体中文<small>Chinese (Simplified)</small></span><span>繁體中文<small>Chinese (Traditional)</small></span><span>한국어<small>Korean</small></span>
+          <span>日本語<small>Japanese</small></span><span>Français<small>French</small></span><span>Español<small>Spanish</small></span><span>Português<small>Portuguese</small></span>
+          <span>हिन्दी<small>Hindi</small></span><span>தமிழ்<small>Tamil</small></span><span>Bahasa Melayu<small>Malay</small></span><span>Bahasa Indonesia<small>Indonesian</small></span>
+          <span>Tiếng Việt<small>Vietnamese</small></span><span>ไทย<small>Thai</small></span><span>Deutsch<small>German</small></span><span>Filipino</span>
+        </div>
+      </div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="langs" data-src="../app/?from=L1:MAIN-ENTRANCE&amp;to=L3:KB-305&amp;lang=ko" data-title="CIS Map in Korean"></div></div>
+    </div>
+    <aside class="notes">A longer trip this time, from the Main Entrance up to KB-305, in Korean and then other languages. The translations were made with AI, so they should be checked by native speakers in the community before launch.</aside>
+  </section>
+
+  <section class="slide" aria-label="Step-free routes and door labels">
+    <div class="cols labels">
+      <div>
+        <h2>Labels where people stand</h2>
+        <p class="lead">Scan the label beside a door, or the one on a stair landing, and the app already knows where you are, so the only question left is where you're going. The sheets come out of the app ready to print, in English and Chinese, for every room, stair and lift.</p>
+      </div>
+      <div class="labels2"><img class="label a" src="img/door-label.png" alt="The door label for KB-305: the room number, a QR code and the CIS Map logo"><img class="label b" src="img/stair-label.png" alt="The label for Stairs 8 on Level 1"></div>
+    </div>
+    <aside class="notes">If asked: Facilities would decide where labels go. The sheets come from the app (qr.html) once the final web address is settled, because the address is in every code.</aside>
+  </section>
+
+  <section class="slide" aria-label="The small things">
+    <h2>The small things</h2>
+    <ul class="qol">
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm-2 6h3v5h4.2l2.6 5.2-1.8.9-2-4.1H11a1 1 0 0 1-1-1zm-1 2v2.3a4.5 4.5 0 1 0 5.9 5.7h2.1A6.5 6.5 0 1 1 9 10z"/></svg></span><div><h3>Step-free</h3><p>Switch it on and the route sticks to lifts and ramps. If a room can only be reached by stairs, the app says so.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM5.3 9h3.4c.8 0 1.3.6 1.3 1.3V15H8.8v5H5.2v-5H4v-4.7C4 9.6 4.5 9 5.3 9zM17 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM15.6 9h2.8c.7 0 1.2.4 1.4 1l1.7 5.5H19V20h-4v-4.5h-2.5L14.2 10c.2-.6.7-1 1.4-1z"/></svg></span><div><h3>Toilets by who they're for</h3><p>Ask for a girls', boys', staff or accessible toilet and you get the nearest one, as the signs say.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6v-2h6V5h-6zM10 7l5 5-5 5-1.4-1.4 2.6-2.6H3v-2h8.2L8.6 8.4z"/></svg></span><div><h3>Which side are you on?</h3><p>The libraries and the gym have more than one door, so a trip from one starts by asking which side you're at.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1 8v7h2v-7zm0-4v2h2V6z"/></svg></span><div><h3>Why the long way</h3><p>When a route goes round a staff-only area or the other school section, a line under it says so.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M15 4l5 5-5 5-1.4-1.4L16.2 10H12a5 5 0 0 0-5 5v3H5v-3a7 7 0 0 1 7-7h4.2l-2.6-2.6zM3 20h14v2H3z"/></svg></span><div><h3>Share a route</h3><p>Send a trip as a link, or show it as a QR code for a parent or a visitor to scan.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M15 4l6 2v14l-6-2-6 2-6-2V4l6 2zm-1 2.2L10 7.5v10.3l4-1.3zM8 7.4L5 6.4v10.2l3 1zm8-.9v10.2l3 1V7.4zM12 9a2 2 0 0 1 2 2c0 1.5-2 3.6-2 3.6S10 12.5 10 11a2 2 0 0 1 2-2z"/></svg></span><div><h3>Tap the map</h3><p>Tap where you are instead of searching for it.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm-1 3h2v5.2l3.6 2.1-1 1.7-4.6-2.6z"/></svg></span><div><h3>How far, how long</h3><p>Every route gives its distance and walking time, stairs included.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 9 9h-2a7 7 0 0 0-14 0H3a9 9 0 0 1 9-9zm-1 6h2v6.2l2.3-2.3 1.4 1.4L12 19l-4.7-4.7 1.4-1.4 2.3 2.3z"/></svg></span><div><h3>Works offline</h3><p>After the first visit it keeps working with no signal, and follows the phone's dark mode and contrast settings.</p></div></li>
+    </ul>
+    <aside class="notes">If there is time, show one live on the search slide's phone: switch on Step-free, or search "girls toilet". "Which side" matters at the libraries and the gym, where a route from the wrong door goes the long way round.</aside>
+  </section>
+
+  <section class="slide seq build" aria-label="How it is made">
+    <h2>How it's built</h2>
+    <div class="fc">
+      <svg class="fc-arrows" viewBox="0 0 1680 830" aria-hidden="true"><defs><marker id="head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9BA4AF"/></marker></defs><path data-a style="--i:2" d="M290 150C312 150 308 115 330 115"/><path data-a style="--i:2" d="M290 395C312 395 308 285 330 285"/><path data-a style="--i:2" d="M290 395C312 395 308 455 330 455"/><path data-a style="--i:2" d="M290 640C312 640 308 625 330 625"/><path data-a style="--i:4" d="M630 115C652 115 648 150 670 150"/><path data-a style="--i:4" d="M630 285C652 285 648 150 670 150"/><path data-a style="--i:4" d="M630 455C652 455 648 150 670 150"/><path data-a style="--i:4" d="M630 625C652 625 648 150 670 150"/><path data-a style="--i:6" d="M825 270L825 296"/><path data-a style="--i:6" d="M825 516L825 542"/><path data-a style="--i:6" d="M980 150C1002 150 998 360 1020 360"/><path data-a style="--i:6" d="M980 400C1002 400 998 360 1020 360"/><path data-a style="--i:8" d="M1240 360C1262 360 1258 170 1280 170"/><path data-a style="--i:9" d="M1480 393L1480 412"/></svg>
+      <span class="colh" data-a style="--i:1; left:0">Sources</span><span class="colh" data-a style="--i:3; left:330px">Processing</span><span class="colh" data-a style="--i:5; left:670px">Data</span><span class="colh" data-a style="--i:7; left:1020px">The bundle</span><span class="colh" data-a style="--i:9; left:1280px">On the phone</span>
+
+      <div class="node src" data-a style="--i:1; left:0; top:40px"><img src="img/build-evac.jpg" alt=""><div><h4>Evacuation plans</h4><p>10 sheets (PNG), one per floor and wing: rooms, codes and corridors</p></div></div>
+      <div class="node src" data-a style="--i:1; left:0; top:285px"><img src="img/build-cad.jpg" alt=""><div><h4>The architect's CAD</h4><p>6 sheets of vector drawings: where walls, doors and stairs really are</p></div></div>
+      <div class="node src" data-a style="--i:1; left:0; top:530px"><img src="img/build-tour.jpg" alt=""><div><h4>The 360° tour</h4><p>605 panoramas at 8192 × 4096, and the signs in them</p></div></div>
+
+      <div class="node step" data-a style="--i:3; left:330px; top:40px"><h4>Tracing</h4><span class="tool">tools/evacpipe</span><p>Each sheet's coloured areas traced into room and corridor polygons, then about 2,400 corrections by hand.</p></div>
+      <div class="node step" data-a style="--i:3; left:330px; top:210px"><h4>Registration</h4><span class="tool">tools/evacpipe/metres.py</span><p>Each sheet fitted to the CAD by its stairs and room codes (a Theil–Sen fit), so every floor is in real metres.</p></div>
+      <div class="node step" data-a style="--i:3; left:330px; top:380px"><h4>Merging the CAD</h4><span class="tool">tools/audit/caddoors.py · doorpins.mjs</span><p>503 doors measured and moved to the CAD's, and the theatre block, bridges, car park and pool taken from it.</p></div>
+      <div class="node step" data-a style="--i:3; left:330px; top:550px"><h4>Reading the signs</h4><span class="tool">tools/tourkit</span><p>7,970 lines of text read off the photos, which name 44 of the 47 toilets by whom they're for.</p></div>
+
+      <div class="node dat" data-a style="--i:5; left:670px; top:40px; height:230px"><img src="img/build-map.jpg" alt=""><div><h4>Floor data</h4><span class="tool">data/*_evac/navmesh_data.json</span><p>606 places with their walls, doors and stairs, in campus metres</p></div></div>
+      <div class="node dat" data-a style="--i:5; left:670px; top:296px; height:220px"><svg class="mini" id="graph-mini" viewBox="0 0 1800 900" aria-hidden="true"></svg><div><h4>Routing graph</h4><span class="tool">routing/build.mjs</span><p><span id="g-nodes">3,602</span> points, <span id="g-edges">12,816</span> corridor links, 103 stairs, lifts and bridges, 10 gates</p></div></div>
+      <div class="node step" data-a style="--i:5; left:670px; top:542px; height:118px"><h4>Checks</h4><p>473 automatic checks after every change, and 15,000 test trips with no route through a wall</p></div>
+
+      <div class="node bundle" data-a style="--i:7; left:1020px; top:210px">
+        <svg viewBox="0 0 188 104" aria-hidden="true"><g fill="#fff" stroke="#9BA4AF" stroke-width="2"><path d="M8 14h40l12 12v66H8z"/><path d="M72 8h40l12 12v72H72z"/><path d="M136 14h40l12 12v66h-52z"/></g><g fill="#6B6662" font-size="12" font-weight="700" text-anchor="middle" font-family="Hanken Grotesk, sans-serif"><text x="34" y="64">floors</text><text x="98" y="58">graph</text><text x="162" y="64">app</text></g></svg>
+        <h4>About 3 MB</h4><p>Static files: the map data, the app and its 16 languages. The phone keeps a copy (a service worker), so after the first visit it works offline. No server, no accounts, no tracking.</p></div>
+
+      <div class="node phone1" data-a style="--i:9; left:1280px; top:40px"><svg id="graph" viewBox="0 0 1800 900" role="img" aria-label="The route search on Level 3, from KB-305 to the Secondary Library"></svg><div><h4>Route search</h4><span class="tool">routing/engine.mjs</span><p>Dijkstra's shortest path: a corridor costs its length, a little more near the walls; stairs cost the time they take; a closed gate is never used.</p></div></div>
+      <div class="node phone2" data-a style="--i:9; left:1280px; top:416px"><ol class="steps"><li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li></ol><h4>Directions</h4><span class="tool">app/directions.js</span><p>The line is straightened and its corners rounded, then written as steps by the landmarks you pass, in any of 16 languages.</p></div>
+    </div>
+    <aside class="notes">Left to right: the evacuation plans were traced, fitted to the architect's drawings, corrected against them, and the tour photos filled in the signs. That became the floor data and a routing graph, checked automatically after every change. The phone downloads about 3 MB once, then works out every route itself with Dijkstra's algorithm. The panel on the right is that search running on the real graph, from KB-305 to the library.</aside>
+  </section>
+
+  <section class="slide engine" aria-label="Inside the route search">
+    <h2>Inside the route search</h2>
+    <div class="eng-panel" id="eng-panel"><svg id="eng" viewBox="0 0 1800 900" role="img" aria-label="The routing graph round KB-305 on Level 3: the search spreading from KB-305, the chain of links it finds to the Secondary Library, and the line the app draws"></svg>
+      <div class="eng-note n2" id="eng-wall">×3 within 1.2 m of a wall</div>
+      <div class="eng-count" id="eng-count"><b>0</b> points settled</div>
+    </div>
+    <ol class="eng-cards">
+      <li class="c1"><h4>The graph</h4><p><span class="gv-points">3,602</span> points where corridors meet, doors open and stairs land, joined by <span class="gv-links">12,816</span> links, and 103 stairs, lifts and bridges between floors. <span class="tool">routing/build.mjs</span></p></li>
+      <li class="c2"><h4>Prices</h4><p>A link costs its walking distance, three times as much within 1.2 m of a wall, so routes keep to the middle of a corridor. Floor a trip should avoid costs more, and a closed gate can't be used. Stairs cost their climb: 5 s a metre up, 3 down, and a lift 60 s of waiting.</p></li>
+      <li class="c3"><h4>Dijkstra's search</h4><p>From KB-305 outwards, the cheapest point not yet settled comes off a binary heap and its neighbours' prices drop where it offers a cheaper way. When the library comes off the heap, the route is found: here after <span class="gv-settled">356</span> points. <span class="tool">routing/engine.mjs</span></p></li>
+      <li class="c4"><h4>The line</h4><p>The chain of links zig-zags through the graph (grey). The app straightens it where the floor allows and rounds its corners, so the line drawn (red) keeps to the corridor. <span class="tool">app/map.js smoothLine</span></p></li>
+      <li class="c5"><h4>The steps</h4><ol class="steps"><li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right at the lift, then left</li><li><span class="ico red"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span>Arrive at the Secondary Library (LKS-304)</li></ol></li>
+    </ol>
+    <p class="eng-time" id="eng-time"></p>
+    <aside class="notes">This is the route search from the last slide, close up. The graph's points and links, priced; Dijkstra's algorithm settling them cheapest first until it reaches the library; the zig-zag chain it returns, smoothed into the line you see in the app; then the steps. The time at the bottom is measured live, in this browser, on the real graph.</aside>
+  </section>
+
+  <section class="slide" aria-label="The phone rule">
+    <h2>What about the phone rule?</h2>
+    <p class="lead issue">Since 2 November, secondary students' phones stay off unless a teacher asks for them, which takes away the most obvious users. These are the ways I can see it still earning its place, and I'd like to hear which you'd back:</p>
+    <ul class="options">
+      <li><b>Visitors and families</b><span>The rule doesn't touch them, and they're the ones looking for rooms at conferences and shows.</span></li>
+      <li><b>Before the first day</b><span>New students can walk through their timetable at home, before they ever set foot in the building.</span></li>
+      <li><b>Orientation</b><span>A teacher-led "find your classes" activity counts as directed use, so the rule allows it.</span></li>
+      <li><b>School laptops</b><span>The app runs the same on a laptop, so a route can be looked up in class and walked afterwards.</span></li>
+      <li><b>Later, if wanted</b><span>A screen by reception, or printed maps at the stairs drawn from the same data. Neither exists yet.</span></li>
+    </ul>
+    <aside class="notes">Ask them: which of these would they want, and is there anything I've missed? This is for the school to decide.</aside>
+  </section>
+
+  <section class="slide" aria-label="What I'm asking for">
+    <div class="askwrap">
+      <div>
+        <h2>What I'm asking for</h2>
+        <ul class="asks">
+          <li><span class="who">Technology</span><span class="what">A web address on cis.edu.sg<span class="why">Then the link, and the codes printed on the door labels, never have to change.</span></span></li>
+          <li><span class="who">Facilities</span><span class="what">Putting up the door labels<span class="why">Where they go is your call, and the sheets are ready to print.</span></span></li>
+          <li><span class="who">Secondary</span><span class="what">A pilot with one grade, or one orientation day<span class="why">Students will find the mistakes I haven't, and I'd like to fix them before launch.</span></span></li>
+          <li><span class="who">Admissions</span><span class="what">The link in the welcome email to new families<span class="why">So a family can find the classroom before they find a parking space.</span></span></li>
+        </ul>
+      </div>
+      <div class="tryit"><div class="qr"><svg id="qr" viewBox="0 0 10 10" role="img" aria-label="QR code for the app"></svg></div><p>Try it now</p><p class="url" id="url"></p></div>
+    </div>
+    <aside class="notes">Optional extra: a list of who teaches where would let families search for a teacher's name or a subject. Then questions, with the code left up.</aside>
+  </section>
+
+  <div class="chrome" aria-hidden="true"><img src="../app/icons/cis-map-logo.svg" alt=""><span>Radek Green</span><span class="n" id="n"></span></div>
+  <div class="bar" id="bar"></div>
+</div>
+<button class="nav prev" id="prev" aria-label="Previous slide"></button>
+<button class="nav next" id="next" aria-label="Next slide"></button>
+<div class="notepad" id="notepad" aria-live="polite"></div>
+
+<script type="module">
+import { qr, qrPath } from '../app/qr.js';
+import { titleMap } from './titlemap.js';
+const APP_URL = 'https://worldwiderad.github.io/CIS-MAP-V2/app/';
+const stage = document.getElementById('stage'), slides = [...stage.querySelectorAll('.slide')];
+const TITLE = 1, BUILD = slides.findIndex(s => s.getAttribute('aria-label') === 'How it is made');
+const ENGINE_AT = slides.findIndex(s => s.getAttribute('aria-label') === 'Inside the route search');
+let scale = 1, title = null, graph = null, engine = null;
+const fit = () => { scale = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.setProperty('--s', scale); if (title) title.resize(); };
+addEventListener('resize', fit); fit();
+
+// the phones: a frame round each live app, iOS's status bar with the time now, Safari's bar with the app's address
+const host = new URL(APP_URL).host;
+const ICON = {
+  signal: '<svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>',
+  wifi: '<svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.3 2.5l1.2-1.3A10.4 10.4 0 0 0 8.5.5 10.4 10.4 0 0 0 1 3.5l1.2 1.3a9 9 0 0 1 6.3-2.5zm0 3.6c1.4 0 2.7.5 3.7 1.4l1.2-1.3a7.2 7.2 0 0 0-9.8 0l1.2 1.3c1-.9 2.3-1.4 3.7-1.4zm0 3.5c-.6 0-1.1.2-1.5.6l1.5 1.6 1.5-1.6c-.4-.4-.9-.6-1.5-.6z"/></svg>',
+  battery: '<svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".38"/><rect x="2" y="2" width="20" height="9" rx="2.3"/><path d="M25 4.4v4.2c.8-.3 1.4-1.1 1.4-2.1S25.8 4.7 25 4.4z" fill-opacity=".4"/></svg>',
+  back: '<svg width="13" height="22" viewBox="0 0 13 22"><path d="M11 2 2 11l9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  fwd: '<svg width="13" height="22" viewBox="0 0 13 22"><path d="m2 2 9 9-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  reload: '<svg width="19" height="20" viewBox="0 0 19 20"><path d="M15.6 11.5A6.5 6.5 0 1 1 13.4 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.6 2.2 14.2 5l-3.4 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  more: '<svg width="22" height="6" viewBox="0 0 22 6"><circle cx="3" cy="3" r="2.4"/><circle cx="11" cy="3" r="2.4"/><circle cx="19" cy="3" r="2.4"/></svg>',
+};
+for (const ph of stage.querySelectorAll('.iphone')) {
+  ph.innerHTML = `<i class="vu"></i><i class="vd"></i><div class="bezel"><div class="screen">
+    <div class="ios-bar"><span class="clock"></span><span class="island"></span><span class="icons">${ICON.signal}${ICON.wifi}${ICON.battery}</span></div>
+    <iframe title="${ph.dataset.title}" data-src="${ph.dataset.src}" loading="lazy"></iframe>
+    <div class="safari"><span class="pill arrows">${ICON.back}${ICON.fwd}</span><span class="pill url"><span>${host}</span>${ICON.reload}</span><span class="pill more">${ICON.more}</span></div>
+  </div></div>`;
+}
+// Each phone plays a short demo in the real app while its slide is up: a search typed out, the route walked step
+// by step, the languages changed. It drives the app's own controls (the slideshow and the app share an origin),
+// and a touch on the phone stops it, so the presenter can take over.
+const wait = (ms, run) => new Promise((ok, no) => setTimeout(() => (run.dead ? no(run) : ok()), ms));
+const DEMO = {
+  async search(w, d, run) {
+    const q = () => d.getElementById('picker-q');
+    const type = async text => { for (let i = 1; i <= text.length; i++) { q().value = text.slice(0, i); q().dispatchEvent(new Event('input', { bubbles: true })); await wait(120, run); } };
+    for (;;) {
+      d.getElementById('end-to').click(); await wait(900, run);
+      for (const [text, hold] of [['libary', 2600], ['girls toilet', 2800], ['kb305', 2400]]) {
+        await type(text); await wait(hold, run);
+        q().value = ''; q().dispatchEvent(new Event('input', { bubbles: true })); await wait(500, run);
+      }
+      d.getElementById('picker-back').click(); await wait(2500, run);
+    }
+  },
+  async steps(w, d, run) {
+    for (;;) {
+      await wait(1500, run);
+      d.getElementById('btn-start').click(); await wait(2600, run);
+      while (!d.getElementById('step-next').hidden) { d.getElementById('step-next').click(); await wait(2600, run); }
+      await wait(1800, run);
+      d.getElementById('step-exit').click(); await wait(2500, run);
+    }
+  },
+  async langs(w, d, run) {
+    for (let i = 0; ; i = (i + 1) % LANGS.length) {
+      await wait(3600, run);
+      d.getElementById('btn-lang').click(); await wait(1100, run);
+      const b = [...d.querySelectorAll('#gate-langs [data-id]')].find(x => x.dataset.id === LANGS[i]);
+      if (b) b.click();
+    }
+  },
+};
+const LANGS = ['zh', 'ta', 'th', 'hi', 'ja', 'vi', 'es', 'ko'];
+const runs = new Map();
+function demo(ph, on) {
+  const old = runs.get(ph); if (old) old.dead = true;
+  runs.delete(ph);
+  if (!on || ph.dataset.touched) return;
+  const run = { dead: false }, f = ph.querySelector('iframe');
+  runs.set(ph, run);
+  (async () => {
+    // the app ready: its places loaded and its sheet drawn
+    for (let i = 0; i < 100; i++) {
+      const w = f.contentWindow, d = f.contentDocument;
+      if (w && w.cisMap && w.cisMap.places && w.cisMap.places() && d.getElementById('end-to')) {
+        if (!ph.dataset.watched) { ph.dataset.watched = 1; d.addEventListener('pointerdown', () => { ph.dataset.touched = 1; demo(ph, false); }, true); }
+        await wait(1200, run);
+        return DEMO[ph.dataset.demo](w, d, run);
+      }
+      await wait(150, run);
+    }
+  })().catch(e => { if (e !== run) console.warn('demo', ph.dataset.demo, e); });
+}
+
+const tick = () => { const d = new Date(), t = `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')}`; for (const c of stage.querySelectorAll('.clock')) c.textContent = t; };
+tick(); setInterval(tick, 10000);
+
+let at = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+function show(i) {
+  at = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, k) => s.classList.toggle('on', k === at));
+  // a live demo loads when its slide first comes up, and stays loaded
+  for (const f of slides[at].querySelectorAll('iframe[data-src]')) { f.src = f.dataset.src; f.removeAttribute('data-src'); }
+  document.getElementById('n').textContent = `${at + 1} / ${slides.length}`;
+  document.getElementById('bar').style.width = `${(100 * (at + 1)) / slides.length}%`;
+  const notes = slides[at].querySelector('.notes');
+  document.getElementById('notepad').textContent = notes ? notes.textContent : '';
+  history.replaceState(null, '', `#${at + 1}`);
+  stage.classList.toggle('bare', at <= TITLE);
+  if (title) { if (at === TITLE) title.play(); else title.pause(); }
+  if (graph && at === BUILD) graph.play();
+  if (engine) { if (at === ENGINE_AT) engine.play(); else engine.stop(); }
+  slides.forEach((s, k) => { for (const ph of s.querySelectorAll('.iphone[data-demo]')) demo(ph, k === at); });
+}
+addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1), 10); if (n && n - 1 !== at) show(n - 1); });
+document.getElementById('prev').onclick = () => show(at - 1);
+document.getElementById('next').onclick = () => show(at + 1);
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(at + 1); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(at - 1); }
+  else if (e.key === 'Home') show(0); else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key === 'n') document.getElementById('notepad').classList.toggle('on');
+  else if (e.key === 'f') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => {});
+});
+let tx = null;
+addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) show(at + (dx < 0 ? 1 : -1)); tx = null; });
+
+// the title's map: Level 3 as the app draws it, made a model, and a route the app works out as the slide loads;
+// it waits, drawn, behind the opening slide, and the route draws itself when the title comes up
+titleMap(document.getElementById('titlemap'), { from: 'L3:KB-305', to: 'L3:LKS-304', toName: 'Secondary Library', stageScale: () => scale })
+  .then(v => { title = v; if (at === TITLE) v.play(); })
+  .catch(e => console.error('title map', e));
+
+// The route search, from deck/engine.json (tools/deck/engine.mjs): the real graph round KB-305 on Level 3, the order
+// the engine's Dijkstra search settles its points in, the chain it returns and the line the app draws. Drawn small on
+// the flow chart and close up on the next slide, where the engine's work unfolds step by step.
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+const pairs = a => { const o = []; for (let i = 0; i < a.length; i += 2) o.push(a[i] + ' ' + a[i + 1]); return o.join(' '); };
+const lineD = pts => 'M' + pts.map(p => p.join(' ')).join('L');
+function drawSearch(svg, G, { tags = true } = {}) {
+  svg.append(el('rect', { x: 0, y: 0, width: G.size[0], height: G.size[1], class: 'g-ground' }));
+  for (const r of G.shapes.walk) svg.append(el('polygon', { points: pairs(r), class: 'g-walk' }));
+  for (const r of G.shapes.rooms) svg.append(el('polygon', { points: pairs(r), class: 'g-room' }));
+  for (const r of G.shapes.stairs) svg.append(el('polygon', { points: pairs(r), class: 'g-stair' }));
+  const wall = new Set(G.wall);
+  const edges = G.edges.map((e, i) => { const p = el('polyline', { points: pairs(e), class: 'g-edge e-edge' + (wall.has(i) ? ' wall' : '') }); svg.append(p); return p; });
+  const dots = G.nodes.map(([x, y]) => { const c = el('circle', { cx: x, cy: y, r: 5.5, class: 'g-node e-node' }); svg.append(c); return c; });
+  const raw = el('polyline', { points: G.raw.map(p => p.join(' ')).join(' '), class: 'e-raw', opacity: 0 });
+  const casing = el('path', { d: lineD(G.line), class: 'e-casing' }), line = el('path', { d: lineD(G.line), class: 'e-line' });
+  svg.append(raw, casing, line);
+  const [sx, sy] = G.line[0], [ex, ey] = G.line[G.line.length - 1];
+  svg.append(el('circle', { cx: sx, cy: sy, r: 14, fill: '#0057B8', stroke: '#fff', 'stroke-width': 5 }));
+  const pin = el('g', { transform: `translate(${ex} ${ey})`, opacity: 0 });
+  pin.append(el('path', { d: 'M0 0C-6-12-20-24-20-38a20 20 0 0 1 40 0C20-24 6-12 0 0z', fill: '#DA291C', stroke: '#fff', 'stroke-width': 4 }), el('circle', { cx: 0, cy: -38, r: 7, fill: '#fff' }));
+  if (tags) {
+    const tag = (x, y, text, parent = svg) => { const e = el('text', { x, y, class: 'g-tag' }); e.textContent = text; parent.append(e); };
+    tag(sx + 24, sy + 12, 'KB-305'); tag(28, -40, 'Secondary Library', pin);
+  }
+  svg.append(pin);
+  const L = line.getTotalLength();
+  const set = { line(p) { for (const e of [line, casing]) { e.style.strokeDasharray = L; e.style.strokeDashoffset = L * (1 - p); } pin.setAttribute('opacity', p >= 1 ? 1 : 0); },
+                seen(n) { G.order.forEach((k, i) => dots[k].classList.toggle('seen', i < n)); }, raw(o) { raw.setAttribute('opacity', o); } };
+  set.line(0); set.seen(0);
+  return set;
+}
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const timeline = (steps, done) => {   // [[ms, fn]...]: runs while its slide is up; returns a stop
+  const ids = steps.map(([ms, fn]) => setTimeout(fn, still ? 0 : ms));
+  return () => ids.forEach(clearTimeout);
+};
+const animate = (ms, fn) => new Promise(ok => { if (still) { fn(1); return ok(); } const t0 = performance.now();
+  const f = now => { const p = Math.min(1, (now - t0) / ms); fn(p); p < 1 ? requestAnimationFrame(f) : ok(); }; requestAnimationFrame(f); });
+
+fetch('engine.json').then(r => r.json()).then(G => {
+  for (const [cls, v] of [['.gv-points', G.stats.points], ['.gv-links', G.stats.links], ['.gv-settled', G.stats.settled]]) for (const e of document.querySelectorAll(cls)) e.textContent = v.toLocaleString('en');
+  document.getElementById('g-nodes').textContent = G.stats.points.toLocaleString('en');
+  document.getElementById('g-edges').textContent = G.stats.links.toLocaleString('en');
+  // the flow chart: the whole graph still, and the search running once the chart has built up
+  const mini = document.getElementById('graph-mini'); drawSearch(mini, G, { tags: false }).seen(1e9);
+  mini.classList.add('on-graph');
+  const small = document.getElementById('graph'), S = drawSearch(small, G); small.classList.add('on-graph');
+  graph = { play() { S.seen(0); S.line(0);
+    animate(1, () => {}).then(() => setTimeout(async () => { await animate(1600, p => S.seen(Math.floor(G.order.length * p))); await animate(1100, p => S.line(p)); }, still ? 0 : 2400)); } };
+  if (at === BUILD) graph.play();
+  // the close-up
+  const box = document.getElementById('eng'), E = drawSearch(box, G), panel = document.getElementById('eng-panel');
+  const cards = [...document.querySelectorAll('.eng-cards > li')], count = document.getElementById('eng-count'), wallNote = document.getElementById('eng-wall');
+  const timeOut = document.getElementById('eng-time');
+  // the note on the wall penalty, beside a priced link on the route's way
+  const w = G.wall.map(i => G.edges[i]).find(e => { const [x, y] = [e[0], e[1]]; return x > 300 && x < 1400 && y > 140 && y < 760; }) || G.edges[G.wall[0]];
+  if (w) Object.assign(wallNote.style, { left: `${(w[0] / 1800) * 1120 + 16}px`, top: `${(w[1] / 900) * 560 - 44}px` });
+  const card = i => cards.forEach((c, k) => { c.classList.toggle('on', k <= i); c.classList.toggle('now', k === i); });
+  let stop = null;
+  const reset = () => { if (stop) stop(); stop = null; card(-1); box.classList.remove('on-graph', 'on-prices'); E.seen(0); E.line(0); E.raw(0);
+    count.style.opacity = 0; wallNote.style.opacity = 0; timeOut.style.opacity = 0; count.querySelector('b').textContent = '0'; };
+  engine = {
+    play() {
+      reset();
+      stop = timeline([
+        [1200, () => { card(0); box.classList.add('on-graph'); }],
+        [3300, () => { card(1); box.classList.add('on-prices'); wallNote.style.opacity = 1; }],
+        [5600, () => { card(2); box.classList.remove('on-prices'); wallNote.style.opacity = 0; count.style.opacity = 1;
+          animate(2200, p => { E.seen(Math.floor(G.order.length * p)); count.querySelector('b').textContent = Math.round(G.stats.settled * p).toLocaleString('en'); }); }],
+        [8200, () => { card(3); animate(700, p => E.raw(p)).then(() => animate(1300, p => E.line(p))); }],
+        [10600, () => { card(4); }],
+        [12000, () => { timeOut.style.opacity = 1; }],
+      ]);
+    },
+    stop: reset,
+  };
+  if (at === ENGINE_AT) engine.play();
+});
+
+// the engine, timed live in this browser on the real graph (the same router the app runs on a phone)
+(async () => {
+  const [{ Router }, { getJSON }] = await Promise.all([import('../routing/engine.mjs'), import('../app/floors.js')]);
+  const router = new Router(await getJSON('../data/routing/graph_evac.json'));
+  router.route('L3:KB-305', 'L3:LKS-304');                       // (once to warm up)
+  const times = []; for (let i = 0; i < 25; i++) { const t0 = performance.now(); router.route('L3:KB-305', 'L3:LKS-304'); times.push(performance.now() - t0); }
+  times.sort((x, y) => x - y);
+  const ms = times[12], far = (() => { const t0 = performance.now(); router.route('L1:MAIN-ENTRANCE', 'L5:TK-508'); return performance.now() - t0; })();
+  document.getElementById('eng-time').innerHTML = `Timed just now, in this browser: <b>${ms < 1 ? ms.toFixed(2) : ms.toFixed(1)} ms</b> for this route, and <b>${far.toFixed(1)} ms</b> from the Main Entrance to TK-508 on Level 5.`;
+})().catch(e => console.warn('timing', e));
+
+// the last slide's code: the app's own QR maker (app/qr.js)
+const code = qr(APP_URL), { d, n } = qrPath(code, 2);
+const q = document.getElementById('qr'); q.setAttribute('viewBox', `0 0 ${n} ${n}`); q.innerHTML = `<path d="${d}" fill="#3D3935"/>`;
+document.getElementById('url').textContent = APP_URL.replace('https://', '').replace(/\/$/, '');
+show(at);
+</script>
+</body>
+</html>

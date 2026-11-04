@@ -169,10 +169,19 @@ the map to what is its own, and the road between the wings is drawn on L1 (`ROAD
 
 **No picture behind it** (the owner's rule). In order:
 
-1. the walls: the floor's footprint filled in the wall colour, then every outline stroked 1.6 m wide
-   (the building's own edge). The footprint is every shape the floor has merged, with the gaps and
-   holes under 5 m closed: on a plan those are walls and structure, and left as nothing they showed
-   as stray light lines and spots between the wall bands;
+1. the walls: the floor's footprint filled in the wall colour, then every outline stroked 0.5 m wide
+   (the building's own edge, a little thicker than a wall inside it). The footprint is every shape the
+   floor has merged, with the gaps and holes under 5 m closed: on a plan those are walls and structure,
+   and left as nothing they showed as stray light lines and spots between the wall bands. Every wall is
+   one thickness (owner, 4 Nov 2026: "don't vary the thickness of walls unless it's for a good reason"):
+   each room and stair is drawn grown into the gap round it, up to 0.9 m, so it reaches its wall
+   (`footprints.py` `rooms_grown`, the `rooms` of `data/footprints_evac.json`; `floors.js` puts them in
+   `r.block`, and a room's doors are cut in that outline). The wall is then a band inside each room's
+   edge and the same band outside each edge of the walkable area (0.18 m each: 0.36 m between two rooms
+   and between a room and a corridor), not round a hole drawn as floor. Before, the footprint showed in
+   every gap the tracing left, and walls ran from 0.2 m to 1.6 m thick, with notches where a trace stepped.
+   A staff-only zone's boxes are moved onto the map edge by edge (`mapRing`), as the walls are: moved by
+   their corners alone, a box crossing a CAD correction drew its edge as a slant across the floor;
 2. the floor (white), then features you walk on (decks, courts, gardens, seating). The floor drawn
    is the walkable area cleaned: the traced outline has slivers (L2: one 0.3 m wide and 13 m long),
    nicks, steps and rounded-off corners from the sheets' colour tracing, which showed in the walls as
@@ -180,7 +189,9 @@ the map to what is its own, and the road between the wings is drawn on L1 (`ROAD
    go, thin walls are kept), simplified to 0.25 m, edges within 12 degrees of the sheet's axes made
    square (unless their run strays more than 0.3 m from the line it would become: a curve or a real
    slant, like the bottom of the library's curved front), and a slant under 2 m between square edges
-   made a corner. Routing and `walkable()` keep
+   made a corner. A real curve the labels name (`outlineArcs`: the two libraries' glass fronts, fitted to
+   the CAD's glazing) is put back as its arc after all of that, to a 1 mm chord; the tracing had made it
+   chords metres long, and on L2 a straight wall. Routing and `walkable()` keep
    the traced outline: this is drawing only. Both come from `tools/app/footprints.py`
    (`data/footprints_evac.json`; run it again after the floors change). On a floor the corrections move
    (`frame: "campus"`) all of it is worked out where the map draws it, in campus metres: the floor filled on
@@ -218,6 +229,9 @@ cleaning made floor, since on the map moved floor can lie over a cut that was be
 Labels sit inside their room when they fit: the room code (shrunk to 9 px before it is dropped),
 and the name above it when there is room. A plain classroom shows its code only. Open spaces
 (the canteen, a pod, the bus bay) are labelled at their portal; named features in grey italics.
+A feature's name may run a little past the feature onto open floor, never onto a room or a stair
+(tested on their outlines, not their boxes, which for a slanted room take in the road beside it).
+No name goes under the route's pin or the card beside it.
 
 ## How the route's line is drawn (`map.js`)
 
@@ -286,7 +300,9 @@ enters, else the section avoided). The time shown is still the walk's own.
 
 Since the north site (1 November): out of doors (on a path, road, deck or crossing the map draws)
 a turn names a landmark from twice as far, and where the way runs out it is "the end of the path",
-not the corridor; the guard house is a landmark; the same landmark is not named twice running. A
+not the corridor; the guard house is a landmark; the same landmark is not named twice running. That
+counts the one a start walks towards, and a landmark left unsaid stays the last one named; the rooms a
+trip starts and ends in are never its landmarks, by any of their doors (`TK-603-D2` is TK-603). A
 **seam** (`seam()`: a bridge with no deck or crossing, BRIDGE-11 where L1's pool site meets TT_L1's
 fire road) is no place to search for, no marker and no floor change in the list: its step says
 "Carry on to Toh Tuck Level 1", the walk on from it starts with no "From …", and nothing heads for
@@ -431,8 +447,10 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
 * **A phone held sideways** pads its notch side (`--safe-l`, `--safe-r`: the bar, the panel, the
   floor buttons, the search).
 * **More contrast** (`prefers-contrast: more`, iOS Increase Contrast and the like): the map's walls,
-  outlines and ground darker (`MORE_LIGHT`, `MORE_DARK` in `map.js`: walls 3.7:1 on the corridors,
-  against 1.6:1) and the interface's greys and hairlines too. The look everyone else sees is the same.
+  outlines and ground darker (`MORE_LIGHT`, `MORE_DARK` in `map.js`: walls 3.6:1 and more on the corridors)
+  and the interface's greys and hairlines too. Since 3 Nov everyone's walls are 3:1 on the corridors (WCAG AA for a
+  graphic; they were 1.6:1 light, 1.4:1 dark), the stairs kept two steps from them (`stair`, `stairIcon`: dark with
+  white treads in light, light with a dark icon in dark).
 * **Why a route goes the long way** shows as a line under the summary (`#route-note`, from
   `detourNote()` in `directions.js`), hidden in step mode.
 * **Step mode's first time** says under the first step that the map does not track you: tap › for
@@ -525,6 +543,11 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   stay `pockets`; a room reached through another (L3's practice rooms) gets its door from the labels'
   `doorAt` (the build copies it to the portal as `door`), cut through both rooms' walls (`d.via`,
   `d.gap`; such a door has no way out to a corridor in `doorWays`).
+* **Second doors (3 Nov)**: a room's second door (a classroom's back door, from the CAD: tools/audit/doorpins.mjs) is a
+  labels openSpace `<ROOM>-D2` with `entranceOf` the room; `Floor.doors` cuts it in the room's wall too
+  (`p.room || roomById.get(p.entranceOf)`), search lists the room once, and a route to or from it takes the nearer door.
+  Directions name it by its room at both ends ("Leave KB-305", never "KB-305-D2"; directions.js routeSteps, 4 Nov),
+  keeping the door's place for which way you face; check.mjs fails a trip that prints a door's id.
 * **The CAD merge (1 Nov, evening)**: `corrections` (see "How the map is drawn"); the atrium void is a
   true circle in campus metres (7.3 m, the CAD's centre) on L2-L4, Stairs 5 the CAD's two flights.
 * **The TK wing's south end (2 Nov)**: `corrections.json` `tk-south` (L2-L4, one profile from the CAD's walls) and
