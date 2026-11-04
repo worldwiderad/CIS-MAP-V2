@@ -81,7 +81,7 @@
      -65.677
     ],
     "method": "cad-stairs",
-    "errorMetres": 0.6,
+    "errorMetres": 0.9,
     "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis)"
    },
    "ffl": 5.55,
@@ -115,8 +115,8 @@
      4.259
     ],
     "method": "cad-room-codes",
-    "errorMetres": 2.7,
-    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+    "errorMetres": 2.4,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 10.0,
    "fflSource": "CAD sheet 02, \"FFL+10\" at the linkway bridge"
@@ -137,8 +137,8 @@
    "regions": 1,
    "metres": {
     "pxPerMetre": {
-     "x": 13.097,
-     "y": 10.748
+     "x": 12.96,
+     "y": 10.715
     },
     "toCampus": [
      0.079081,
@@ -149,7 +149,7 @@
      73.426
     ],
     "method": "cad-stairs",
-    "errorMetres": 0.2,
+    "errorMetres": 0.6,
     "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis); scaled by its own room codes shared with the CAD, which routing measures with"
    },
    "ffl": 14.3,
@@ -185,7 +185,7 @@
     ],
     "method": "cad-room-codes",
     "errorMetres": 3.2,
-    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 18.0,
    "fflSource": "CAD sheet 04, \"FFL+18\""
@@ -218,7 +218,7 @@
      80.426
     ],
     "method": "cad-room-codes",
-    "errorMetres": 1.7,
+    "errorMetres": 2.2,
     "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 21.7,
@@ -252,8 +252,8 @@
      69.154
     ],
     "method": "cad-room-codes",
-    "errorMetres": 1.0,
-    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains"
+    "errorMetres": 0.9,
+    "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 25.4,
    "fflSource": "assumed: L5 + 3.7 m (no FFL note on sheet 06)"

@@ -56,8 +56,11 @@ export function routeSteps(route, campus, lang) {
     if (s.type !== 'walk') { out.push(connectorStep(s, campus, lang, decks.get(i))); continue; }
     if (!legs[i]) continue;
     const { floor, pts } = legs[i];
-    const start = i === 0 ? endPortal(floor, route.from, pts[0])
-                          : floor.portalById.get(steps[i - 1].id) || null;
+    let start = i === 0 ? endPortal(floor, route.from, pts[0])
+                        : floor.portalById.get(steps[i - 1].id) || null;
+    // (a trip from a room's second door starts at the room, "From KB-305", not at the door's own id: the door's
+    // place is kept, for which way you face; a side of a big place keeps its side, to name it)
+    if (start && start.entranceOf && !start.side) { const m = floor.portalById.get(start.entranceOf); if (m) start = { ...m, x: start.x, y: start.y }; }
     let end = i === steps.length - 1 ? endPortal(floor, route.to, pts[pts.length - 1]) : null;
     // (a trip to a big place ends at its nearer side, and arrives at the place: "Arrive at the
     // Secondary Library", straight ahead; a start at a side keeps the side, to name it)
@@ -199,7 +202,7 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
   // a lift is told by what stands beside it: there are two on most floors
   const target = direct ? (goal.type === 'elevator' ? liftName(goal, floor, lang) : refName(goal, lang)) : '';
   const skip = [start, end, next];
-  let text, leaveDir = null, towardId = null, towardText = null;
+  let text, leaveDir = null, towardId = null, towardText = null, towardEn = null;
   if (start) {
     // walking on over a seam (the road south of the pool deck), there is nothing there to start "from"
     const onward = seam(start);
@@ -210,7 +213,7 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
       // with no way you face coming out to judge "straight on" by (a stair, the entrance), the
       // first thing to make for, when there is one to name
       const toward = facing === null && !direct && !isRoom && runs[r0 + 1] ? landmark(floor, runs[r0 + 1].at, ends, skip, stepFree) : null;
-      if (toward) { towardId = toward.id; towardText = toward.name(lang); }
+      if (toward) { towardId = toward.id; towardText = toward.name(lang); towardEn = toward.name('en'); }
       text = toward ? t(lang, onward ? 'onToward' : sideOf ? 'leaveByToward' : 'startAtToward', { place: what, side: sideName, mark: toward.name(lang) })
                     : t(lang, base + (direct ? 'Head' : 'Straight'), { place: what, target, side: sideName });
     } else { text = t(lang, base + 'Turn' + head, { place: what, target, ...dirVars(dir, lang) }); leaveDir = dir; }
@@ -238,13 +241,17 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
   out.push({ kind: 'depart', dir: turnDir, text, dist: length(departLine), floor: floor.id, at: lead[0].at, focus: departLine, mark: towardId, markText: towardText });
 
   let said = null;   // the last turn said, so a second the same way says "again"
-  let named = null;  // the landmark the last turn named: twice running says nothing new
+  // the landmark the last step named: twice running says nothing new ("walk towards Stairs 12", then "Turn left at
+  // Stairs 12"), so the first turn counts the one you set off towards
+  let named = towardEn;
   for (let k = first; k < runs.length; k++) {
     const r = runs[k];
     const a = Math.abs(r.turn), dir = side(r.turn);
     let mark = landmark(floor, r.at, ends, skip, stepFree);
     if (mark && mark.name('en') === named) mark = null;
-    named = mark ? mark.name('en') : null;
+    // (and one left unsaid stays the last named: "walk towards the Atrium Lobby", "Bear left", then "Bear left by the
+    // Atrium Lobby" named it twice in three steps)
+    if (mark) named = mark.name('en');
     let kind, key;
     if (a > BACK) { kind = 'around'; key = 'turnAround'; }
     else if (a <= BEAR) { kind = 'bear'; key = mark ? (mark.connector ? 'bearAt' : 'bearBy') : 'bear'; }
@@ -407,8 +414,11 @@ function landmark(floor, at, ends, skip, stepFree) {
 
 function mark(floor, [x, y], ends, skip, reach, stepFree) {
   let best = null, bs = Infinity;
+  // the rooms you start and end in are no landmark either, by any of their doors ("Turn left by TK-603", then "Arrive
+  // at TK-603": its second door, TK-603-D2, is a portal of its own)
+  const own = new Set(skip.filter(Boolean).map(q => roomOf(q.id)));
   for (const p of floor.portals) {
-    if (skip.includes(p) || p.entranceOf || ends.has(`${floor.id}:${p.id}`) || seam(p)) continue;
+    if (skip.includes(p) || own.has(roomOf(p.id)) || p.entranceOf || ends.has(`${floor.id}:${p.id}`) || seam(p)) continue;
     // a room inside another (LKS-405-B, BT-206-2) has its door in that room, not on the corridor
     if (p.code && SUB_ROOM.test(p.code)) continue;
     const d = Math.hypot(p.x - x, p.y - y);
@@ -430,6 +440,8 @@ function mark(floor, [x, y], ends, skip, reach, stepFree) {
 }
 
 const SUB_ROOM = /^[A-Z]+-\d+-\w+$/i;
+// a room's second (third, ...) door is <ROOM>-D2: the room either way
+const roomOf = id => String(id).replace(/-D\d+$/, '');
 // names that say nothing a door's code does not: such a room is a landmark by its code
 const PLAIN = /^(classroom|store|store ?room|storage|office|work ?room|room|toilets?|supply|locker|m&e\b.*)$/i;
 

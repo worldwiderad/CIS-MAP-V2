@@ -18,13 +18,15 @@ const FONT = fontFor('en');
 
 // Two palettes, the phone's light or dark setting choosing (MapView watches it). The dark one is
 // the same code, not an inversion: corridors a step above the ground, rooms in muted versions of
-// their colours, stairs light so they still stand out, labels with a dark halo.
+// their colours, stairs light so they still stand out, labels with a dark halo. Walls are 3:1 on the
+// corridors in both (WCAG AA for a graphic you need: they washed out in the sun at 1.6:1, 3 Nov 2026),
+// and the stairs two steps from the walls: dark with white treads in light, light with a dark icon in dark.
 const LIGHT = {
-  ground: '#E6E9EC', wall: '#C8CED5', floor: '#FFFFFF', line: '#B3BAC3',
+  ground: '#E6E9EC', wall: '#8895A4', floor: '#FFFFFF', line: '#B3BAC3',
   room: '#F3EFE6', special: '#FAEBC4', library: '#E7DEF4', hall: '#D8E5F7', pool: '#C4E4F5',
   food: '#FCDFC7', care: '#FADADE', office: '#E4E8EF', toilet: '#D0ECEA', service: '#E1E4E8',
   outdoor: '#E1EED7', lift: '#D3DAE3', blank: '#E4E7EA', drop: '#E1EED7', bus: '#E1EED7', entrance: '#F3EFE6',
-  stair: '#7B8592', tread: 'rgba(255,255,255,0.24)',
+  stair: '#5A636D', stairIcon: '#FFFFFF', tread: 'rgba(255,255,255,0.24)',
   text: '#3D3935', soft: '#6B6662', faint: '#736D68', onDark: '#FFFFFF',
   red: '#DA291C', redTint: '#FBDDD9', blue: '#0057B8', blueTint: '#DCE6F3',
   pick: 'rgba(38,43,49,0.10)',
@@ -34,11 +36,11 @@ const LIGHT = {
   staffTint: 'rgba(196,72,58,0.07)', staffLine: 'rgba(196,72,58,0.26)', staffText: '#A2372C',
 };
 const DARK = {
-  ground: '#14171B', wall: '#3A4048', floor: '#262A30', line: '#4C535C',
+  ground: '#14171B', wall: '#697482', floor: '#262A30', line: '#4C535C',
   room: '#35332E', special: '#4A4129', library: '#3E3652', hall: '#2C3C53', pool: '#204659',
   food: '#4E3826', care: '#4E3036', office: '#333A43', toilet: '#244745', service: '#2E3339',
   outdoor: '#2E3E2A', lift: '#3B434D', blank: '#2C3137', drop: '#2E3E2A', bus: '#2E3E2A', entrance: '#35332E',
-  stair: '#6E7884', tread: 'rgba(0,0,0,0.25)',
+  stair: '#A3ADB8', stairIcon: '#14171B', tread: 'rgba(0,0,0,0.25)',
   text: '#ECEEF1', soft: '#B5BCC5', faint: '#9AA3AD', onDark: '#F2F4F6',
   red: '#F0574A', redTint: '#5A2723', blue: '#6E9BF2', blueTint: '#23344F',
   pick: 'rgba(255,255,255,0.10)',
@@ -57,7 +59,7 @@ const FEATURE_LIGHT = {
   'open-air': { fill: '#E6E9EC' },
   shaft: { fill: '#CBD1D7' }, service: { fill: '#D5DADF' }, store: { fill: '#DCE8EA' },
   'back-of-house': { fill: '#DCE0E5' }, counter: { fill: '#D0D6DC' }, fixture: { fill: '#D0D6DC' },
-  'stair-flight': { fill: '#7A818B', treads: true, line: '#646B75' },
+  'stair-flight': { fill: '#5A636D', treads: true, line: '#4B535C' },
   planter: { fill: '#BFDCAE', line: '#9BC487' }, garden: { fill: '#D6EACB' }, courtyard: { fill: '#EEF2EA' },
   parapet: { fill: '#9AA2AB' }, divider: { line: '#9AA2AB' },
   gate: { line: '#8D959E', dash: true }, ramp: { fill: '#EEF1F4', line: '#B8C0C8' },
@@ -78,7 +80,7 @@ const FEATURE_DARK = {
   'open-air': { fill: '#14171B' },
   shaft: { fill: '#30363D' }, service: { fill: '#2E343A' }, store: { fill: '#2D4044' },
   'back-of-house': { fill: '#30353C' }, counter: { fill: '#353B42' }, fixture: { fill: '#353B42' },
-  'stair-flight': { fill: '#6E7782', treads: true, line: '#5A626C' },
+  'stair-flight': { fill: '#A3ADB8', treads: true, line: '#8C96A1' },
   planter: { fill: '#2F4A2A', line: '#4E7044' }, garden: { fill: '#2A3D27' }, courtyard: { fill: '#252B24' },
   parapet: { fill: '#4A5058' }, divider: { line: '#5A616A' },
   gate: { line: '#6A727B', dash: true }, ramp: { fill: '#2A2F35', line: '#4A5058' },
@@ -93,7 +95,7 @@ const FEATURE_DARK = {
   other: { fill: '#2E3339' },
 };
 // A phone set to more contrast (iOS Increase Contrast, and the like): walls and outlines that still
-// read in Singapore sun (the usual ones are 1.6:1 on the corridors; these 3:1 and more)
+// read in Singapore sun (the usual ones are 3:1 on the corridors; these 3.6:1 and more)
 const MORE_LIGHT = { wall: '#7D8792', line: '#6E7782', ground: '#D3D8DE' };
 const MORE_DARK = { wall: '#8A939D', line: '#9AA3AD', ground: '#0B0D10' };
 let FEATURE = FEATURE_LIGHT, ROOM_FILL = {};
@@ -132,6 +134,7 @@ const MALE = new Set(['boys', 'men', 'adults', 'male', 'accessible']), FEMALE = 
 
 const REDUCED = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const WALL_IN = 0.18;   // metres: the wall drawn inside a room's edge (two rooms side by side: 0.36 m)
+const OUTER_WALL = 0.5; // metres: the stroke round the building's outline (a quarter of it outside, under the rest)
 
 export class MapView {
   constructor(canvas, handlers = {}) {
@@ -215,8 +218,10 @@ export class MapView {
     for (const a of (doc && doc.areas) || []) {
       const f = a.staffOnly && this.floors && this.floors[a.floor];
       if (!f) continue;
+      // (moved as the floor's walls are, edges and all: by its corners alone, a box crossing one of the CAD's
+      // corrections drew its edge as a slant across the floor, L4's admin wing by Finance; owner, 4 Nov 2026)
       const rings = [...(a.boxes || []).map(([x0, y0, x1, y1]) => [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]), ...(a.polygons || [])]
-        .map(rg => rg.map(([x, y]) => f.view(x, y)));
+        .map(rg => f.mapRing(rg));
       // every ring one way round, so where two overlap the fill is their union
       const path = new Path2D();
       for (const rg of rings) {
@@ -561,8 +566,15 @@ export class MapView {
     // outline thick, for the building's own edge; square at the corners, as walls are (round joins
     // put a bump on every corner and a bite where two met)
     if (f.footprint) { ctx.fillStyle = C.wall; ctx.fill(f.footprint); }
+    // (out of doors there are no walls: round a road, a walkway, a garden, the footprint's edge -- simplified on a
+    // 0.2 m grid -- showed as slivers of wall along every slanting kerb; cleared back to ground, under the building's
+    // own walls, which come next)
+    ctx.fillStyle = ctx.strokeStyle = C.ground; ctx.lineWidth = 0.6;
+    for (const ft of f.features) if (ft.outdoor) { ctx.fill(ft.path); ctx.stroke(ft.path); }
+    // (the building's own edge a little thicker than a wall inside it; 1.6 m, with the rooms short of their walls,
+    // made an outside wall three to four times an inside one)
     ctx.lineJoin = 'miter'; ctx.miterLimit = 2;
-    ctx.strokeStyle = C.wall; ctx.lineWidth = 1.6; ctx.stroke(f.outline);
+    ctx.strokeStyle = C.wall; ctx.lineWidth = OUTER_WALL; ctx.stroke(f.outline);
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     // a leftover too thick to be a wall is blank space with walls round it, not a slab of wall
     if (f.pockets) { ctx.fillStyle = C.blank; ctx.fill(f.pockets); }
@@ -619,6 +631,13 @@ export class MapView {
     ctx.save(); ctx.clip(f.roomEdges);
     ctx.strokeStyle = C.wall; ctx.lineWidth = 2 * WALL_IN; ctx.stroke(f.roomEdges);
     ctx.restore();
+    // ...and the same band outside every edge of the walkable area, so a room's wall onto a corridor is as thick
+    // as the wall between two rooms (owner, 4 Nov 2026: one wall thickness). Not over floor drawn beside the walkable
+    // area (a bridge deck, an area marked "not a through route"); opened again at each door's way through.
+    ctx.save(); for (const p of this.outside(f)) ctx.clip(p, 'evenodd');
+    ctx.strokeStyle = C.wall; ctx.lineWidth = 2 * WALL_IN; ctx.stroke(f.walkEdge || f.walk);
+    ctx.fillStyle = C.floor; ctx.fill(this.doorWays(f));
+    ctx.restore();
     if (s > 5) this.paintDoors(f, px);
     for (const ft of f.features) if (!ft.walkable) this.paintFeature(ft, px);
     for (const [k, col] of [['pick', C.text], ['from', C.blue], ['to', C.red]]) {
@@ -663,6 +682,22 @@ export class MapView {
       p.lineTo(ax + tx + nx * L, ay + ty + ny * L); p.lineTo(ax - tx + nx * L, ay - ty + ny * L); p.closePath();
     }
     return (f.doorWayPath = p);
+  }
+
+  // Everything but the floor, as two clips (even-odd) whose overlap is what's left: the walkable area cut out of a
+  // sheet the size of the world, and the floor drawn beside it (an area marked "not a through route", a walkable
+  // feature such as a bridge deck) cut out of another. Worked out once per floor.
+  outside(f) {
+    if (f.outsidePaths) return f.outsidePaths;
+    const sheet = () => { const p = new Path2D(); p.rect(-1e5, -1e5, 2e5, 2e5); return p; };
+    const a = sheet(), b = sheet();
+    a.addPath(f.walk);
+    for (const sp of f.softFloor || []) b.addPath(sp);
+    for (const ft of f.features) if (ft.walkable || ft.outdoor) b.addPath(ft.path);
+    // (and not out of doors: beside a road or a lawn the walkable area's edge is a kerb, not a wall)
+    const c = sheet();
+    if (f.ground) c.addPath(f.ground);
+    return (f.outsidePaths = [a, b, c]);
   }
 
   // A door: a gap in the room's outline, a metre wide, where its portal meets it.
@@ -727,6 +762,14 @@ export class MapView {
   }
 
   paintFeature(ft, px) {
+    // (clipped out of a room it only partly covers: floors.js clipOut)
+    if (ft.clipOut) {
+      const ctx = this.ctx, out = new Path2D(); out.rect(-1e5, -1e5, 2e5, 2e5); out.addPath(ft.clipOut);
+      ctx.save(); ctx.clip(out, 'evenodd');
+      const keep = ft.clipOut; ft.clipOut = null;
+      try { this.paintFeature(ft, px); } finally { ft.clipOut = keep; ctx.restore(); }
+      return;
+    }
     // a place you walk through drawn whole (a library, the canteen, the gym): its room colour
     const ctx = this.ctx, st = FEATURE[ft.kind] || (ROOM_FILL[ft.kind] ? { fill: ROOM_FILL[ft.kind], line: C.line } : FEATURE.other);
     if (st.fill) { ctx.fillStyle = st.fill; ctx.fill(ft.path); }
@@ -927,8 +970,8 @@ export class MapView {
     }
   }
 
-  // A name in a card beside the pin's head, kept on the screen and clear of the floor buttons.
-  callout(text, x, y) {
+  // Where the card with a name goes beside the pin's head: on the screen and clear of the floor buttons.
+  calloutBox(text, x, y) {
     const ctx = this.ctx, v = this.visible(), font = `600 12.5px ${this.font}`;
     ctx.font = font;
     // a name too long for the screen beside the pin goes on two lines (on one it ran under the
@@ -940,7 +983,13 @@ export class MapView {
     const w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 16, h = 24 + 15 * (lines.length - 1);
     let bx = x + 17;
     if (bx + w > v.x1 - 4) bx = x - 17 - w;
-    bx = Math.round(Math.max(v.x0 + 4, bx)); const by = Math.round(y - h / 2);
+    bx = Math.round(Math.max(v.x0 + 4, bx));
+    return { bx, by: Math.round(y - h / 2), w, h, lines, font };
+  }
+
+  callout(text, x, y) {
+    const ctx = this.ctx, { bx, by, w, h, lines, font } = this.calloutBox(text, x, y);
+    ctx.font = font;
     ctx.save();
     ctx.shadowColor = 'rgba(20,24,30,0.22)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 1;
     roundRect(ctx, bx, by, w, h, 8); ctx.fillStyle = C.marker; ctx.fill();
@@ -1017,7 +1066,11 @@ export class MapView {
     const W = this.w, H = this.h, v = this.visible();
     // the markers keep their spot: the pin, the start, the floor-change chips (last frame's)
     const marks = [], R = this.route;
-    if (R && R.end && on.has(R.end.floor)) { const [x, y] = this.toScreen(R.end.x, R.end.y); marks.push([x - 14, y - 40, x + 14, y + 2]); }
+    if (R && R.end && on.has(R.end.floor)) {
+      const [x, y] = this.toScreen(R.end.x, R.end.y); marks.push([x - 14, y - 40, x + 14, y + 2]);
+      // and the card beside its head, which a room's name showed under (LKS-301 under "Secondary Library")
+      if (R.endName) { const c = this.calloutBox(R.endName(this.lang), x, y - 24); marks.push([c.bx - 3, c.by - 3, c.bx + c.w + 3, c.by + c.h + 3]); }
+    }
     if (R && R.start && on.has(R.start.floor)) { const [x, y] = this.toScreen(R.start.x, R.start.y); marks.push([x - 11, y - 11, x + 11, y + 11]); }
     for (const c of this.chips) marks.push([c.x0, c.y0, c.x1, c.y1]);
     if (this.on.bar) { const b = this.on.bar(); marks.push([b[0] - 4, b[1] - 4, b[2] + 4, b[3] + 4]); }
@@ -1060,7 +1113,7 @@ export class MapView {
       if (cx + bw / 2 < 0 || cx - bw / 2 > W || cy + bh / 2 < 0 || cy - bh / 2 > H) continue;
       if (r.kind === 'stair') {
         // a stair the step names says its number even when its block is too small to: on a card
-        if (!this.iconLabel(r, cx, cy, bw, bh, ICON.stair, (r.id.match(/\d+/) || [''])[0], C.onDark) && named.has(r)) outside(r, cx, cy, bw, bh);
+        if (!this.iconLabel(r, cx, cy, bw, bh, ICON.stair, (r.id.match(/\d+/) || [''])[0], C.stairIcon) && named.has(r)) outside(r, cx, cy, bw, bh);
         continue;
       }
       if (r.kind === 'lift') { this.iconLabel(r, cx, cy, bw, bh, ICON.lift, '', C.soft); continue; }
@@ -1244,7 +1297,7 @@ export class MapView {
         const [x, y] = this.toScreen(ft.lx, ft.ly), bw = ft.lw * s, bh = ft.lh * s;
         const box = [x - bw / 2, y - bh / 2, x + bw / 2, y + bh / 2];
         if (x < v.x0 || x > v.x1 || y < v.y0 || y > v.y1 || !free(...box)) continue;
-        this.iconLabel(ft, x, y, bw, bh, ICON.stair, sn, C.onDark);
+        this.iconLabel(ft, x, y, bw, bh, ICON.stair, sn, C.stairIcon);
         taken.push(box);
         continue;
       }
@@ -1257,6 +1310,17 @@ export class MapView {
       if (x - w / 2 < v.x0 || x + w / 2 > v.x1 || y < v.y0 || y > v.y1) continue;
       const box = [x - w / 2, y - 7, x + w / 2, y + 7];
       if (!free(...box)) continue;
+      // a name a little wider than its feature may run onto the open floor beside it, not onto a room or a stair
+      // (L1's "Servery", 1.8 m wide, ran across Stairs 9's treads); the room the feature stands in is its floor.
+      // Tested on the rooms' own outlines: a slanted room's box takes in the road beside it (the north road's name went)
+      const fw = ft.lw * s;
+      if (w > fw) {
+        const own = order.map(g => g.roomAt(ft.lx, ft.ly)).find(Boolean), pts = [];
+        for (const [a, b] of [[box[0] + 2, x - fw / 2], [x + fw / 2, box[2] - 2]]) if (b > a)
+          for (const px of [a, (a + b) / 2, b]) for (const py of [y - 4, y, y + 4]) pts.push(this.toWorld(px, py));
+        if (pts.some(([wx, wy]) => order.some(g => g.rooms.some(r => r !== own && r.kind !== 'blank' &&
+            wx >= r.bbox.x0 && wx <= r.bbox.x1 && wy >= r.bbox.y0 && wy <= r.bbox.y1 && inside(r.block || r.ring, wx, wy))))) continue;
+      }
       ctx.font = ital; ctx.lineWidth = 3; ctx.strokeStyle = C.halo; ctx.strokeText(txt, x, y);
       ctx.fillStyle = C.faint; ctx.fillText(txt, x, y);
       taken.push(box);
