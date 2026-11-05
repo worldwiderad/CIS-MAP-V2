@@ -528,7 +528,7 @@ export function detourNote(router, r, areas, stepFree) {
   }
   // a toll is a price on its edges, with no name: which area the free route crosses says
   const toll = areas.find(a => !a.gate && enters(free, a) && !enters(r, a));
-  if (toll) return /^LIBRARY/.test(toll.id) ? 'noteLibrary' : /^BUS/.test(toll.id) ? 'noteBusBay' : /^NORTH-ROADS/.test(toll.id) ? 'noteRoads' : 'noteCourts';
+  if (toll) return /^LIBRARY/.test(toll.id) ? 'noteLibrary' : /^BUS/.test(toll.id) ? 'noteBusBay' : /^NORTH-ROADS/.test(toll.id) ? 'noteRoads' : null;
   const sec = r.rules && r.rules.avoidSection;
   if (sec && gone(`section:${sec}`)) return sec === 'primary' ? 'notePrimary' : 'noteSecondary';
   return null;

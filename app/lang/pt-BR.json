@@ -166,7 +166,6 @@
   "noteOffice": "Contorna a secretaria, que não é área de passagem.",
   "noteLibrary": "Contorna a biblioteca em vez de atravessá-la.",
   "noteBusBay": "Contorna a baia de ônibus em vez de atravessá-la.",
-  "noteCourts": "Contorna as quadras de basquete em vez de atravessá-las.",
   "notePool": "Contorna o deck da piscina, que é cercado.",
   "noteLobby": "Contorna o bloco dos vestiários: os saguões não são área de passagem.",
   "noteRoads": "Segue pelas calçadas, evitando as vias de acesso e o estacionamento.",

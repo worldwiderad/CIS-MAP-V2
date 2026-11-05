@@ -166,7 +166,6 @@
   "noteOffice": "Contourne le secrétariat, qui n’est pas un lieu de passage.",
   "noteLibrary": "Contourne la bibliothèque au lieu de la traverser.",
   "noteBusBay": "Contourne la zone des autobus au lieu de la traverser.",
-  "noteCourts": "Contourne les terrains de basketball au lieu de les traverser.",
   "notePool": "Contourne la terrasse de la piscine, qui est clôturée.",
   "noteLobby": "Contourne le bâtiment des vestiaires, dont les halls ne sont pas des lieux de passage.",
   "noteRoads": "Reste sur les allées piétonnes, en évitant les voies d’accès et le parking.",

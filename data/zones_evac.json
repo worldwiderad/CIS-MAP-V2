@@ -47,7 +47,7 @@
    "BT": "secondary"
   },
   "L6": {
-   "TK": "shared"
+   "TK": "secondary"
   },
   "TT_L1": {
    "TT": "primary"
@@ -92,11 +92,12 @@
    "TK-406": "shared"
   },
   "L5": {
-   "FITNESS-GALLERY": "shared"
+   "FITNESS-GALLERY": "secondary",
+   "FITNESS-GALLERY-W": "secondary"
   },
   "L1": {
-   "PRIMARY-PLAY": "primary",
-   "SAND-PLAY": "primary"
+   "PRIMARY-PLAY": "shared",
+   "SAND-PLAY": "shared"
   },
   "TT_L4": {
    "TT-BLACKBOX": "shared",
@@ -111,7 +112,7 @@
    "label": {
     "en": "Primary play area"
    },
-   "section": "primary",
+   "section": "shared",
    "boxes": [
     [
      1087,
@@ -119,8 +120,7 @@
      1690,
      2327
     ]
-   ],
-   "guess": true
+   ]
   },
   {
    "id": "MAIN-OFFICE-L1",
@@ -159,23 +159,6 @@
      2322
     ]
    ]
-  },
-  {
-   "id": "STAFF-CARPARK-L1",
-   "floor": "L1",
-   "label": {
-    "en": "Basketball courts and driveway (the old staff car park)"
-   },
-   "toll": 2,
-   "boxes": [
-    [
-     1690,
-     2322,
-     2322,
-     2605
-    ]
-   ],
-   "guess": true
   },
   {
    "id": "LIBRARY-L2",
@@ -1099,8 +1082,7 @@
      1195,
      1630
     ]
-   ],
-   "guess": true
+   ]
   },
   {
    "id": "BLACKBOX-FOYER-TT_L4",
@@ -1116,8 +1098,7 @@
      1012,
      1094
     ]
-   ],
-   "guess": true
+   ]
   },
   {
    "id": "GYM-TT_L4",
@@ -1532,6 +1513,43 @@
      1946
     ]
    ]
+  },
+  {
+   "id": "POD-G-TT_L4",
+   "floor": "TT_L4",
+   "label": {
+    "en": "Pod G and the linkway deck",
+    "zh": "G区及连廊"
+   },
+   "section": "shared",
+   "polygons": [
+    [
+     [
+      0,
+      100
+     ],
+     [
+      598,
+      100
+     ],
+     [
+      598,
+      500
+     ],
+     [
+      1247,
+      500
+     ],
+     [
+      1247,
+      700
+     ],
+     [
+      0,
+      700
+     ]
+    ]
+   ]
   }
  ],
  "notGated": {
@@ -1576,7 +1594,8 @@
   "_stairs": "Per metre of rise: a 4 m storey is 20 s up (about 25 m of corridor) and 12 s down (about 15 m). Counted in the time shown: climbing takes that long.",
   "liftWaitSeconds": 60,
   "liftSecondsPerMetre": 1,
-  "_lifts": "A lift is mostly the wait. Step-free trips use only lifts and ramps.",
+  "liftsStepFreeOnly": true,
+  "_lifts": "A lift is mostly the wait. Only a step-free trip takes a lift (owner, 5 Nov 2026: \"just step free\"); a step-free trip uses only lifts and ramps.",
   "landingSeconds": 2,
   "_landing": "A stair landing printed on two sheets at one level (Stairs 12 at L1 and TT_L1) is the same spot: a couple of seconds, no flight.",
   "bridges": {

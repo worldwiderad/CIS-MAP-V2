@@ -165,7 +165,10 @@ export class Router {
       if (stepFree) return Infinity;
       return rise > 0 ? rise * t.stairUpSecondsPerMetre : -rise * t.stairDownSecondsPerMetre;
     }
-    if (l.kind === 'elevator') return t.liftWaitSeconds + Math.abs(rise) * t.liftSecondsPerMetre;
+    if (l.kind === 'elevator') {
+      if (t.liftsStepFreeOnly && !stepFree) return Infinity;   // lifts are for step-free trips (zones travel)
+      return t.liftWaitSeconds + Math.abs(rise) * t.liftSecondsPerMetre;
+    }
     if (l.kind === 'bridge') return l.length / t.walkSpeed;
     return Infinity;
   }

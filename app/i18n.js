@@ -203,7 +203,7 @@ export const STRINGS = {
     // why a route goes the long way (a school rule): under the summary
     noteGym: 'Goes round the gym, which is not a through route.', noteStaff: 'Goes round a staff-only area.',
     noteOffice: 'Goes round the office, which is not a through route.', noteLibrary: 'Goes round the library rather than through it.',
-    noteBusBay: 'Goes round the bus bay rather than across it.', noteCourts: 'Goes round the basketball courts rather than across them.',
+    noteBusBay: 'Goes round the bus bay rather than across it.',
     notePool: 'Goes round the pool deck, which is fenced.', noteLobby: 'Goes round the changing block: its lobbies are not a way through.',
     noteRoads: 'Keeps to the footpaths, off the driveways and the car park.',
     notePrimary: 'Keeps out of the primary school’s corridors.', noteSecondary: 'Keeps out of the secondary school’s corridors.',
@@ -308,7 +308,7 @@ export const STRINGS = {
     staffOnly: '仅限教职员工',
     noteGym: '绕过体育馆：体育馆不作通道。', noteStaff: '绕过教职员专用区域。',
     noteOffice: '绕过办公室：办公室不作通道。', noteLibrary: '绕过图书馆，不从中穿行。',
-    noteBusBay: '绕过巴士停靠区，不从中穿行。', noteCourts: '绕过篮球场，不从中穿行。',
+    noteBusBay: '绕过巴士停靠区，不从中穿行。',
     notePool: '绕过泳池平台：平台有围栏。', noteLobby: '绕过更衣楼：其门厅不作通道。',
     noteRoads: '沿人行道走，避开车道和停车场。',
     notePrimary: '避开小学部的走廊。', noteSecondary: '避开中学部的走廊。',
