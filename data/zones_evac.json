@@ -1,6 +1,6 @@
 {
  "schema": "cis-map/zones-evac/1",
- "note": "The routing layer laid over the evacuation map (data/<F>_evac/), without changing it: which part of each floor is Primary, Secondary or Shared, where through-traffic is barred (gates) or discouraged (tolls), and what stairs, lifts and bridges cost. Read by tools/routing/build.mjs. Every area marked \"guess\": true is a draft for the owner to confirm. Coordinates are each floor's own sheet pixels.",
+ "note": "The routing layer laid over the evacuation map (data/<F>_evac/), without changing it: which part of each floor is Primary, Secondary or Shared, where through-traffic is barred (gates) or discouraged (tolls), and what stairs, lifts and bridges cost. Read by tools/routing/build.mjs. An area marked \"guess\": true is a draft for the owner to confirm (none since 5 Nov 2026, when the owner answered the last of them on the review page). Coordinates are each floor's own sheet pixels.",
  "sections": {
   "primary": {
    "label": {
@@ -21,7 +21,7 @@
  },
  "sectionRule": "A trip avoids the other section when at least one end is in a section: Secondary to Secondary, or Secondary to Shared, avoids Primary floor, and the reverse. Primary to Secondary, and Shared to Shared, avoid nothing. Avoided floor is a toll (rules.sectionAvoid), never a wall, so a room reachable only through the other section is still reached, by the least of it.",
  "wingSections": {
-  "_why": "Owner, 30 Oct 2026: Secondary is KB L3-L5, TK L4-L5, BT L4-L5, LKS L3 (the Secondary Arts Centre and Secondary Library) and sometimes a few LKS L2 music rooms; nothing in Toh Tuck except sometimes the Black Box Theatre. Classroom wings not named are Primary. L1's KB and LKS rooms are facilities and administration, L4's LKS rooms are school leadership, and L6 is the STEAM Centre: Shared. Floor is painted by the nearest room door of a wing, then the areas below override.",
+  "_why": "Owner, 30 Oct 2026: Secondary is KB L3-L5, TK L4-L5, BT L4-L5, LKS L3 (the Secondary Arts Centre and Secondary Library) and sometimes a few LKS L2 music rooms; nothing in Toh Tuck except sometimes the Black Box Theatre. Classroom wings not named are Primary. L1's KB and LKS rooms are facilities and administration, L4's LKS rooms are school leadership, and L6 is the STEAM Centre: Shared until 5 Nov 2026, when the owner made it Secondary (\"PE shared, steam and fitness secondary\"). Floor is painted by the nearest room door of a wing, then the areas below override.",
   "L1": {
    "KB": "shared",
    "LKS": "shared"
@@ -50,7 +50,7 @@
    "BT": "secondary"
   },
   "L6": {
-   "TK": "shared"
+   "TK": "secondary"
   },
   "TT_L1": {
    "TT": "primary"
@@ -66,7 +66,7 @@
   }
  },
  "roomSections": {
-  "_why": "Destinations whose section differs from their wing's, or that carry no wing code. A trip's section comes from its two ends.",
+  "_why": "Destinations whose section differs from their wing's, or that carry no wing code. A trip's section comes from its two ends. Owner, 5 Nov 2026 (review page): the play area and its sand pit are Shared; L5's Fitness Centre is Secondary (TK-406 and TK-422, the PE offices, stay Shared).",
   "L2": {
    "LKS-207": "primary",
    "LKS-206": "secondary",
@@ -96,11 +96,12 @@
    "TK-406": "shared"
   },
   "L5": {
-   "FITNESS-GALLERY": "shared"
+   "FITNESS-GALLERY": "secondary",
+   "FITNESS-GALLERY-W": "secondary"
   },
   "L1": {
-   "PRIMARY-PLAY": "primary",
-   "SAND-PLAY": "primary"
+   "PRIMARY-PLAY": "shared",
+   "SAND-PLAY": "shared"
   },
   "TT_L4": {
    "TT-BLACKBOX": "shared",
@@ -115,7 +116,7 @@
    "label": {
     "en": "Primary play area"
    },
-   "section": "primary",
+   "section": "shared",
    "boxes": [
     [
      1087,
@@ -124,8 +125,7 @@
      2327
     ]
    ],
-   "guess": true,
-   "why": "The sheet's \"Primary play area\" and its sand pit, between the admin lift corridor and the bus-bay line."
+   "why": "The sheet's \"Primary play area\" and its sand pit, between the admin lift corridor and the bus-bay line. Owner, 5 Nov 2026 (review page): Shared, not Primary floor."
   },
   {
    "id": "MAIN-OFFICE-L1",
@@ -166,24 +166,6 @@
     ]
    ],
    "why": "Owner: avoid if you can (bus bay). The bay itself; the drop-off and recess strip along its north side (y < 335) is left untolled, because it is the ground-level way between the Toh Tuck walkway and Lakeside -- tolled, a Toh Tuck ground-floor trip climbed to L2 and back down to avoid it. Its east edge north of y 420 is left untolled too: the covered walkway to Toh Tuck (BRIDGE-1) leaves the bay there, under the linkway bridges (app review 31 Oct 2026)."
-  },
-  {
-   "id": "STAFF-CARPARK-L1",
-   "floor": "L1",
-   "label": {
-    "en": "Basketball courts and driveway (the old staff car park)"
-   },
-   "toll": 2,
-   "boxes": [
-    [
-     1690,
-     2322,
-     2322,
-     2605
-    ]
-   ],
-   "guess": true,
-   "why": "Owner said \"bus bay, etc.\"; the car park beside it is the same kind of space."
   },
   {
    "id": "LIBRARY-L2",
@@ -1112,8 +1094,7 @@
      1630
     ]
    ],
-   "guess": true,
-   "why": "L4's LKS side is school leadership, not a Secondary wing: the lobby by Stairs 1, 2 and the lift, the leadership floor, and the Roof Garden. Painted from the nearest wing it came out half Secondary (from KB and BT rooms across the walls)."
+   "why": "L4's LKS side is school leadership, not a Secondary wing: the lobby by Stairs 1, 2 and the lift, the leadership floor, and the Roof Garden. Painted from the nearest wing it came out half Secondary (from KB and BT rooms across the walls). Owner, 5 Nov 2026 (review page): Shared, as drawn; and routes reach the Roof Garden past Stairs 6 or up Stairs 3 and 4, never across the leadership floor."
   },
   {
    "id": "BLACKBOX-FOYER-TT_L4",
@@ -1130,8 +1111,7 @@
      1094
     ]
    ],
-   "guess": true,
-   "why": "The pre-function space and sound lock in front of the Black Box Theatre, which Secondary uses too: Shared, so a Secondary trip to the theatre is not charged for its foyer."
+   "why": "The pre-function space and sound lock in front of the Black Box Theatre, which Secondary uses too: Shared, so a Secondary trip to the theatre is not charged for its foyer. Owner, 5 Nov 2026 (review page): Shared, \"so should pod g, just so routing to bbt works correctly. same with first floor to get to the elevator/staircase\". Pod G is POD-G-TT_L4. The ground floor's way to the main lift and Stairs 20, and Pod G on TT_L2 and TT_L3, were tried Shared and left as they were: see POD-G-TT_L4."
   },
   {
    "id": "GYM-TT_L4",
@@ -1554,6 +1534,44 @@
     ]
    ],
    "why": "Owner, 2 Nov 2026: the passage between Stairs 3 and the Kitchen on one side and the music block on the other is staff only, as L1's below it, so Stairs 3 is not a way into the Primary Library on L2 (\"it should go to l3 and down atrium stairs\"): Stairs 3's L2 door opens into it, and a stair is not a trip's end, so a gate keeps routes out. From the library's south side to the canteen (the CAD moves it 6.7 m east with the Kitchen). The box stops at sheet x 598, inside lakeside-southwest's edge (48.7 m), so it moves whole with the passage."
+  },
+  {
+   "id": "POD-G-TT_L4",
+   "floor": "TT_L4",
+   "label": {
+    "en": "Pod G and the linkway deck",
+    "zh": "G区及连廊"
+   },
+   "section": "shared",
+   "polygons": [
+    [
+     [
+      0,
+      100
+     ],
+     [
+      598,
+      100
+     ],
+     [
+      598,
+      500
+     ],
+     [
+      1247,
+      500
+     ],
+     [
+      1247,
+      700
+     ],
+     [
+      0,
+      700
+     ]
+    ]
+   ],
+   "why": "Owner, 5 Nov 2026 (review page, the Black Box question): Pod G is Shared, so a trip to the Black Box Theatre is not charged for the way to its foyer. The floor between the gym's south wall (sheet y 500) and the foyer box (y 700): the linkway deck as far as this sheet draws it, Pod G, the activity pod in front of the gym, and the main lift lobby with Stairs 20's door. Before, a Secondary trip from the L4 bridge paid x5 a metre on 46 of its 69 m here, and 73 step-free trips to the theatre went round by another bridge and the Toh Tuck lift (L4 TK-407: 347 s; now 108 s over the L4 bridge); the stair trips were already the owner's, over the L4 gym bridge, and are unchanged. Tried and left out, 5 Nov: the same on TT_L2 and TT_L3 (deck, Pod G, lift lobby) sent the stair trips from L3 over the L3 bridge and up Stairs 20, 17 s longer, because the gym toll prices the L4 bridge's recess at x10, and sent 22 step-free trips from L4's KB rooms down to L3 and round (about 340 s against 120); the ground floor's way from the covered walkway to the main lift and Stairs 20, Shared without those, sent step-free trips from L3 down to L1 and across (about 350 s against 210). No trip that starts on the ground floor pays there anyway: L1 is all Shared, so its trips avoid nothing."
   }
  ],
  "notGated": {
@@ -1600,7 +1618,8 @@
   "_stairs": "Per metre of rise: a 4 m storey is 20 s up (about 25 m of corridor) and 12 s down (about 15 m). Counted in the time shown: climbing takes that long.",
   "liftWaitSeconds": 60,
   "liftSecondsPerMetre": 1,
-  "_lifts": "A lift is mostly the wait. Step-free trips use only lifts and ramps.",
+  "liftsStepFreeOnly": true,
+  "_lifts": "A lift is mostly the wait. Only a step-free trip takes a lift (owner, 5 Nov 2026: \"just step free\"); a step-free trip uses only lifts and ramps.",
   "landingSeconds": 2,
   "_landing": "A stair landing printed on two sheets at one level (Stairs 12 at L1 and TT_L1) is the same spot: a couple of seconds, no flight.",
   "bridges": {

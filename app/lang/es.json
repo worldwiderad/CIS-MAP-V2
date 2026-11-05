@@ -166,7 +166,6 @@
   "noteOffice": "Rodea la oficina, que no es zona de paso.",
   "noteLibrary": "Rodea la biblioteca en lugar de atravesarla.",
   "noteBusBay": "Rodea la zona de autobuses en lugar de atravesarla.",
-  "noteCourts": "Rodea las canchas de baloncesto en lugar de atravesarlas.",
   "notePool": "Rodea la terraza de la piscina, que está cercada.",
   "noteLobby": "Rodea el edificio de vestuarios: sus vestíbulos no son zona de paso.",
   "noteRoads": "Va por los caminos peatonales, evitando las vías de acceso y el estacionamiento.",

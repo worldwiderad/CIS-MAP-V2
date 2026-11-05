@@ -81,7 +81,7 @@
      -65.677
     ],
     "method": "cad-stairs",
-    "errorMetres": 0.9,
+    "errorMetres": 0.5,
     "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis)"
    },
    "ffl": 5.55,
@@ -137,8 +137,8 @@
    "regions": 1,
    "metres": {
     "pxPerMetre": {
-     "x": 12.96,
-     "y": 10.715
+     "x": 12.996,
+     "y": 10.709
     },
     "toCampus": [
      0.079081,
@@ -149,7 +149,7 @@
      73.426
     ],
     "method": "cad-stairs",
-    "errorMetres": 0.6,
+    "errorMetres": 0.5,
     "source": "its stairs against where the floors registered by room codes put the same shafts (Theil-Sen per axis); scaled by its own room codes shared with the CAD, which routing measures with"
    },
    "ffl": 14.3,
@@ -184,7 +184,7 @@
      76.424
     ],
     "method": "cad-room-codes",
-    "errorMetres": 3.2,
+    "errorMetres": 2.9,
     "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 18.0,
@@ -218,7 +218,7 @@
      80.426
     ],
     "method": "cad-room-codes",
-    "errorMetres": 2.2,
+    "errorMetres": 2.4,
     "source": "room codes shared with the CAD (doors.register), CAD in metres from its dimension chains; held where its rooms placed from the CAD were measured (metres.py PINNED)"
    },
    "ffl": 21.7,
