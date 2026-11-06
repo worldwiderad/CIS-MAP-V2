@@ -428,7 +428,7 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 .stepbar #step-prev { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); width: 44px; height: 44px; }
 .stepbar #step-next { background: var(--contrast); color: var(--on-contrast); width: 44px; height: 44px; }
 .stepbar #step-next:hover { opacity: 0.9; }
-.stepbar .step-exit { color: var(--ink-3); width: 36px; }
+.stepbar .step-exit { color: var(--ink-3); width: 44px; height: 44px; }
 .stepbar .step-done { flex: none; width: auto; height: 44px; padding: 0 18px; }
 .stepbar .icon-btn:disabled { opacity: 0.35; cursor: default; }
 .stepbar-main { grid-area: main; min-width: 0; display: flex; align-items: center; gap: 10px; }
@@ -609,7 +609,7 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 .k-hall { background: #CBDDF2; color: #2F5A8F; }
 .k-pool { background: #BFE0F2; color: #1F6283; }
 .k-food { background: #F9D2B3; color: #8F4A16; }
-.k-care { background: #F6CDD3; color: #9B3346; }
+.k-care { background: #F8CCE6; color: #8F3466; }
 .k-office { background: #D9DFE8; color: #3F4C5E; }
 .k-toilet { background: #BFE4E1; color: #22706F; }
 .k-service { background: #DCE0E5; color: #4B535D; }
@@ -657,7 +657,7 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
   .k-hall { background: #2D3C52; color: #AFCBF0; }
   .k-pool { background: #22465A; color: #9FD3EE; }
   .k-food { background: #4E3826; color: #F5BE93; }
-  .k-care { background: #4E3036; color: #F3B3BE; }
+  .k-care { background: #4E2F3C; color: #F2B4D2; }
   .k-office { background: #333A43; color: #C3CCD8; }
   .k-toilet { background: #244745; color: #96DCD7; }
   .k-service { background: #2E3339; color: #B5BCC5; }
@@ -683,6 +683,8 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
     box-shadow: 1px 0 0 var(--line);
     padding: 14px 14px 14px;
   }
+  /* (open, the phone's sheet stops under the bar: the panel stopped 56 px short of the window's foot, 6 Nov) */
+  .sheet.open { max-height: none; }
   .grip { display: none; }
   .go, .stepbar { display: none !important; }
   .swap .ico-qr { display: block; }

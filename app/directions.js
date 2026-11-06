@@ -251,7 +251,14 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
     const r = runs[k];
     const a = Math.abs(r.turn), dir = side(r.turn);
     let mark = landmark(floor, r.at, ends, skip, stepFree);
-    if (mark && mark.name('en') === named) mark = null;
+    if (mark && mark.name('en') === named) {
+      // (the one just named is no news. Unless the corridor ends there (below), the next one at the turn: "Walk towards
+      // Meeting Room 2", then a bare "Bear right" with Meeting Room 3 beside the turn, 6 Nov)
+      const was = floor.portals.find(p => p.id === mark.id);
+      const end = a > BEAR && a <= BACK && endsAhead(floor, r.at, runs[k - 1].hdg);
+      mark = end ? null : landmark(floor, r.at, ends, [...skip, was], stepFree);
+      if (mark && mark.name('en') === named) mark = null;
+    }
     // (and one left unsaid stays the last named: "walk towards the Atrium Lobby", "Bear left", then "Bear left by the
     // Atrium Lobby" named it twice in three steps)
     if (mark) named = mark.name('en');
