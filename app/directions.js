@@ -165,7 +165,10 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
         prev.len += a.len + b.len; prev.pts.push(...a.pts.slice(1), ...b.pts.slice(1));
         runs.splice(k, 2);
       } else {
-        runs.splice(k, 2, { turn: net, at: a.at, len: a.len + b.len, hdg: b.hdg, main: b.main, pts: [...a.pts, ...b.pts.slice(1)] });
+        // (said where the bend that wins is: a short turn one way and a bigger one back is the second turn, and it
+        // was said at the first, "bear right by the Arts Room" where the line turns left, the final bug check, 6 Nov)
+        const at = Math.sign(net) === Math.sign(a.turn) ? a.at : b.at;
+        runs.splice(k, 2, { turn: net, at, len: a.len + b.len, hdg: b.hdg, main: b.main, pts: [...a.pts, ...b.pts.slice(1)] });
       }
       k--;
     }

@@ -998,7 +998,7 @@
    },
    "section": "shared",
    "gate": true,
-   "toll": 10,
+   "toll": 4,
    "opensFor": {
     "buildings": [
      "tohtuck"

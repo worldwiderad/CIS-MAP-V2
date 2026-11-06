@@ -67,8 +67,9 @@ const SYNONYMS = {
   doctor: ['nurse'], infirmary: ['nurse'],
   exit: ['entrance'], gate: ['entrance'],
   auditorium: ['theatre'], theater: ['theatre'], stage: ['theatre'],
-  // (no car park on campus since the staff one became basketball courts: where a car stops instead)
-  parking: ['drop', 'bay'], carpark: ['drop', 'bay'], park: ['drop', 'bay'], car: ['drop', 'bay', 'driveway'],
+  // (where a car stops, and the visitors' car park on the north site: "car park" is read as "carpark", and the name
+  // "Visitor Car Park" itself found nothing, 6 Nov)
+  parking: ['drop', 'bay', 'car', 'park'], carpark: ['drop', 'bay', 'car', 'park'], park: ['drop', 'bay'], car: ['drop', 'bay', 'driveway'],
   counselor: ['counsellor', 'counselling'], counseling: ['counselling'],
   counsellor: ['counselling'], counselling: ['counsellor'],
   swimming: ['pool'], swim: ['pool', 'swimming'],
@@ -358,7 +359,7 @@ export class Places {
     for (let w of s.split(/[^\p{L}\p{M}\p{N}-]+/u).filter(Boolean)) {
       if (CJK.test(w)) { w = w.replace(ZH_NEAR, ''); if (w) rest.push(w); continue; }
       if (!kind && this.kindOf(w)) { kind = this.kindOf(w); continue; }
-      if (WHO[w]) { toilet = toilet || WHO[w]; continue; }
+      if (Object.hasOwn(WHO, w)) { toilet = toilet || WHO[w]; continue; }
       // "staff", "female", "student": said by the toilets' own words, not a place to be near
       if (STOP.has(w) || NEAR_WORDS.has(w) || toiletWords.has(w)) continue;
       rest.push(w);
@@ -405,11 +406,14 @@ export class Places {
   // Matches with their scores, best first: a code beats a name, a whole word beats the start of
   // one, which beats a typo; every word typed must match something.
   scored(q, limit = 60) {
-    const typed = (q || '').trim(), V = this.vocab;
+    // (full-width letters, digits and dashes, as a Chinese or Japanese keyboard types them -- ４０５, ＫＢ－４０５ -- read
+    // as the plain ones: in English and Chinese they found nothing, 6 Nov. Brackets and commas stay, as names have them.)
+    const typed = (q || '').replace(/[\uff10-\uff19\uff21-\uff3a\uff41-\uff5a\uff0d]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+      .replace(/\u3000/g, ' ').trim(), V = this.vocab;
     // in another language: its words for a kind of place read as the English ones, the rest kept; a
     // place's name in it is matched against what is left with the small words gone ("図書館 近く",
     // "la bibliothèque": the library), or against all that was typed if nothing is
-    if (V) q = canon(typed, V);
+    q = V ? canon(typed, V) : typed;
     const left = V ? q.split(/\s+/).filter(w => w && !CANON.has(w)) : [];
     const own = V ? (left.join(V.unspaced ? '' : ' ') || fold(typed)) : '';
     const ownToks = V && !V.unspaced ? splitWords(own).filter((w, i, all) => !V.ignore.has(w) || (w.length === 1 && i === all.length - 1)) : [];
@@ -420,7 +424,7 @@ export class Places {
     const bare = /\d/.test(q) ? q.replace(/\b(?:room|rm|classroom|class|no\.?|number)\b|#/gi, ' ').trim() || q : q;
     const ql = q.toLowerCase(), qn = norm(bare), toks = words(q).filter(w => !STOP.has(w));
     const kind = this.kindOf(q), zh = CJK.test(q);
-    const whoK = [...new Set(toks.map(w => WHO[w]).filter(Boolean))];
+    const whoK = [...new Set(toks.map(w => Object.hasOwn(WHO, w) && WHO[w]).filter(Boolean))];
     // the whole id a door label prints ("L4:KB-405", "l4 kb405"): that place, first
     const m = /^([a-z]{1,2}_?l?\d)\s*[:\s]\s*(.+)$/i.exec(q);
     const exact = this.find(q) || (m && this.list.concat(this.exactOnly).find(p => p.floor.id.toLowerCase() === m[1].toLowerCase().replace(/^tt(?!_)/, 'tt_')
@@ -610,7 +614,8 @@ function nameScore(p, ql, toks) {
 // A word's other words, also for a word typed with a slip in it ("cafteria" is a cafeteria).
 const synCache = new Map();
 function synonyms(tk) {
-  if (SYNONYMS[tk]) return SYNONYMS[tk];
+  // (own words only: "constructor" typed found Object's, and the search threw, 6 Nov)
+  if (Object.hasOwn(SYNONYMS, tk)) return SYNONYMS[tk];
   if (!synCache.has(tk)) {
     // (a slip, not another word that starts the same: "nurse" is not a nursery)
     const k = tk.length >= 5 ? Object.keys(SYNONYMS).find(w => w.length >= 5 && w[0] === tk[0] && Math.abs(w.length - tk.length) <= 1 && near(w, tk)) : null;
@@ -627,7 +632,7 @@ function zhScore(z, q) {
   // a name's bracketed qualifier says which one, not what it is: 校医室（小学） is as much 校医室
   // as BT-505's, and the nearer comes first (医务室 once put the kindergarten's first, 140 m away)
   const bare = z.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
-  for (const a of [q, ...(ZH_SYNONYMS[q] || [])]) {
+  for (const a of [q, ...((Object.hasOwn(ZH_SYNONYMS, q) && ZH_SYNONYMS[q]) || [])]) {
     if (z === a || bare === a) s = Math.max(s, 860);
     else if (z.endsWith(a)) s = Math.max(s, 790);
     else if (z.startsWith(a)) s = Math.max(s, 730);

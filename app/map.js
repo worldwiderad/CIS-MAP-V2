@@ -425,7 +425,8 @@ export class MapView {
       tap = null;
     };
     cv.addEventListener('pointerup', up);
-    cv.addEventListener('pointercancel', up);
+    // (a touch the browser takes back, for a gesture of its own, is no tap: it chose a place, the final bug check, 6 Nov)
+    cv.addEventListener('pointercancel', e => { tap = null; up(e); });
     cv.addEventListener('wheel', e => {
       e.preventDefault();
       const [x, y] = xy(e);
@@ -1446,12 +1447,52 @@ function polyline(ctx, pts) {
 // clearance. Then each stretch moves to the middle of its corridor (centre), and each corner
 // becomes an arc of up to ARC metres, smaller where the stretches either side are short, so
 // neighbouring arcs never overlap.
+//
+// Straightened on into the bends either side, a long straight run of the engine's line down a corridor tilted
+// with them, and the line leaned against the walls it ran between: 0.7 m over 24 m down the east side of L4's
+// gym, 1.1 m over 36 m past L3's Makerspace (6 Nov). So the line is also drawn with each such run kept where the
+// engine has it (straighten's keepRuns), and of the two the one whose long stretches lean less is drawn.
 const STRAIGHT = 1.6, CLEAR = 0.7, ENDS = 1.5, ARC = 3, HALF = 3.5, WOBBLE = 0.8, NEAR = 0.3, BACK = 2;
+const LONG = 6, LEAN = 0.25, PARALLEL = 0.25;
 
 function smoothLine(pts, floor) {
   if (pts.length < 3) return pts;
   if (!floor || !floor.walkable) return fillet(pts, ARC);
-  return fillet(centre(straighten(unhook(pts, floor), floor), floor), ARC, floor);
+  const P = unhook(pts, floor);
+  const plain = fillet(centre(straighten(P, floor), floor), ARC, floor);
+  const runs = straighten(P, floor, true);
+  if (!runs) return plain;
+  const kept = fillet(centre(runs, floor), ARC, floor);
+  return leanOf(kept, floor) < leanOf(plain, floor) - 0.05 ? kept : plain;
+}
+
+// How far a line leans in a straight corridor: of its stretches LONG metres or more whose walls are both within
+// HALF metres and run parallel (the corridor as wide at a fifth, half and four fifths of the way), the most any
+// one comes nearer one wall over those three points.
+function leanOf(line, floor) {
+  let most = 0;
+  for (let i = 1; i < line.length; i++) {
+    const [ax, ay] = line[i - 1], [bx, by] = line[i], L = Math.hypot(bx - ax, by - ay);
+    if (L < LONG) continue;
+    const [l, r] = gaps(floor, line[i - 1], line[i]);
+    if (Math.max(...l, ...r) >= HALF) continue;
+    const w = l.map((v, k) => v + r[k]);
+    if (Math.max(...w) - Math.min(...w) > PARALLEL) continue;
+    most = Math.max(most, Math.max(...l) - Math.min(...l));
+  }
+  return most;
+}
+
+// The open floor either side of a stretch (to HALF metres) at a fifth, half and four fifths of the way along it.
+function gaps(floor, [ax, ay], [bx, by]) {
+  const L = Math.hypot(bx - ax, by - ay) || 1e-9, nx = -(by - ay) / L, ny = (bx - ax) / L;
+  const gap = (x, y, sx, sy) => { let d = 0; while (d < HALF && floor.walkable(x + sx * (d + 0.1), y + sy * (d + 0.1))) d += 0.1; return d; };
+  const l = [], r = [];
+  for (const t of [0.2, 0.5, 0.8]) {
+    const x = ax + (bx - ax) * t, y = ay + (by - ay) * t;
+    l.push(gap(x, y, nx, ny)); r.push(gap(x, y, -nx, -ny));
+  }
+  return [l, r];
 }
 
 // A line that doubles back where it needn't, its way back within BACK metres of its way out across open
@@ -1569,7 +1610,9 @@ function centre(pts, floor) {
   return pts;
 }
 
-function straighten(pts, floor) {
+// (keepRuns: a straight run of LONG metres or more down a corridor, its walls parallel to it, keeps both its ends
+// wherever one straight line would tilt it by more than LEAN metres over its length; null if the line has none)
+function straighten(pts, floor, keepRuns = false) {
   const n = pts.length, cum = cumulative(pts), total = cum[n - 1];
   const open = (i, j) => {
     const [ax, ay] = pts[i], [bx, by] = pts[j], L = Math.hypot(bx - ax, by - ay);
@@ -1587,6 +1630,31 @@ function straighten(pts, floor) {
   // a corner too tight for CLEAR, as L1's does round the stair at the north entrance -- is drawn straight where
   // that comes no nearer a wall than the line it replaces did, nor nearer than NEAR where that line kept it.
   // Cut at any nearness, a corner clipped the wall's end: L3 by TK-302, 3 Nov.)
+  const strays = (i, j) => {
+    const [ax, ay] = pts[i], [bx, by] = pts[j], L = Math.hypot(bx - ax, by - ay) || 1e-9;
+    let far = 0;
+    for (let k = i + 1; k < j; k++) far = Math.max(far, Math.abs((bx - ax) * (ay - pts[k][1]) - (ax - pts[k][0]) * (by - ay)) / L);
+    return far;
+  };
+  const runs = [];
+  if (keepRuns) {
+    for (let i = 0; i < n - 1;) {
+      let j = i + 1;
+      while (j + 1 < n && strays(i, j + 1) <= 0.02) j++;
+      if (cum[j] - cum[i] >= LONG) {
+        const [l, r] = gaps(floor, pts[i], pts[j]), spread = v => Math.max(...v) - Math.min(...v);
+        if (Math.max(...l, ...r) < HALF && spread(l) <= PARALLEL && spread(r) <= PARALLEL) runs.push([i, j]);
+      }
+      i = j;
+    }
+    if (!runs.length) return null;
+  }
+  // the first such run within pts[a]..pts[b] that one straight line from a to b would tilt by more than LEAN
+  const leans = (a, b) => {
+    const [ax, ay] = pts[a], [bx, by] = pts[b], L = Math.hypot(bx - ax, by - ay) || 1e-9;
+    return runs.find(([i, j]) => i >= a && j <= b && (i > a || j < b) &&
+      Math.abs((bx - ax) * (pts[j][1] - pts[i][1]) - (by - ay) * (pts[j][0] - pts[i][0])) / L > LEAN);
+  };
   const room = (x, y, nx, ny) => {
     for (const c of [NEAR, 0.2, 0.1]) if (floor.walkable(x + nx * c, y + ny * c) && floor.walkable(x - nx * c, y - ny * c)) return c;
     return 0;
@@ -1618,23 +1686,19 @@ function straighten(pts, floor) {
       const d = Math.abs((bx - ax) * (ay - pts[i][1]) - (ax - pts[i][0]) * (by - ay)) / L;
       if (d > far) { far = d; at = i; }
     }
-    if (far > STRAIGHT || !(far <= WOBBLE ? onFloor(a, b) : open(a, b))) { keep[at] = 1; stack.push([a, at], [at, b]); }
+    if (far > STRAIGHT || !(far <= WOBBLE ? onFloor(a, b) : open(a, b))) { keep[at] = 1; stack.push([a, at], [at, b]); continue; }
+    const run = leans(a, b);
+    if (run) { const [i, j] = run; keep[i] = keep[j] = 1; stack.push([a, i], [i, j], [j, b]); }
   }
   // Then each zig-zag on its own: splitting a longer stretch at a zig-zag's furthest point keeps that point. From
   // each point kept, the line goes straight on to the furthest kept point it strays at most WOBBLE from on the
   // way (and that onFloor allows; the nearer ones are tried in turn).
   const ids = [];
   for (let i = 0; i < n; i++) if (keep[i]) ids.push(i);
-  const strays = (i, j) => {
-    const [ax, ay] = pts[i], [bx, by] = pts[j], L = Math.hypot(bx - ax, by - ay) || 1e-9;
-    let far = 0;
-    for (let k = i + 1; k < j; k++) far = Math.max(far, Math.abs((bx - ax) * (ay - pts[k][1]) - (ax - pts[k][0]) * (by - ay)) / L);
-    return far;
-  };
   const out = [pts[ids[0]]];
   for (let a = 0; a < ids.length - 1;) {
     let c = a + 1;
-    while (c + 1 < ids.length && strays(ids[a], ids[c + 1]) <= WOBBLE) c++;
+    while (c + 1 < ids.length && strays(ids[a], ids[c + 1]) <= WOBBLE && !leans(ids[a], ids[c + 1])) c++;
     while (c > a + 1 && !onFloor(ids[a], ids[c])) c--;
     out.push(pts[ids[c]]);
     a = c;

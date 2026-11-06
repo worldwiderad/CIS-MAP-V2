@@ -252,7 +252,14 @@ furthest point the splitting kept. Every arc stays on the floor: where a full on
 corner it is drawn tighter, down to a plain corner (fewer, longer stretches make bigger arcs). Where two
 moved stretches meet nearly straight on, one point halfway between joins them. Before, a step across joined
 them, which the arcs turned into an S-shaped kink: 92 places over the campus. A move that would send a
-piece back against its own stretch is not made. About 0.4 ms a floor leg (worst 2 ms): `Floor.walkable`
+piece back against its own stretch is not made. A long straight run of the engine's line down a corridor
+(6 m or more, both walls within 3.5 m and parallel to it) was straightened on into the bends either side and
+tilted with them, so the whole line leaned against the walls: 0.85 m over 29 m down the east side of L4's gym,
+1.1 m over 36 m past L3's Makerspace (6 Nov). So `straighten` can also keep such a run's two ends wherever one
+straight line would tilt it by more than 0.25 m (`keepRuns`), and `smoothLine` draws the leg both ways and keeps
+the one whose long stretches lean less in their corridors (`leanOf`): on 3,501 legs, 390 lean less and none
+more, and the rest are drawn as before. That doubles the work on a leg that has such a run: about 0.7 ms a floor
+leg (worst 10 ms), once per route. Before it, about 0.4 ms (worst 2 ms): `Floor.walkable`
 counts a ray's crossings only over the outline's edges in the point's metre band (a corrected floor's
 outline has 1,000-1,400 corners; tried one by one each test took 15-30 us, and a route 16 ms a leg). The line
 is about a metre wide close up and 3.5–6 px whatever the zoom, so it stays inside a corridor drawn small. Step by step, the step's stretch is the line and
@@ -392,7 +399,10 @@ new map shows at once; only when the network fails does the last copy answer. Ev
 request asks the server whether the file changed (`cache: 'no-cache'`, a 304 when not): left
 to the browser's own cache, a new `main.js` once arrived beside an old `search.js` and the app
 would not start. The service worker controls `app/` only: the shipped app at the root is
-untouched. Change `CACHE` in `sw.js` to throw every old copy away.
+untouched. Change `CACHE` in `sw.js` to throw every old copy away (its own copies only, `cismap-*`: the
+site's other pages on worldwiderad.github.io share the origin's caches). An error from the server (a 503,
+a filter's block page) counts as a failed request: the copy answers if there is one (the final bug check,
+6 Nov).
 
 A network that answers but crawls: the app's own page waits `PAGE_WAIT` (4 s) and then opens from
 the saved copy, and that page's `resultingClientId` goes in `fromCopy`, so everything it loads after
@@ -568,7 +578,9 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   place only its sides as doors, so a trip ends at the nearer side. `directions.js`: a start at a side says `leaveBy*` ("Leave the
   Secondary Library by the atrium side"); a trip to the place arrives at it by name (`end` merged with its main).
   `qrsheet.js` labels each side, not the place. Sides: L2 LKS-207 and L3 LKS-304 (ATRIUM, STAIRS2), L4 GYMNASIUM
-  (N, S).
+  (N, S). Since 6 Nov `compute()` asks too whenever a trip's start is the place itself (a link naming no side, an old
+  label, a swap): it had started at whichever side was nearer the destination. `nextStop()` starts the next walk at
+  the side the last one ended at (`arrivedBy`: the side whose door is nearest the route's last point).
 * **2 Nov (morning)**: `mapRing` keeps the jump where an edge crosses a hard region edge (a step; left
   straight, the canteen's north side drew a 3 m wedge); `footprints.py` works in campus metres on corrected
   floors and every layer fills nonzero (see "How the map is drawn"); the `block-south` corrections; Stairs 8's

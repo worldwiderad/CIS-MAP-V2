@@ -18,7 +18,7 @@
 // untouched. Bump CACHE whenever the files below change, so a phone that installs the new copy
 // installs all of it at once.
 
-const CACHE = 'cismap-v97';
+const CACHE = 'cismap-v99';
 const PAGE_WAIT = 4000;   // ms
 
 // i18n.js LANGUAGES with a file of their own
@@ -52,7 +52,8 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
-    for (const k of await caches.keys()) if (k !== CACHE) await caches.delete(k);
+    // (this app's old copies only: the site's other pages on worldwiderad.github.io share the origin's caches)
+    for (const k of await caches.keys()) if (k.startsWith('cismap-') && k !== CACHE) await caches.delete(k);
     await self.clients.claim();
   })());
 });
@@ -95,6 +96,9 @@ async function answer(e, req, url) {
   try {
     const res = await net;
     if ((res.ok || res.type === 'opaque') && !fromCopy.has(e.clientId)) cache.put(key, res.clone()).catch(() => {});
+    // (an error from the server, a 503 or a filter's block page, is a failed request too: the copy answers if
+    // there is one)
+    if (!res.ok && res.type !== 'opaque') return (await cache.match(key)) || res;
     return res;
   } catch {
     return (await cache.match(key)) || Response.error();
