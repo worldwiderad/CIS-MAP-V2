@@ -263,14 +263,14 @@ b, strong { color: var(--ink); font-weight: 700; }
       </div>
       <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="search" data-src="../app/?lang=en" data-title="CIS Map, live"></div></div>
     </div>
-    <aside class="notes">Search "305" and pick KB-305. Then "girls toilet". Then the typo, "libary". Click the slide's edge to get the arrow keys back.</aside>
+    <aside class="notes">Search "305" and pick KB-305. Then "girls toilet". Then the typo, "libary". The clicker keeps working after you tap the phone.</aside>
   </section>
 
   <section class="slide" aria-label="Live: directions">
     <div class="demo">
       <div>
         <h2>Directions that point at things you can see</h2>
-        <p class="lead">Each step names a landmark on the way. This is what the app says for the walk on the title slide, from KB-305 to the Secondary Library:</p>
+        <p class="lead">This is what the app says for the walk on the title slide, from KB-305 to the Secondary Library. Every step names something you'll see on the way:</p>
         <ol class="steps">
           <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li>
           <li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li>
@@ -290,7 +290,7 @@ b, strong { color: var(--ink); font-weight: 700; }
         <p class="lead">A family who doesn't read English gets the room names, the search and the directions in their own language. The 文A button changes it at any time.</p>
         <div class="langs" data-a style="--i:2">
           <span>English</span><span>简体中文<small>Chinese (Simplified)</small></span><span>繁體中文<small>Chinese (Traditional)</small></span><span>한국어<small>Korean</small></span>
-          <span>日本語<small>Japanese</small></span><span>Français<small>French</small></span><span>Español<small>Spanish</small></span><span>Português<small>Portuguese</small></span>
+          <span>日本語<small>Japanese</small></span><span>Français<small>French</small></span><span>Español<small>Spanish</small></span><span>Português (Brasil)<small>Portuguese (Brazil)</small></span>
           <span>हिन्दी<small>Hindi</small></span><span>தமிழ்<small>Tamil</small></span><span>Bahasa Melayu<small>Malay</small></span><span>Bahasa Indonesia<small>Indonesian</small></span>
           <span>Tiếng Việt<small>Vietnamese</small></span><span>ไทย<small>Thai</small></span><span>Deutsch<small>German</small></span><span>Filipino</span>
         </div>
@@ -437,6 +437,18 @@ for (const ph of stage.querySelectorAll('.iphone')) {
     <div class="safari"><span class="pill arrows">${ICON.back}${ICON.fwd}</span><span class="pill url"><span>${host}</span>${ICON.reload}</span><span class="pill more">${ICON.more}</span></div>
   </div></div>`;
 }
+// A clicker sends Page Down and Page Up (some send the arrows). Once a demo or a tap put the keyboard focus inside a
+// phone, its key presses went to the app and the slides stopped moving on slides 4 to 6. The app is on the same site,
+// so they are heard here as well and passed on, except an arrow while typing in the app's search box (it moves the cursor).
+for (const f of stage.querySelectorAll('.iphone iframe')) f.addEventListener('load', () => {
+  try {
+    f.contentWindow.addEventListener('keydown', e => {
+      const typing = e.target && (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName));
+      const step = { PageDown: 1, PageUp: -1, ArrowRight: typing ? 0 : 1, ArrowLeft: typing ? 0 : -1 }[e.key];
+      if (step) { e.preventDefault(); e.stopPropagation(); show(at + step); }
+    }, true);
+  } catch { /* a page from another site keeps its keys */ }
+});
 // Each phone plays a short demo in the real app while its slide is up: a search typed out, the route walked step
 // by step, the languages changed. It drives the app's own controls (the slideshow and the app share an origin),
 // and a touch on the phone stops it, so the presenter can take over.
@@ -447,6 +459,8 @@ const DEMO = {
     const type = async text => { for (let i = 1; i <= text.length; i++) { q().value = text.slice(0, i); q().dispatchEvent(new Event('input', { bubbles: true })); await wait(120, run); } };
     for (;;) {
       d.getElementById('end-to').click(); await wait(900, run);
+      // (the app puts the cursor in its search box; the demo types without it, so a clicker's arrows still reach the slides)
+      if (d.activeElement && d.activeElement.blur) d.activeElement.blur();
       for (const [text, hold] of [['libary', 2600], ['girls toilet', 2800], ['kb305', 2400]]) {
         await type(text); await wait(hold, run);
         q().value = ''; q().dispatchEvent(new Event('input', { bubbles: true })); await wait(500, run);

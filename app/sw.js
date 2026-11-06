@@ -18,7 +18,7 @@
 // untouched. Bump CACHE whenever the files below change, so a phone that installs the new copy
 // installs all of it at once.
 
-const CACHE = 'cismap-v99';
+const CACHE = 'cismap-v100';
 const PAGE_WAIT = 4000;   // ms
 
 // i18n.js LANGUAGES with a file of their own

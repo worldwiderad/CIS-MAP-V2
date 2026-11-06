@@ -1231,14 +1231,15 @@ function renderResults() {
   fitSubs(ul);
 }
 
-// A result's line under its name, in full ("Level 1 · near LKS-105", "Toh Tuck Level 2 · …"),
+// A result's line under its name, in full ("Level 1 · near LKS-105", "Level 2 · Toh Tuck · …"),
 // and fitSubs: a line that would need two rows is said short instead ("L1 · near LKS-105"; owner:
-// rather that than an ellipsis).
+// rather that than an ellipsis). (Toh Tuck's floors the card's way round: the list said "Toh Tuck Level 2"
+// and the card "Level 2 · Toh Tuck", 6 Nov; Lakeside's stay "Level 1", the building most places are in.)
 function listSub(p, L) {
   const bits = [];
   if (p.code && placeTitle(p, L) !== p.code) bits.push(p.code);
   if (isPlainClassroom(p)) bits.push(nameIn(p.name, L));
-  bits.push(floorName(p.floor, L));
+  bits.push(p.floor.building === 'tohtuck' ? floorLabel(p.floor, L) : floorName(p.floor, L));
   if (p.staffOnly) bits.push(t(L, 'staffOnly'));
   if (!p.code && nearText(p, L)) bits.push(t(L, 'near', { place: nearText(p, L) }));
   return bits.join(' · ');

@@ -4,7 +4,7 @@
 // you are on is the one named in the corner; tap the other wing, or pan over to it, and it is.
 //
 // There is no picture behind it. Corridors are white, and a room's colour says what it is for:
-// the places people look for carry a colour (food orange, care rose, toilets teal, halls blue,
+// the places people look for carry a colour (food orange, care pink, toilets teal, halls blue,
 // the library lavender, labs and studios gold) while the plain classrooms, the bulk of every
 // floor, stay a quiet stone so the others stand out; back rooms and lifts are grey, stairs slate.
 // The real things the mapping recorded (voids, planters, courts, decks) are drawn as what they
@@ -24,7 +24,9 @@ const FONT = fontFor('en');
 const LIGHT = {
   ground: '#E6E9EC', wall: '#8895A4', floor: '#FFFFFF', line: '#B3BAC3',
   room: '#F3EFE6', special: '#FAEBC4', library: '#E7DEF4', hall: '#D8E5F7', pool: '#C4E4F5',
-  food: '#FCDFC7', care: '#FADADE', office: '#E4E8EF', toilet: '#D0ECEA', service: '#E1E4E8',
+  // (care a cool pink: the warm rose it was, #FADADE, was the destination's own tint all but exactly, delta E 3.6,
+  // and the nurse's room by a route read as where it went, 6 Nov; now 8 from it, and 7.5 from the library's lavender)
+  food: '#FCDFC7', care: '#F8D9EA', office: '#E4E8EF', toilet: '#D0ECEA', service: '#E1E4E8',
   outdoor: '#E1EED7', lift: '#D3DAE3', blank: '#E4E7EA', drop: '#E1EED7', bus: '#E1EED7', entrance: '#F3EFE6',
   stair: '#5A636D', stairIcon: '#FFFFFF', tread: 'rgba(255,255,255,0.24)',
   text: '#3D3935', soft: '#6B6662', faint: '#736D68', onDark: '#FFFFFF',
@@ -38,7 +40,7 @@ const LIGHT = {
 const DARK = {
   ground: '#14171B', wall: '#697482', floor: '#262A30', line: '#4C535C',
   room: '#35332E', special: '#4A4129', library: '#3E3652', hall: '#2C3C53', pool: '#204659',
-  food: '#4E3826', care: '#4E3036', office: '#333A43', toilet: '#244745', service: '#2E3339',
+  food: '#4E3826', care: '#4E2F3C', office: '#333A43', toilet: '#244745', service: '#2E3339',
   outdoor: '#2E3E2A', lift: '#3B434D', blank: '#2C3137', drop: '#2E3E2A', bus: '#2E3E2A', entrance: '#35332E',
   stair: '#A3ADB8', stairIcon: '#14171B', tread: 'rgba(0,0,0,0.25)',
   text: '#ECEEF1', soft: '#B5BCC5', faint: '#9AA3AD', onDark: '#F2F4F6',

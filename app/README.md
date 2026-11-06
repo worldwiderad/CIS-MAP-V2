@@ -202,10 +202,11 @@ the map to what is its own, and the road between the wings is drawn on L1 (`ROAD
    through route" (L1's atrium, L4's gym) is floor, with no wall round it, and so is the hole under
    a thing that stands on the floor with no walls (the atrium's curved stairs, a planter);
 3. rooms, coloured by what they are for (`roomKind` in `floors.js` reads it from the name): the
-   places people look for carry a colour (food orange, care rose for the nurse and counselling,
+   places people look for carry a colour (food orange, care a cool pink for the nurse and counselling,
    toilets teal, halls blue, the pool a deeper blue, the library lavender, labs and studios gold,
    offices slate) while plain classrooms, the bulk of every floor, stay a quiet stone so the rest
-   stand out; stores and plant grey, stairs slate. A lift is one clean block over its shaft (the
+   stand out (care was a warm rose until 6 Nov, delta E 3.6 from the destination's tint: the nurse's room
+   beside a route read as where it went; `#F8D9EA` is 8 from it and 7.5 from the library); stores and plant grey, stairs slate. A lift is one clean block over its shaft (the
    CAD's shaft is a ragged hole a little bigger than the lift);
 4. features you cannot walk on (voids and light wells hatched, shafts, planters, counters). Roads
    are asphalt grey, a zebra crossing striped. Floor that is staff only (`staffOnly` areas in
@@ -279,7 +280,10 @@ steps out of a door or a stair. A jog (a turn one way and, under 8 m on, back th
 bend, said as its net turn, or not at all under 40°. A turn is named after a stair, lift, room code
 or named place within 6 m (a pod, the canteen, the toilets; never an office named after a job),
 then within 9 m; failing both, "at the end of the corridor" when the floor runs out a few metres
-on (`Floor.walkable`); a second turn the same way says "again". Leaving a room, left and right
+on (`Floor.walkable`); a second turn the same way says "again". The one the step before named is no news,
+so the next one in reach is named instead, unless the corridor ends there (6 Nov: "walk towards Meeting
+Room 2", then a bare "Bear right" beside Meeting Room 3; 1,252 of 19,948 test trips gained a landmark).
+A merged jog is said where its bigger bend is. Leaving a room, left and right
 are judged against the way you face coming out of its door, and a start that turns carries the
 turn (`dir`) for its arrow; arriving, the side the room is on against the way you were walking
 (a room behind that way, its last turn unsaid, by the last 3 m instead), straight ahead for a room
