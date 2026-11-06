@@ -165,7 +165,7 @@
      2322
     ]
    ],
-   "why": "Owner: avoid if you can (bus bay). The bay itself; the drop-off and recess strip along its north side (y < 335) is left untolled, because it is the ground-level way between the Toh Tuck walkway and Lakeside -- tolled, a Toh Tuck ground-floor trip climbed to L2 and back down to avoid it. Its east edge north of y 420 is left untolled too: the covered walkway to Toh Tuck (BRIDGE-1) leaves the bay there, under the linkway bridges (app review 31 Oct 2026)."
+   "why": "Owner: avoid if you can (bus bay); on 6 Nov 2026, asked whether walkers should keep out of it altogether, a toll of 2 as it is (\"let's do 2x toll and see how that works\"). The bay itself; the drop-off and recess strip along its north side (y < 335) is left untolled, because it is the ground-level way between the Toh Tuck walkway and Lakeside -- tolled, a Toh Tuck ground-floor trip climbed to L2 and back down to avoid it. Its east edge north of y 420 is left untolled too: the covered walkway to Toh Tuck (BRIDGE-1) leaves the bay there, under the linkway bridges (app review 31 Oct 2026)."
   },
   {
    "id": "LIBRARY-L2",
@@ -1007,7 +1007,7 @@
    },
    "section": "shared",
    "gate": true,
-   "toll": 10,
+   "toll": 4,
    "opensFor": {
     "buildings": [
      "tohtuck"
@@ -1033,7 +1033,7 @@
      288
     ]
    ],
-   "why": "Owner: the gym is no through traffic EXCEPT to and from the Toh Tuck wing over the L4 bridge, and a trip to anything on the gym uses as little gym floor as it can (it comes down from L5 or up from L3 by the nearest stair). The hall's floor along all four walls (owner, 31 Oct 2026: the whole box is gym, walkable round its edges; the court in the middle is cut from routing), TK-411's channel, and the recess the bridge enters by, one bay south of Stairs 12 (TK-403 opens off the hall beside it; left out, trips to TK-403 went round through Toh Tuck and back over the bridge). Toll 4 -> 10 on 1 Nov 2026 (review round 8): at 4 a step-free trip, having no stairs to come down by, still walked the hall's edge (KB-405 to the accessible toilet by TK-405: 73 m of gym, where the far lift via L5 needs 24 m); at 10 step-free trips use as little gym floor as they can too, and step-free trips to Toh Tuck L4 take another bridge. Set it back to 4 for the shorter way (APP_STATUS question 7)."
+   "why": "Owner: the gym is no through traffic EXCEPT to and from the Toh Tuck wing over the L4 bridge, and a trip to anything on the gym uses as little gym floor as it can (it comes down from L5 or up from L3 by the nearest stair). The hall's floor along all four walls (owner, 31 Oct 2026: the whole box is gym, walkable round its edges; the court in the middle is cut from routing), TK-411's channel, and the recess the bridge enters by, one bay south of Stairs 12 (TK-403 opens off the hall beside it; left out, trips to TK-403 went round through Toh Tuck and back over the bridge). The toll is 4 (owner, 6 Nov 2026: \"let's go 4x\"). It was 10 from 1 Nov (review round 8), because at 4 a step-free trip, having no stairs to come down by, still walks the hall's edge (KB-405 to the accessible toilet by TK-405: 73 m of gym, where the far lift via L5 needs 24 m); at 10 step-free trips kept off the gym too, but went the long way round by the lifts and other bridges."
   },
   {
    "id": "ADMIN-L4",

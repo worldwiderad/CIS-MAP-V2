@@ -351,24 +351,44 @@ function shareLink() {
 // The start is no longer the door the QR code was on.
 function notHere() { state.here = false; session.set('here', null); }
 
-// On to the next of several destinations: where you are now is where the next walk starts.
+// On to the next of several destinations: where you are now is where the next walk starts (in a big place with
+// sides, the side this walk came in by).
 function nextStop() {
   if (state.stops.length < 2) return;
   state.stops.shift();
-  state.from = state.to; notHere();
+  state.from = arrivedBy(state.to); notHere();
   state.to = state.stops[0];
   compute();
+}
+
+// The side of a big place the route ends at: the one whose door is nearest the route's last point.
+function arrivedBy(p) {
+  const legs = (state.route && state.route.legs) || [], L = legs[legs.length - 1];
+  const sides = (p.sides || []).filter(s => L && L.points.length && s.floor.id === L.floor);
+  if (!sides.length) return p;
+  const [x, y] = campus.byId[L.floor].routePoint(...L.points[L.points.length - 1]);
+  const off = s => Math.hypot(s.portal.x - x, s.portal.y - y);
+  return sides.reduce((a, s) => (off(s) < off(a) ? s : a));
 }
 
 // ---- routing --------------------------------------------------------------------------------
 
 function compute({ fit = true } = {}) {
+  // a start in a big place with sides that names none (a link typed out, an old label, a swap): which side? It
+  // started at whichever side was nearer the destination, without a word (the final bug check, 6 Nov)
+  if (state.from && state.to && state.from.sides && state.from.sides.length > 1) {
+    const p = state.from;
+    state.from = null; state.route = null; state.steps = [];
+    setFrom(p, () => compute({ fit }));
+    return;
+  }
   state.route = null; state.steps = []; state.current = -1; state.note = null;
   if (state.layer === 'steps') { state.layer = null; history.replaceState({ trip: true }, ''); }
   map.setFocus(null); map.setPassed(0); map.setMarks({ near: null });
   notice(null);
   if (state.from && state.to) {
-    if (state.from.key === state.to.key) notice('same', 'info');
+    // (a side of a big place, to the place itself, is there too: it walked out of the door and back in, 7 m)
+    if (state.from.key === state.to.key || state.from.sideOf === state.to) notice('same', 'info');
     else {
       const r = router.route(state.from.key, state.to.key, { stepFree: state.stepFree });
       if (r.ok) { state.route = r; state.steps = routeSteps(r, campus, state.lang); state.note = detourNote(router, r, ruleAreas, state.stepFree); }
@@ -949,7 +969,7 @@ function pickedOnMap(p) {
   const after = () => {
     state.pick = null;
     if (state.from && state.to) compute();
-    else { setMarks(); map.setRoute(drawn()); render(); writeLink(); }
+    else { setMarks(); map.setRoute(drawn()); render(); tripEntry(); writeLink(); }
   };
   if (which === 'from') setFrom(p, after);
   else { state.to = p; state.stops = [p]; state.stopTotal = 1; after(); }
@@ -991,8 +1011,9 @@ function choose(p) {
     const after = () => {
       state.pick = null;
       if (state.from && state.to) compute();
-      // a place looked up is shown first; the From field then invites a start for directions
-      else { setMarks(); map.setRoute(drawn()); render(); writeLink(); focusPlace(state.from && which === 'from' ? state.from : p); }
+      // a place looked up is shown first; the From field then invites a start for directions (a destination
+      // waiting for its start has its history entry, as a route does: Back took the app away with it, 6 Nov)
+      else { setMarks(); map.setRoute(drawn()); render(); tripEntry(); writeLink(); focusPlace(state.from && which === 'from' ? state.from : p); }
     };
     if (which === 'from') setFrom(p, after);
     else { state.to = p; state.stops = [p]; state.stopTotal = 1; after(); }
@@ -1258,7 +1279,7 @@ function renderIdle() {
     b.addEventListener('click', () => {
       remember(p);
       state.to = p; state.stops = [p]; state.stopTotal = 1; state.pick = null;
-      if (state.from) compute(); else { setMarks(); map.setRoute(drawn()); render(); writeLink(); focusPlace(p); }
+      if (state.from) compute(); else { setMarks(); map.setRoute(drawn()); render(); tripEntry(); writeLink(); focusPlace(p); }
     });
     li.appendChild(b); ul.appendChild(li);
   }
@@ -1668,10 +1689,14 @@ function wire() {
     // the door this phone scanned stays known: swapped back, it is "You are here" again
     const scanned = session.get('here') || (state.here && state.from ? state.from.key : null);
     const [from, to] = [state.to, state.from];
-    state.to = asDest(to);
-    state.stops = state.to ? [state.to] : [];
-    state.stopTotal = state.stops.length;
-    const go = () => { state.here = !!state.from && state.from.key === scanned; session.set('here', scanned); compute(); };
+    // (the trip changes once the new start is known: a side question cancelled leaves it as it was, where it had
+    // said KB-305 to KB-305 over the old route's steps, the final bug check, 6 Nov)
+    const go = () => {
+      state.to = asDest(to);
+      state.stops = state.to ? [state.to] : [];
+      state.stopTotal = state.stops.length;
+      state.here = !!state.from && state.from.key === scanned; session.set('here', scanned); compute();
+    };
     if (from) setFrom(from, go); else { state.from = null; go(); }
   });
   $('opt-stepfree').addEventListener('change', e => {
