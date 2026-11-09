@@ -2,7 +2,7 @@
 
 The new CIS Map: walking directions between any two places on the campus, on a phone, in
 sixteen languages (English and Simplified Chinese built in; fourteen more, each in its own file). It replaces the first prototype's viewer (`index.html`, `js/`), which stays
-as it was. Owner-facing account: `APP_STATUS.md` at the repo root.
+as it was. Project status: `APP_STATUS.md` on the development branch.
 
 Static files and nothing else. No build step, no framework, no server code, no accounts, no
 tracking. It reads the map (`data/<F>_evac/navmesh_data.json`), the floors index
@@ -26,7 +26,7 @@ Serve it compressed: the first visit fetches about 2.1 MB, most of it the routin
 door label. Any production server's gzip or brotli for `.json`, `.js` and `.css` does it;
 `python3 -m http.server` does not compress.
 
-**Routes on the map's own floor** (3 Nov; owner: "why would it go through that wall?"). On the floors the CAD's
+**Routes on the map's own floor** (3 Nov: routes were cutting through walls). On the floors the CAD's
 corrections move (L1-L5) the routing network is built on the floor as the map draws it (tools/routing/README.md,
 step 0), so its points are already on the map: `useRouting(campus, graph)` (floors.js; main.js, the tools and the
 door-label sheet call it) gives each such floor `routeT`, and `Floor.routePoint` / `mapLine` only turn the points
@@ -39,7 +39,7 @@ the map moves them through the CAD corrections. Drawn corner to corner, a run fr
 cut straight across whatever lay between (Stairs 13's treads on L5 and L4). So each leg is cut into half-metre
 pieces before it is moved, and bends with the floor. Where a correction shears the floor (moves a corridor metres
 further than the rooms beside it), that bend came out as a hook: down the corridor too far, back up, then on
-(owner, 3 Nov, by L4's KB toilets "and in multiple places"). `unspur` takes those out: a stretch that comes back on
+(3 Nov, by L4's KB toilets and in several other places). `unspur` takes those out: a stretch that comes back on
 the map to within 2.5 m of where it left, while the sheet's route there only turns, is drawn straight across. A jog
 at a seam (one side offset, not doubling back) stays, so no shortcut crosses a room. Where a correction's move
 changes within one piece (its edge) and that piece, drawn straight, would leave the floor, the piece is halved
@@ -47,8 +47,8 @@ until each half is half a metre on the map or stays on the floor, so the line be
 (L1, lakeside-west's edge: one straight 3 m step ran across the wall beside it); a step that stays on the floor
 is left a straight slant.
 
-**The route-line test** (`node tools/app/routelines.mjs`, 3 Nov; owner: "can you do a test for these? something
-like a backtracking or squiggle test?"). About 2,000 trips over all ten floors, each line drawn as the app draws it
+**The route-line test** (`node tools/app/routelines.mjs`, 3 Nov: a test for
+backtracking and squiggles). About 2,000 trips over all ten floors, each line drawn as the app draws it
 (the engine, `Floor.mapLine`, `smoothLine`), in about 6 s; `tools/app/check.mjs` runs it as its last check. It fails
 on any line that doubles back (out half a metre or more and back, with open floor across: a hook, a spike, a poke
 into a room and out), jogs (two sharp bends that step the line sideways 0.1-1 m and carry on), or zig-zags (three
@@ -59,7 +59,7 @@ On the same 2,000 trips:
 
 | the drawing as it was | backtracks | jogs | zig-zags | cuts |
 |---|---|---|---|---|
-| the night of 2 Nov (what the owner saw) | 137 | 780 | 26 | 3 |
+| the night of 2 Nov | 137 | 780 | 26 | 3 |
 | the morning of 3 Nov (`unspur` in) | 10 | 565 | 13 | 0 |
 | now | 0 | 0 | 0 | 0 |
 
@@ -68,7 +68,7 @@ the network is built on the map's own floor (below) there are none, and the test
 565 jogs, 564 were the smoothing's (92 places); of its 10 backtracks, 9 were the engine's own (doors joined to the
 corridor's network behind the way out).
 
-**Loading, a level at a time** (owner, 2 Nov: "load the 1st floor first"). `loadFloors(root, { first,
+**Loading, a level at a time** (2 Nov: the 1st floor loads first). `loadFloors(root, { first,
 onLevel })` fetches the first level on its own -- a Lakeside floor and its Toh Tuck partner (L1 + TT_L1),
 or a link's from-floor's -- and the map draws as soon as it and the staff-only zones are in; the rest
 follow, the to-floor's level first, then those between, then outward, each built as it comes. The graph is
@@ -135,8 +135,8 @@ about 25 degrees as on the ground (`tools/evacpipe/metres.py` fits each Toh Tuck
 both it and the CAD show: stair cores, lift lobbies, the bridge door, corners;
 `tools/evacpipe/tt_campus_pairs.json`; 0.5–1.5 m rms). L1 and L3 are placed by their stairs.
 
-**Corrected where the CAD says the sheet is wrong.** The sheets are an artistic depiction (owner,
-1 Nov 2026); one linear placement per floor cannot undo their local distortions. `data/floors_evac.json`
+**Corrected where the CAD says the sheet is wrong.** The sheets are an artistic depiction (1 Nov
+2026); one linear placement per floor cannot undo their local distortions. `data/floors_evac.json`
 `corrections` (written by `metres.py` from `tools/evacpipe/corrections.json`) move points inside a
 region (campus metres, judged where the sheet puts the point) by `dx`/`dy`, each piecewise linear in
 y: `lakeside-west` takes Lakeside's west side 8–16 m south, where the CAD has its stairs, lift and
@@ -167,13 +167,13 @@ the road narrowed; its `metres.clip` (made by `metres.py` from a polygon in camp
 the map to what is its own, and the road between the wings is drawn on L1 (`ROAD-EAST`,
 `CROSSING-WALKWAY` in its labels), past that sheet's east edge.
 
-**No picture behind it** (the owner's rule). In order:
+**No picture behind it**. In order:
 
 1. the walls: the floor's footprint filled in the wall colour, then every outline stroked 0.5 m wide
    (the building's own edge, a little thicker than a wall inside it). The footprint is every shape the
    floor has merged, with the gaps and holes under 5 m closed: on a plan those are walls and structure,
    and left as nothing they showed as stray light lines and spots between the wall bands. Every wall is
-   one thickness (owner, 4 Nov 2026: "don't vary the thickness of walls unless it's for a good reason"):
+   one thickness (4 Nov 2026: wall thickness only varies for a good reason):
    each room and stair is drawn grown into the gap round it, up to 0.9 m, so it reaches its wall
    (`footprints.py` `rooms_grown`, the `rooms` of `data/footprints_evac.json`; `floors.js` puts them in
    `r.block`, and a room's doors are cut in that outline). The wall is then a band inside each room's
@@ -331,7 +331,7 @@ characters are read as Simplified (圖書館). A search that is only a kind (`to
 `洗手间`, `电梯`, `食堂`) is that kind's chip, nearest first. A second door of one place
 (`entranceOf`) is not listed on its own; a place with no code is told apart by the room it is
 near (and the next, or a number, when two share it). A number with no room (`exactOnly` on a labels openSpace: L3
-TK-306 and L2 TK-206, the bridge landings where their cells were; owner, 3 Nov) is in the floor's `portalById` but
+TK-306 and L2 TK-206, the bridge landings where their cells were; 3 Nov) is in the floor's `portalById` but
 not its `portals`, so it is never drawn, tapped, named in directions or used to tell places apart, and in
 `Places.exactOnly`, not `list`: only its whole code or number finds it (`306`, `TK-306`, `L3:TK-306`; not `30`). Other names for a place (a subject, a teacher, a club) come from
 `data/directory_evac.json` when the school fills it (`"aliases": {"L3:KB-305": ["Biology",
@@ -425,17 +425,17 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   it, and the search or a step it interrupted comes back). Sixteen languages, two to a row, each row
   a pair (English and French, the two Chinese, Korean and Japanese, Spanish and Portuguese, Hindi and
   Tamil, Malay and Indonesian, Vietnamese and Thai, German and Tagalog, the last two added after). Its heading is the sign for languages, the 文A
-  of the header's button, drawn large (owner, 2 Nov: simpler than words in one language), on a first
+  of the header's button, drawn large (2 Nov: simpler than words in one language), on a first
   visit and from the header alike; a screen reader hears it in the phone's language (or the current
   one). On a short phone (an SE) the sign and rows tighten so all sixteen are in sight. Opened from the header by a key, the
   keyboard lands on the current language; by a tap, on the page itself (Safari drew the focus ring after a
   tap too, and the scrolling box clipped it at the screen's edge: the box has 6px of room for a ring now). Contrast meets
-  WCAG 2.1 AA (owner, 3 Nov), the look kept: white on the CIS red 4.9:1; a language button a 6% white tint,
+  WCAG 2.1 AA (3 Nov), the look kept: white on the CIS red 4.9:1; a language button a 6% white tint,
   its white text 4.56:1 (the 14% tint it was gave 4.1:1); hover brightens the edge, not the fill; the
   chosen one red on white, 4.87:1. (A dark fill passed with more to spare but looked like a high-contrast
-  mode: the owner turned it down.)
+  mode, so it was dropped.)
 
-* **Languages** (`i18n.js` `LANGUAGES`; owner, 2 Nov). English and Simplified Chinese are in `i18n.js`;
+* **Languages** (`i18n.js` `LANGUAGES`; 2 Nov). English and Simplified Chinese are in `i18n.js`;
   each other language is `lang/<id>.json`, fetched when it is chosen (before the first screen on a
   later visit, waiting up to 1.5 s for it, else English until it comes) and kept offline by `sw.js`.
   A file holds the language's `strings`, its `names` (the map's English names -> its own, a number
@@ -485,14 +485,14 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   is the QR card, to carry the trip from a laptop or a lobby screen to a phone.
 * **Dialogs** keep Tab inside them; behind them the map, the sheet and the home link are inert
   (the language button stays live for the search).
-* **The floor column** is one button per level, 6 to 1 (owner, 31 Oct: the Lakeside/Toh Tuck
+* **The floor column** is one button per level, 6 to 1 (31 Oct: the Lakeside/Toh Tuck
   switch went, since a level's two wings are drawn together and the floor you are on follows the
   view). A level picked by hand shows the route on it, else the whole level (both wings); its floor
   is the route's, else the wing you are in, else Lakeside's. The column folds into one floor button
   when it would not fit beside the sheet, and while stepping; the button opens the whole list and
   the sheet steps down to make room. There is no separate floor name on the map (the floor buttons
   say it); it is kept for screen readers.
-* **A bridge is an area** (owner: "not a portal"): `floors.js` gives each bridge's deck (the covered
+* **A bridge is an area**, not a portal: `floors.js` gives each bridge's deck (the covered
   walkway's zebra crossing) its portal's id, middle and axis (`areaOf`), and both doors `area`. The
   map draws the bridge's marker mid-deck with the name along the deck when it fits; a tap anywhere
   on the deck picks the bridge, which is tinted and outlined like a room; the directions still say
@@ -520,14 +520,14 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   the step bar held at its top; an upright iPad (768 px and wider) gets the wide layout with a 340 px
   panel; the trip's × keeps a scanned door as "You are here" (a second × clears it); a destination
   waiting for its start has its own Back step; a room's name drawn outside its room sits on a card.
-* **The step list is the guide's train line** (owner, 1 Nov, after the six-shot comparison): one
+* **The step list is the guide's train line** (1 Nov, after the six-shot comparison): one
   3 px red line through the steps, dashed from a stair or lift to the first step on the floor it
   reaches (`climb`, `climbed`); turns are 30 px ringed stops with the arrow in ink, emboldened by a
   stroke, so a bear and a turn tell apart at a glance; changes of level and the arrival are solid
   red stops with bold text; the start is the blue dot with its halo, as in the From field. Floors are named the same way
   round in both wings: "Level 2 · Toh Tuck" (`floorLabel`: step headers, place cards, door labels)
   and "TT L2" short.
-* **Shapes know which way they run** (owner's screenshots, 1 Nov): `frameOf` (floors.js) is each
+* **Shapes know which way they run** (1 Nov): `frameOf` (floors.js) is each
   shape's smallest rectangle (rotating calipers on its hull), snapped to its floor's own axes within
   12 degrees; `MapView.inFrame` draws treads, a zebra's bars and a court's lines in it, so the upper
   field and Toh Tuck's gym and stairs are marked the way they run. A lift's block is the lift's own
@@ -599,7 +599,7 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   arm, the lobby's entrance wall and the Drop-off outside it; the library's north side on L2 and L3
   (the glazed bay, the rooms east of it, the corridor to Stairs 2); L3's curved auditorium back wall
   and the library aisle beside it; Stairs 1 at the CAD's stair on L1-L3. Placed through the labels as
-  above; APP_STATUS "The front, on all three floors".
+  above.
 
 ## Browsers
 
