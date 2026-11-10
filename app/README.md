@@ -1,8 +1,16 @@
 # The app (`app/`)
 
 The new CIS Map: walking directions between any two places on the campus, on a phone, in
-sixteen languages (English and Simplified Chinese built in; fourteen more, each in its own file). It replaces the first prototype's viewer (`index.html`, `js/`), which stays
-as it was. Project status: `APP_STATUS.md` on the development branch.
+sixteen languages (English and Simplified Chinese built in; fourteen more, each in its own file). It replaces the first prototype's viewer, archived in
+`archive/prototype/`. Project status: `APP_STATUS.md` on the development branch.
+
+The site's root address opens a homepage (`index.html`, since 10 Nov 2026; the first prototype that was there is in
+`archive/prototype/`): what the map is, "Open the map", a code to scan on a computer, and
+Level 3 as a model with a route on it (`model.js`, which the slideshow's title uses too; its names go
+only on floor the raised walls leave showing, through `map.js`'s `labelSpot` and `labelClear`, and on a
+phone the plan is turned so the route runs down the screen). It loads the app's
+`app.css`, `i18n.js` (its four lines are in the string table, so every language has them), `qr.js` and `model.js`,
+and shares the app's saved language (`cismap.lang`).
 
 Static files and nothing else. No build step, no framework, no server code, no accounts, no
 tracking. It reads the map (`data/<F>_evac/navmesh_data.json`), the floors index
@@ -320,7 +328,7 @@ counts the one a start walks towards, and a landmark left unsaid stays the last 
 trip starts and ends in are never its landmarks, by any of their doors (`TK-603-D2` is TK-603). A
 **seam** (`seam()`: a bridge with no deck or crossing, BRIDGE-11 where L1's pool site meets TT_L1's
 fire road) is no place to search for, no marker and no floor change in the list: its step says
-"Carry on to Toh Tuck Level 1", the walk on from it starts with no "From …", and nothing heads for
+"Carry on", the walk on from it starts with no "From …", and nothing heads for
 it. The pool deck, the changing block's lobbies and the north driveways have their own detour notes.
 
 ## Search (`search.js`)
@@ -378,13 +386,19 @@ the school's virtual tour (31 October; four readers, one floor group each, zoomi
 near each block, with the photo and the confidence recorded per block). The signs: girls' and boys'
 toilets say "Students only"; men's, women's and all-gender ones "Adults only"; older plates show
 only a woman or a man. 27 of the 45 toilet-kind places are settled; 18 are listed as unknown (no
-photo in sight of them) and stay "Toilet". A plain "Toilet" is named for what it holds ("Toilets
-(Girls, Women)", "Girls' Toilet"); one with a name of its own keeps it. The Toilets chip gets a row
-of its own: Girls, Boys, Women, Men, Adults, Accessible. Each lists only the blocks that serve it
-(an adult may use an all-gender adults' toilet; a plate with no age serves either), nearest first,
-each named for what was asked ("Nearest: Girls' Toilet"). "girls toilet", "staff toilet", "女厕"
-find them too. The map draws a block's figures for who it is for (a girls' block shows the girl
-alone) and, room permitting, its caption ("Girls · Women"); the door labels name it the same way.
+photo in sight of them) and stay "Toilet". Who a toilet is for is said with the sex first, then
+students or adults, so the word for each sex stays the same (since 10 Nov 2026; "Girls", "Women" and
+"Female" side by side read as a mistake): Female students, Male students, Female adults, Male adults,
+All-gender adults, and plain Female or Male for a plate with no age. The keys stay `girls`, `boys`,
+`women`, `men`, `adults`, `female`, `male`. A plain "Toilet" is named for what it holds ("Toilets
+(Female students, Female adults)", "Female Students' Toilet"); one with a name of its own keeps it. The
+Toilets chip gets a row of its own: Female students, Male students, Female adults, Male adults,
+All-gender adults, Accessible. Each lists only the blocks that serve it (an adult may use an all-gender
+adults' toilet; a plate with no age serves either), nearest first, each named for what was asked
+("Nearest for female students"). "girls toilet", "female students toilet", "staff toilet", "女厕"
+find them too. The map draws a block's figures for who it is for (a girls' block shows the woman's
+figure alone) and, room permitting and wholly on the screen, its caption ("Female students · Female
+adults"); the door labels name it the same way.
 
 ## Door labels (`qr.html`)
 
@@ -536,9 +550,11 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
   3 px red line through the steps, dashed from a stair or lift to the first step on the floor it
   reaches (`climb`, `climbed`); turns are 30 px ringed stops with the arrow in ink, emboldened by a
   stroke, so a bear and a turn tell apart at a glance; changes of level and the arrival are solid
-  red stops with bold text; the start is the blue dot with its halo, as in the From field. Floors are named the same way
-  round in both wings: "Level 2 · Toh Tuck" (`floorLabel`: step headers, place cards, door labels)
-  and "TT L2" short.
+  red stops with bold text; the start is the blue dot with its halo, as in the From field. A floor is its level,
+  "Level 2" and "L2" short, in every wing: until 10 Nov the TT rooms' floors said "Level 2 · Toh Tuck",
+  a building of their own as the evacuation plans had it (the owner: "a relic from the evac plans"). A
+  level is headed once in the step list, the bridge and the covered walkway name no floor ("Cross the
+  Linkway Bridge"), and the door-label sheet offers one choice a level (`qrsheet.js`).
 * **Shapes know which way they run** (1 Nov): `frameOf` (floors.js) is each
   shape's smallest rectangle (rotating calipers on its hull), snapped to its floor's own axes within
   12 degrees; `MapView.inFrame` draws treads, a zebra's bars and a court's lines in it, so the upper

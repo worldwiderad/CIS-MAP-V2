@@ -109,6 +109,9 @@ const PHRASES = [
   [/\bfirst[\s-]*aid\b/g, 'firstaid'], [/\bboard\s+room\b/g, 'boardroom'], [/\bhelp\s*desk\b/g, 'helpdesk'],
   [/\bcomputer\s+science\b/g, 'compsci'], [/\bvisual\s+arts?\b/g, 'arts'],
   [/\b(it|i\.t\.)\s+(office|support|help|department|dept|team)\b/g, 'itoffice'],
+  // the toilets' own words since 10 Nov 2026 ("Female students", "Male adults", "All-gender adults")
+  [/\bfemale\s+(students?|pupils?)\b/g, 'girls'], [/\bmale\s+(students?|pupils?)\b/g, 'boys'],
+  [/\bfemale\s+adults?\b/g, 'women'], [/\bmale\s+adults?\b/g, 'men'], [/\ball[\s-]*gender(\s+adults?)?\b/g, 'adults'],
 ];
 const phrased = q => PHRASES.reduce((s, [re, w]) => s.replace(re, w), q.toLowerCase());
 const ZH_SYNONYMS = {
@@ -137,6 +140,8 @@ const LEVEL_WORDS = [
 ];
 const ZH_NUM = { 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6 };
 const WHO = {
+  // (the Chinese the toilets are named in, before the shorter words inside them)
+  女学生: 'girls', 男学生: 'boys', 成年女性: 'women', 成年男性: 'men', 成人通用: 'adults',
   girls: 'girls', girl: 'girls', 女生: 'girls', boys: 'boys', boy: 'boys', 男生: 'boys',
   women: 'women', woman: 'women', ladies: 'women', lady: 'women', 女士: 'women', men: 'men', man: 'men', gents: 'men', 男士: 'men',
   adult: 'adults', adults: 'adults', unisex: 'adults', 成人: 'adults',
@@ -220,7 +225,8 @@ export class Places {
     for (const p of this.list) {
       if (p.code || !p.portal) continue;
       const by = (q => Math.hypot(q.x - p.portal.x, q.y - p.portal.y));
-      p.nearCodes = p.floor.portals.filter(q => q.code && by(q) < 40).sort((a, b) => by(a) - by(b)).map(q => q.code);
+      // (a room's second door is the room: "near KB-310", never the door's id "KB-310-D2", review 10 Nov)
+      p.nearCodes = [...new Set(p.floor.portals.filter(q => q.code && by(q) < 40).sort((a, b) => by(a) - by(b)).map(q => q.code.replace(/-D\d+$/, '')))];
       p.near = p.nearCodes[0] || null;
       if (!p.near) {
         const named = p.floor.openPlaces.filter(q => q.id !== p.id && q.name && q.name.en && q.name.en.length <= 28 && by(q) < 40)

@@ -2,9 +2,7 @@
 // file, app/lang/<id>.json, fetched when it is chosen (tools/i18n writes them; see its README).
 //
 // Place names come from the map itself: each portal's label carries en and zh. The other languages
-// name places from their file's table of the map's English names. The building names "Lakeside"
-// and "Toh Tuck" stay in English in every language: the school has no other name for either on
-// record here, and the signs on site use these.
+// name places from their file's table of the map's English names.
 //
 // Anything a language leaves out is said in English, and so is a place name its table lacks.
 
@@ -186,16 +184,15 @@ export const STRINGS = {
     stairsUp: 'Take {stair} up to {floor}', stairsDown: 'Take {stair} down to {floor}',
     stairsUpN: 'Take {stair} up {n} floors to {floor}', stairsDownN: 'Take {stair} down {n} floors to {floor}',
     liftUp: 'Take {lift} up to {floor}', liftDown: 'Take {lift} down to {floor}',
-    bridge: 'Cross the Linkway Bridge to {floor}',
-    walkway: 'Take the covered walkway to {floor}',
-    seam: 'Carry on to {floor}',
+    bridge: 'Cross the Linkway Bridge',
+    walkway: 'Take the covered walkway',
+    seam: 'Carry on',
     landing: 'Go through the {stair} landing onto {floor}',
     walkTo: '{dist} to {place}',
     onFloor: 'on {floor}',
     toFloor: 'To {floor}', fromFloor: 'From {floor}',
-    lakeside: 'Lakeside', tohtuck: 'Toh Tuck',
-    level: 'Level {n}', ttLevel: 'Toh Tuck Level {n}', floorIn: '{floor}, {building}', levelWord: 'Level',
-    levelShort: 'L{n}', ttShort: 'TT L{n}',
+    level: 'Level {n}', levelWord: 'Level',
+    levelShort: 'L{n}',
     viaPlace: '{place}',
     // misc
     about: 'About this map',
@@ -211,16 +208,24 @@ export const STRINGS = {
     liftRef: 'the lift', liftBy: 'the lift by {mark}', liftOwn: 'the {name}', bridgeRef: 'the Linkway Bridge', walkwayRef: 'the covered walkway',
     connLift: 'Lift', connBridge: 'Bridge', connWalkway: 'Walkway',
     near: 'near {place}', listSep: ', ', and: ' and ', capSep: ' · ', withCode: '{name} ({code})',
-    capGirls: 'Girls', capBoys: 'Boys', capWomen: 'Women', capMen: 'Men', capAdults: 'Adults',
+    // Who a toilet is for: the sex first, then whether the sign says students or adults, so one word
+    // stays the same across them ("Girls", "Women" and "Female" side by side read as a mistake, owner
+    // 10 Nov 2026). The older plates say only female or male: no qualifier, for either age.
+    capGirls: 'Female students', capBoys: 'Male students', capWomen: 'Female adults', capMen: 'Male adults', capAdults: 'All-gender adults',
     capFemale: 'Female', capMale: 'Male', capAccessible: 'Accessible',
-    // who a toilet is for, inside a sentence ("Nearest for girls and boys")
-    whoGirls: 'girls', whoBoys: 'boys', whoWomen: 'women', whoMen: 'men',
+    // who a toilet is for, inside a sentence ("Nearest for female students")
+    whoGirls: 'female students', whoBoys: 'male students', whoWomen: 'female adults', whoMen: 'male adults',
     // a toilet block named for what it holds
-    toiletGirls: "Girls' Toilet", toiletBoys: "Boys' Toilet", toiletWomen: "Women's Toilet", toiletMen: "Men's Toilet",
-    toiletAdults: "Adults' Toilet (all-gender)", toiletFemale: 'Female Toilet', toiletMale: 'Male Toilet', toiletAccessible: 'Accessible Toilet',
+    toiletGirls: "Female Students' Toilet", toiletBoys: "Male Students' Toilet", toiletWomen: "Female Adults' Toilet", toiletMen: "Male Adults' Toilet",
+    toiletAdults: "All-Gender Adults' Toilet", toiletFemale: 'Female Toilet', toiletMale: 'Male Toilet', toiletAccessible: 'Accessible Toilet',
     toiletsOf: 'Toilets ({list})',
     minUnder: '<1 min',
     unknownPlace: 'This link points at “{q}”, which is not on the map.',
+    // the homepage at the site's root (index.html)
+    homeTitle: 'Find any room at Lakeside',
+    homeLead: 'Walking directions to any room on all six floors, from wherever you’re standing.',
+    homeOpen: 'Open the map',
+    homeScan: 'Or scan this with your phone',
   },
   zh: {
     title: '地图',
@@ -293,16 +298,15 @@ export const STRINGS = {
     stairsUp: '走{stair}上楼到{floor}', stairsDown: '走{stair}下楼到{floor}',
     stairsUpN: '走{stair}上 {n} 层到{floor}', stairsDownN: '走{stair}下 {n} 层到{floor}',
     liftUp: '乘{lift}上到{floor}', liftDown: '乘{lift}下到{floor}',
-    bridge: '经连廊前往{floor}',
-    walkway: '沿有盖步道前往{floor}',
-    seam: '继续前往{floor}',
+    bridge: '走过连廊',
+    walkway: '沿有盖步道走',
+    seam: '继续往前走',
     landing: '经{stair}平台进入{floor}',
     walkTo: '{dist}到{place}',
     onFloor: '在{floor}',
     toFloor: '前往{floor}', fromFloor: '来自{floor}',
-    lakeside: 'Lakeside', tohtuck: 'Toh Tuck',
-    level: '{n}楼', ttLevel: 'Toh Tuck {n}楼', floorIn: '{building} {floor}', levelWord: '楼层',
-    levelShort: '{n}楼', ttShort: 'TT {n}楼',
+    level: '{n}楼', levelWord: '楼层',
+    levelShort: '{n}楼',
     viaPlace: '{place}',
     about: '关于此地图',
     staffOnly: '仅限教职员工',
@@ -315,14 +319,18 @@ export const STRINGS = {
     liftRef: '电梯', liftBy: '{mark}旁的电梯', liftOwn: '{name}', bridgeRef: '连廊', walkwayRef: '有盖步道',
     connLift: '电梯', connBridge: '连廊', connWalkway: '步道',
     near: '靠近{place}', listSep: '、', and: '和', capSep: '·', withCode: '{name}（{code}）',
-    capGirls: '女生', capBoys: '男生', capWomen: '女士', capMen: '男士', capAdults: '成人',
+    capGirls: '女学生', capBoys: '男学生', capWomen: '成年女性', capMen: '成年男性', capAdults: '成人通用',
     capFemale: '女', capMale: '男', capAccessible: '无障碍',
-    whoGirls: '女生', whoBoys: '男生', whoWomen: '女士', whoMen: '男士',
-    toiletGirls: '女生洗手间', toiletBoys: '男生洗手间', toiletWomen: '女士洗手间', toiletMen: '男士洗手间',
-    toiletAdults: '成人洗手间（不分性别）', toiletFemale: '女洗手间', toiletMale: '男洗手间', toiletAccessible: '无障碍洗手间',
+    whoGirls: '女学生', whoBoys: '男学生', whoWomen: '成年女性', whoMen: '成年男性',
+    toiletGirls: '女学生洗手间', toiletBoys: '男学生洗手间', toiletWomen: '成年女性洗手间', toiletMen: '成年男性洗手间',
+    toiletAdults: '成人通用洗手间', toiletFemale: '女洗手间', toiletMale: '男洗手间', toiletAccessible: '无障碍洗手间',
     toiletsOf: '洗手间（{list}）',
     minUnder: '<1 分钟',
     unknownPlace: '此链接指向“{q}”，但地图上没有这个地点。',
+    homeTitle: '在 Lakeside 找到任何房间',
+    homeLead: '从您所在的地方出发，步行前往六层楼里的任何房间。',
+    homeOpen: '打开地图',
+    homeScan: '或用手机扫描这个二维码',
   },
 };
 
@@ -347,18 +355,11 @@ function spaced(s) {
     .replace(/([A-Za-z0-9])([\u3400-\u9fff])/g, (m, a, b) => (/\d/.test(a) && /[楼层樓層]/.test(b) ? m : `${a} ${b}`));
 }
 
-// "Level 3" / "Toh Tuck Level 3" / "3楼"
+// "Level 3" / "L3" / "3楼". A level is one floor across every wing: Toh Tuck's TT rooms are a wing like
+// LKS, BT, TK and KB, not a building of their own (owner, 10 Nov 2026: "a relic from the evac plans").
+// The map still keeps two floor files on Levels 1 to 4, one per evacuation plan; nothing says so.
 export function floorName(floor, lang, short = false) {
-  const tt = floor.building === 'tohtuck';
-  const key = short ? (tt ? 'ttShort' : 'levelShort') : (tt ? 'ttLevel' : 'level');
-  return t(lang, key, { n: floor.level });
-}
-
-export function buildingName(id, lang) { return t(lang, id === 'tohtuck' ? 'tohtuck' : 'lakeside'); }
-
-// A floor with its building, the same way round in both: "Level 3 · Lakeside", "Level 3 · Toh Tuck".
-export function floorLabel(floor, lang) {
-  return `${t(lang, 'level', { n: floor.level })} · ${buildingName(floor.building, lang)}`;
+  return t(lang, short ? 'levelShort' : 'level', { n: floor.level });
 }
 
 export function fmtDist(m, lang) {
@@ -370,9 +371,14 @@ export function fmtTime(s, lang) {
   return t(lang, 'min', { n: Math.max(1, Math.round(s / 60)) });
 }
 
+// Under a minute means under 60 s, in the list, the directions and the sheet's one line alike: the
+// list once said "1 min" for a 55 s walk to the boys' toilet that the directions called "under a
+// minute" (it cut at 45 s, the directions at 60; owner, 10 Nov 2026)
+export const underMinute = s => s < 60;
+
 // A walk's time in a list, short: "<1 min", "3 min" / "<1 分钟", "3 分钟"
 export function fmtMins(s, lang) {
-  return s < 45 ? t(lang, 'minUnder') : t(lang, 'min', { n: Math.round(s / 60) });
+  return underMinute(s) ? t(lang, 'minUnder') : t(lang, 'min', { n: Math.round(s / 60) });
 }
 
 // A place's name in running text: its room code when it has one ("KB-305"), else its name.

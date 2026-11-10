@@ -4,7 +4,7 @@
   "floor": "L3",
   "building": "CIS Lakeside",
   "createdAt": "2026-08-15T13:36:47Z",
-  "updatedAt": "2026-11-05T11:31:59Z",
+  "updatedAt": "2026-11-10T16:54:53Z",
   "editor": "evacpipe"
  },
  "image": "/floorplans/evacuation/levels/LKS_L3.png",
@@ -3870,7 +3870,7 @@
    "x": 1655.0,
    "y": 804.5,
    "label": {
-    "en": "Plant room TK-327",
+    "en": "Plant Room TK-327",
     "zh": "\u673a\u7535\u5ba4 TK-327"
    },
    "link": null
@@ -4101,7 +4101,7 @@
    "x": 1088.5,
    "y": 1219.0,
    "label": {
-    "en": "Steam Store BT-309",
+    "en": "STEAM Store BT-309",
     "zh": "\u79d1\u521b\u50a8\u85cf\u5ba4 BT-309"
    },
    "link": null
@@ -6533,7 +6533,7 @@
   {
    "id": "TK-327",
    "label": {
-    "en": "Plant room TK-327",
+    "en": "Plant Room TK-327",
     "zh": "\u673a\u7535\u5ba4 TK-327"
    },
    "vertices": [
@@ -7312,7 +7312,7 @@
   {
    "id": "BT-309",
    "label": {
-    "en": "Steam Store BT-309",
+    "en": "STEAM Store BT-309",
     "zh": "\u79d1\u521b\u50a8\u85cf\u5ba4 BT-309"
    },
    "vertices": [

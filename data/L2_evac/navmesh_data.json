@@ -4,7 +4,7 @@
   "floor": "L2",
   "building": "CIS Lakeside",
   "createdAt": "2026-08-15T14:01:52Z",
-  "updatedAt": "2026-11-05T12:54:56Z",
+  "updatedAt": "2026-11-10T16:54:38Z",
   "editor": "evacpipe"
  },
  "image": "/floorplans/evacuation/levels/LKS_L2_site.png",
@@ -4417,7 +4417,7 @@
    "x": 1634.0,
    "y": 1460.0,
    "label": {
-    "en": "Coordinators office TK-232",
+    "en": "Coordinators Office TK-232",
     "zh": "\u534f\u8c03\u5458\u529e\u516c\u5ba4 TK-232"
    },
    "link": null
@@ -8044,7 +8044,7 @@
   {
    "id": "TK-232",
    "label": {
-    "en": "Coordinators office TK-232",
+    "en": "Coordinators Office TK-232",
     "zh": "\u534f\u8c03\u5458\u529e\u516c\u5ba4 TK-232"
    },
    "vertices": [

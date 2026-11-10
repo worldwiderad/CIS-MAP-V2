@@ -6,7 +6,7 @@ import { Router } from '../routing/engine.mjs';
 import { loadFloors, getJSON, useRouting } from './floors.js';
 import { Places, nearText } from './search.js';
 import { qr, qrPath } from './qr.js';
-import { floorLabel, placeTitle, t } from './i18n.js';
+import { floorName, placeTitle, t } from './i18n.js';
 
 const ROOT = '../';
 const QUIET = 2;   // the white margin round each code, in its own squares
@@ -72,11 +72,12 @@ function applyLang() {
   $('find').placeholder = S.findHint;
   $('btn-lang').textContent = S.lang;
   $('btn-lang').setAttribute('aria-label', S.langLabel);
-  const want = $('floor').value || firstFloor;
+  // one choice a level, the TT wing's rooms in it too (a ?floor=TT_L2 link is Level 2)
+  const pick = $('floor').value || firstFloor, want = `L${(campus.byId[pick] || campus.byId.L1).level}`;
   $('floor').innerHTML = '';
-  for (const f of campus.floors) {
+  for (const f of campus.floors.filter(f => /^L\d$/.test(f.id))) {
     const o = document.createElement('option');
-    o.value = f.id; o.textContent = floorLabel(f, lang);
+    o.value = f.id; o.textContent = floorName(f, lang);
     $('floor').appendChild(o);
   }
   $('floor').value = want;
@@ -113,7 +114,7 @@ async function render() {
   // a big place with sides (the Secondary Library, the gym) gets a label at each side instead of one for
   // the place: scanned there, the trip starts at that side
   const list = (found ? found.slice(0, MAX)
-    : places.list.filter(p => p.floor.id === $('floor').value).filter(ok).sort((a, b) => places.cmp(a, b)))
+    : places.list.filter(p => p.floor.level === campus.byId[$('floor').value].level).filter(ok).sort((a, b) => places.cmp(a, b)))
     .flatMap(p => (p.sides && p.sides.length > 1 ? p.sides : [p]));
   const capped = found && found.length > MAX ? S.capped(MAX, found.length) : '';
   const sheet = $('sheet');
@@ -133,7 +134,7 @@ async function render() {
       .map(([x, l]) => `<span class="${l}" lang="${l === 'zh' ? 'zh-Hans' : 'en'}">${esc(x)}</span>`).join(' · ');
     // the floor in both languages; and "Toilet", "Passenger Lift": the place nearby tells two such
     // labels apart on the wall
-    const where = `${floorLabel(p.floor, 'en')} · ${p.floor.level}楼`;
+    const where = `${floorName(p.floor, 'en')} · ${p.floor.level}楼`;
     const near = p.code || !twins(p, title) ? '' : nearText(p, 'en');
     const sideOf = l => { const x = at.side && (at.side[l] || at.side.en); return x ? x.charAt(0).toUpperCase() + x.slice(1) : ''; };
     // after the brand guide's door plate: the number first and big; its id is in the code's link
@@ -168,10 +169,10 @@ async function render() {
   } else $('status').textContent = S.good(made.length) + tail;
 }
 
-// Whether another label on the same floor would read the same (two "Toilet"s, two lifts): only then
+// Whether another label on the same level would read the same (two "Toilet"s, two lifts): only then
 // does a label need the room it is near.
 function twins(p, title) {
-  return places.list.some(q => q !== p && q.floor === p.floor && !q.code && (q.code || placeTitle(q, 'en')) === title);
+  return places.list.some(q => q !== p && q.floor.level === p.floor.level && !q.code && (q.code || placeTitle(q, 'en')) === title);
 }
 
 // Every name whole on its label: the number on one line (a name in its place on two), the names

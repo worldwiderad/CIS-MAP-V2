@@ -17,7 +17,7 @@ import { MapView } from './map.js';
 import { Places, CHIPS, TOILET_GROUPS, nearText } from './search.js';
 import { routeSteps, walkway, detourNote, ruleAreasOf } from './directions.js';
 import { qr, qrPath } from './qr.js';
-import { t, floorName, floorLabel, buildingName, fmtDist, fmtTime, fmtMins, placeTitle, isPlainClassroom, shortName, nameIn,
+import { t, floorName, fmtDist, fmtTime, fmtMins, underMinute, placeTitle, isPlainClassroom, shortName, nameIn,
   LANGUAGES, LANGS, language, langId, loadLang, systemLang } from './i18n.js';
 
 const ROOT = '../';
@@ -454,7 +454,7 @@ function drawn() {
     return {
       floor: s.fromFloor, x: p ? p.x : 0, y: p ? p.y : 0, toFloor: s.toFloor,
       kind: s.type === 'bridge' || !s.rise ? 'bridge' : s.rise > 0 ? 'up' : 'down',
-      label: lang => `${connName(s, lang)} → ${floorAcross(f, campus.byId[s.toFloor], lang)}`,
+      label: lang => connName(s, lang) + (floorAcross(f, campus.byId[s.toFloor], lang) ? ` → ${floorAcross(f, campus.byId[s.toFloor], lang)}` : ''),
     };
   });
   // the walks and bridges in the order they are taken: step by step, what lies behind the step and
@@ -476,10 +476,9 @@ function routeFloors(r) {
   return seq;
 }
 
-// The floor a connector leads to, short; with its building when it crosses to the other one.
+// The floor a connector leads to, short: "L4"; nothing for a bridge or walkway, which stays on its level.
 function floorAcross(from, to, lang) {
-  const short = floorName(to, lang, true);
-  return from.building !== to.building && to.building !== 'tohtuck' ? `${buildingName(to.building, lang)} ${short}` : short;
+  return from.level === to.level ? '' : floorName(to, lang, true);
 }
 
 function connName(s, lang) {
@@ -562,12 +561,11 @@ function renderFloors() {
     $('levels').appendChild(btn);
   }
   $('floor-pill-n').textContent = String(f.level);
-  // (on a Toh Tuck floor the wing's name: "3 / Level" never said which building, a review found)
-  $('floor-pill-b').textContent = f.building === 'tohtuck' ? buildingName(f.building, L) : t(L, 'levelWord');
-  $('floor-pill').setAttribute('aria-label', `${floorLabel(f, L)}: ${t(L, 'floors')}`);
+  $('floor-pill-b').textContent = t(L, 'levelWord');
+  $('floor-pill').setAttribute('aria-label', `${floorName(f, L)}: ${t(L, 'floors')}`);
   $('floor-pill').classList.toggle('on-route', [...onRoute].some(id => id !== f.id));
-  $('floorname').textContent = t(L, 'floorIn', { floor: t(L, 'level', { n: f.level }), building: buildingName(f.building, L) });
-  $('map').setAttribute('aria-label', floorLabel(f, L));
+  $('floorname').textContent = floorName(f, L);
+  $('map').setAttribute('aria-label', floorName(f, L));
   fitFloorbar();
 }
 
@@ -617,7 +615,7 @@ function render() {
     // "Toilet", "Passenger Lift" alone could be anywhere: say which floor (and near what); a name
     // of its own ("Canteen Level 1") already says
     const nr = p.type === 'stair' ? '' : nearText(p, L);
-    const where = !p.generic ? '' : ` · ${floorName(p.floor, L, true)}${nr ? ` · ${t(L, 'near', { place: nr })}` : ''}`;
+    const where = !p.generic ? '' : ` · ${floorName(p.floor, L)}${nr ? ` · ${t(L, 'near', { place: nr })}` : ''}`;
     el.innerHTML = (here ? `<span class="here">${esc(t(L, 'youAreHere'))}</span> · ` : '') + esc(keepCodes(title + code + side + where));
   };
   end($('from-v'), state.from, 'chooseStart', state.here);
@@ -631,10 +629,11 @@ function render() {
 
   const r = state.route;
   if (r) {
-    const fl = routeFloors(r).map(id => floorName(campus.byId[id], L, true));
+    // (a level once, over the bridge too: "L2 → L3", never "L2 → L2 → L3")
+    const fl = routeFloors(r).map(id => floorName(campus.byId[id], L, true)).filter((x, i, a) => x !== a[i - 1]);
     // (under a minute is under 60 s: at 45 a trip and its way back, the climb slower than the
     // descent, could fall either side and read as two different walks)
-    const head = r.seconds < 60 ? t(L, 'summaryShort', { dist: fmtDist(r.metres, L) })
+    const head = underMinute(r.seconds) ? t(L, 'summaryShort', { dist: fmtDist(r.metres, L) })
       : t(L, 'summary', { dist: fmtDist(r.metres, L), time: fmtTime(r.seconds, L) });
     // each floor whole ("TT 4楼" once broke before 楼 on a small phone)
     // (and "about 3 min" whole: it once broke before "min")
@@ -718,15 +717,16 @@ function renderStepbar() {
 function renderSteps() {
   const ol = $('steps'), L = state.lang;
   ol.innerHTML = '';
-  // the line is dashed from a stair or a lift to the first step on the floor it reaches
-  let floor = null, climbed = false;
+  // the line is dashed from a stair or a lift to the first step on the floor it reaches; a level is
+  // headed once, over the bridge to the TT wing too
+  let level = null, climbed = false;
   state.steps.forEach((s, i) => {
-    if (s.floor !== floor) {
-      floor = s.floor;
+    const f = campus.byId[s.floor];
+    if (f.level !== level) {
+      level = f.level;
       const h = document.createElement('li');
       h.className = 'steps-floor' + (climbed ? ' climb' : '');
-      const f = campus.byId[floor];
-      h.textContent = floorLabel(f, L);
+      h.textContent = floorName(f, L);
       ol.appendChild(h);
     }
     const li = document.createElement('li');
@@ -791,13 +791,15 @@ function endSteps() {
 // either side of each, so the hyphen keeps its own glyph.
 function keepCodes(text) { return text.replace(/([A-Z0-9])-(?=[A-Z0-9])/g, '$1\u2060-\u2060'); }
 
-function subtitle(p, L, short = false) {
+// A place's line under its name, on its card and in a list: "LKS-405 · Level 4 · Staff only". A level in
+// words is "Level 4" everywhere (owner, 10 Nov 2026: the lists said "L4" on a row that would have
+// wrapped and "Level 2" on the next); a long line takes its second row. "L4" is kept for the arrows:
+// "L3 → L2" on the trip's line, "→ L5" on a stair's step, "via L2" beside ↑2.
+function subtitle(p, L) {
   const bits = [];
   if (p.code && placeTitle(p, L) !== p.code) bits.push(p.code);
   if (isPlainClassroom(p)) bits.push(nameIn(p.name, L));
-  // in a list, room for what tells places apart: "L1" / "TT L2"; on the card, the floor and its
-  // building, as the step list heads its floors: "Level 2 · Toh Tuck"
-  bits.push(short ? floorName(p.floor, L, true) : floorLabel(p.floor, L));
+  bits.push(floorName(p.floor, L));
   if (p.staffOnly) bits.push(t(L, 'staffOnly'));
   if (!p.code && nearText(p, L)) bits.push(t(L, 'near', { place: nearText(p, L) }));
   return bits.join(' · ');
@@ -1133,7 +1135,7 @@ function renderResults() {
   // on a floor the search named: "toilets on L2", "3楼洗手间"
   if (ask && ask.level) {
     list = list.filter(p => p.floor.level === ask.level && (!ask.building || p.floor.building === ask.building));
-    head = `${head || t(L, 'results')}${t(L, 'capSep')}${floorName(ask.building === 'tohtuck' ? campus.byId[`TT_L${ask.level}`] : campus.byId[`L${ask.level}`], L)}`;
+    head = `${head || t(L, 'results')}${t(L, 'capSep')}${t(L, 'level', { n: ask.level })}`;
   }
   // the door this phone scanned, offered back as a start (after a swap, say)
   const scanned = state.pickerFor === 'from' && !q && !state.chip && places.get(session.get('here') || '');
@@ -1214,13 +1216,11 @@ function renderResults() {
   const from = near || (state.pickerFor === 'to' ? state.from : null);
   const floorHint = (p, d) => {
     if (!from) return '';
-    // on your own floor, but the way there is by another (round the gym, say): which one
-    if (p.floor === from.floor) {
-      const other = d && routeFloors(d).find(id => id !== from.floor.id);
+    // on your own level, but the way there is by another (round the gym, say): which one
+    if (p.floor.level === from.floor.level) {
+      const other = d && routeFloors(d).find(id => campus.byId[id].level !== from.floor.level);
       return other ? ` · ${esc(t(L, 'viaFloor', { f: floorName(campus.byId[other], L, true) }))}` : '';
     }
-    // (the two wings share their levels: up or down counts across the bridge too; the other wing
-    // itself is in the line under the name)
     const dl = p.floor.level - from.floor.level;
     if (!dl) return '';
     return ` · <span aria-label="${esc(t(L, (dl > 0 ? 'floorUp' : 'floorDown') + (Math.abs(dl) > 1 ? 's' : ''), { n: Math.abs(dl) }))}">${dl > 0 ? '↑' : '↓'}${Math.abs(dl)}</span>`;
@@ -1246,37 +1246,15 @@ function renderResults() {
       : (p === scanned ? `${t(L, 'youAreHere')} · ` : '') + (holds && p.toiletNamed ? shortName(placeTitle(p, L)) : placeTitle(p, L));
     b.innerHTML = `<span class="result-ico k-${p.kind}">${svg(P[p.kind] || P.room)}</span>`
       + `<span class="result-text"><span class="result-title">${esc(title)}</span>`
-      + `<span class="result-sub" data-short="${esc(keepCodes((holds ? holds + ' · ' : '') + subtitle(p, L, true)))}">${esc(keepCodes((holds ? holds + ' · ' : '') + listSub(p, L)))}</span></span>`
+      + `<span class="result-sub">${esc(keepCodes((holds ? holds + ' · ' : '') + subtitle(p, L)))}</span></span>`
       + `<span class="result-dist">${d ? `${esc(fmtMins(d.seconds, L))}<small>${esc(fmtDist(d.metres, L))}${floorHint(p, d)}</small>` : ''}</span>`;
     b.addEventListener('click', () => choose(p));
     li.appendChild(b);
     ul.appendChild(li);
   });
   if (state.active >= 0) $('picker-q').setAttribute('aria-activedescendant', `result-${state.active}`);
-  fitSubs(ul);
 }
 
-// A result's line under its name, in full ("Level 1 · near LKS-105", "Level 2 · Toh Tuck · …"),
-// and fitSubs: a line that would need two rows is said short instead ("L1 · near LKS-105"; owner:
-// rather that than an ellipsis). (Toh Tuck's floors the card's way round: the list said "Toh Tuck Level 2"
-// and the card "Level 2 · Toh Tuck", 6 Nov; Lakeside's stay "Level 1", the building most places are in.)
-function listSub(p, L) {
-  const bits = [];
-  if (p.code && placeTitle(p, L) !== p.code) bits.push(p.code);
-  if (isPlainClassroom(p)) bits.push(nameIn(p.name, L));
-  bits.push(p.floor.building === 'tohtuck' ? floorLabel(p.floor, L) : floorName(p.floor, L));
-  if (p.staffOnly) bits.push(t(L, 'staffOnly'));
-  if (!p.code && nearText(p, L)) bits.push(t(L, 'near', { place: nearText(p, L) }));
-  return bits.join(' · ');
-}
-function fitSubs(root) {
-  requestAnimationFrame(() => {
-    for (const el of root.querySelectorAll('.result-sub[data-short]')) {
-      const lh = parseFloat(getComputedStyle(el).lineHeight) || 16;
-      if (el.scrollHeight > lh * 1.5) el.textContent = el.dataset.short;
-    }
-  });
-}
 
 // On a wide screen the panel has room to spare before a trip: the kinds of place, and the places
 // people look for most, a click from being the destination.
@@ -1301,7 +1279,7 @@ function renderIdle() {
     b.type = 'button'; b.className = 'result';
     b.innerHTML = `<span class="result-ico k-${p.kind}">${svg(P[p.kind] || P.room)}</span>`
       + `<span class="result-text"><span class="result-title">${esc(placeTitle(p, L))}</span>`
-      + `<span class="result-sub" data-short="${esc(subtitle(p, L, true))}">${esc(listSub(p, L))}</span></span>`;
+      + `<span class="result-sub">${esc(subtitle(p, L))}</span></span>`;
     b.addEventListener('click', () => {
       remember(p);
       state.to = p; state.stops = [p]; state.stopTotal = 1; state.pick = null;
@@ -1309,7 +1287,6 @@ function renderIdle() {
     });
     li.appendChild(b); ul.appendChild(li);
   }
-  fitSubs(ul);
 }
 
 function recent() {
@@ -1605,7 +1582,7 @@ function toggleSheet() { setSheet(sheetMode() === 'mid' ? 'open' : 'mid'); }
 function renderMini() {
   const L = state.lang, r = state.route, m = $('mini');
   const name = p => shortName(placeTitle(p, L));
-  m.textContent = r ? `${name(state.from)} → ${name(state.to)} · ${r.seconds < 45 ? fmtDist(r.metres, L) : fmtTime(r.seconds, L)}`
+  m.textContent = r ? `${name(state.from)} → ${name(state.to)} · ${underMinute(r.seconds) ? fmtDist(r.metres, L) : fmtTime(r.seconds, L)}`
     : state.to ? `→ ${name(state.to)}` : t(L, 'whereTo');
 }
 

@@ -4,7 +4,7 @@
   "floor": "TT_L3",
   "building": "CIS Toh Tuck Wing",
   "createdAt": "2026-08-15T13:37:00Z",
-  "updatedAt": "2026-11-04T17:59:00Z",
+  "updatedAt": "2026-11-10T16:55:12Z",
   "editor": "evacpipe"
  },
  "image": "/floorplans/evacuation/levels/TT_L3.jpg",
@@ -1243,7 +1243,7 @@
    "x": 861.0,
    "y": 580.0,
    "label": {
-    "en": "Activity pod",
+    "en": "Activity Pod",
     "zh": "\u6d3b\u52a8\u533a"
    },
    "link": null

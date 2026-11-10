@@ -4,7 +4,7 @@
   "floor": "L4",
   "building": "CIS Lakeside",
   "createdAt": "2026-08-15T14:05:40Z",
-  "updatedAt": "2026-11-05T16:48:14Z",
+  "updatedAt": "2026-11-10T16:55:05Z",
   "editor": "evacpipe"
  },
  "image": "/floorplans/evacuation/levels/LKS_L4.png",
@@ -2953,7 +2953,7 @@
    "x": 1416.4,
    "y": 640.3,
    "label": {
-    "en": "LAN Room (KB wing)",
+    "en": "LAN Room (KB Wing)",
     "zh": "\u7f51\u7edc\u673a\u623f\uff08KB \u7ffc\uff09"
    },
    "link": null
@@ -3239,7 +3239,7 @@
    "x": 1154.0,
    "y": 1160.0,
    "label": {
-    "en": "LAN Room (BT wing)",
+    "en": "LAN Room (BT Wing)",
     "zh": "\u7f51\u7edc\u673a\u623f\uff08BT \u7ffc\uff09"
    },
    "link": null
@@ -4024,7 +4024,7 @@
    "x": 1399.9,
    "y": 603.2,
    "label": {
-    "en": "LAN Room (KB wing)",
+    "en": "LAN Room (KB Wing)",
     "zh": "\u7f51\u7edc\u673a\u623f\uff08KB \u7ffc\uff09"
    },
    "link": null,
@@ -4884,7 +4884,7 @@
   {
    "id": "LAN-KB",
    "label": {
-    "en": "LAN Room (KB wing)",
+    "en": "LAN Room (KB Wing)",
     "zh": "\u7f51\u7edc\u673a\u623f\uff08KB \u7ffc\uff09"
    },
    "vertices": [
@@ -5749,7 +5749,7 @@
   {
    "id": "LAN-BT",
    "label": {
-    "en": "LAN Room (BT wing)",
+    "en": "LAN Room (BT Wing)",
     "zh": "\u7f51\u7edc\u673a\u623f\uff08BT \u7ffc\uff09"
    },
    "vertices": [

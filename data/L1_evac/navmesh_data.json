@@ -4,7 +4,7 @@
   "floor": "L1",
   "building": "CIS Lakeside",
   "createdAt": "2026-08-15T13:36:41Z",
-  "updatedAt": "2026-11-10T15:00:53Z",
+  "updatedAt": "2026-11-10T16:54:16Z",
   "editor": "evacpipe"
  },
  "image": "/floorplans/evacuation/levels/LKS_L1_site.png",
@@ -4677,7 +4677,7 @@
    "x": 1645.0,
    "y": 1990.0,
    "label": {
-    "en": "Sand play area",
+    "en": "Sand Play Area",
     "zh": "\u6c99\u6c60\u6e38\u620f\u533a"
    },
    "link": null
@@ -6579,7 +6579,7 @@
   {
    "id": "SAND-PLAY",
    "label": {
-    "en": "Sand play area",
+    "en": "Sand Play Area",
     "zh": "\u6c99\u6c60\u6e38\u620f\u533a"
    },
    "vertices": [
@@ -9224,7 +9224,7 @@
    "id": "PLANT-ROOM-N",
    "kind": "service",
    "label": {
-    "en": "Plant room",
+    "en": "Plant Room",
     "zh": "\u673a\u623f"
    },
    "vertices": [

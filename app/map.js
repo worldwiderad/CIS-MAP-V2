@@ -1065,7 +1065,7 @@ export class MapView {
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const taken = [];
     const hit = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
-    const free = (...box) => !taken.some(r => hit(box, r));
+    const free = (...box) => !taken.some(r => hit(box, r)) && this.labelClear(box);
     const W = this.w, H = this.h, v = this.visible();
     // the markers keep their spot: the pin, the start, the floor-change chips (last frame's)
     const marks = [], R = this.route;
@@ -1111,8 +1111,9 @@ export class MapView {
     const all = order.flatMap(g => g.rooms.filter(r => g.mine(r.lx, r.ly)));
     const rooms = named.size ? [...all].sort((a, b) => named.has(b) - named.has(a)) : all;
     for (const r of rooms) {
-      const [cx, cy] = this.toScreen(r.lx, r.ly);
-      const bw = r.lw * s, bh = r.lh * s;
+      const spot = this.labelSpot(r);
+      if (!spot) continue;
+      const [cx, cy, bw, bh] = spot;
       if (cx + bw / 2 < 0 || cx - bw / 2 > W || cy + bh / 2 < 0 || cy - bh / 2 > H) continue;
       if (r.kind === 'stair') {
         // a stair the step names says its number even when its block is too small to: on a card
@@ -1142,9 +1143,10 @@ export class MapView {
           const capFont = `600 ${Math.max(9, size - 2)}px ${this.font}`, lh = Math.max(9, size - 2) + 2;
           const half = Math.ceil(names.length / 2);
           const ways = names.length ? [[names.join(sep)], [names.slice(0, half).join(sep), names.slice(half).join(sep)], names] : [];
-          // (none where it would run under a marker: the pin at the door, say)
+          // (none where it would run under a marker: the pin at the door, say; nor off the edge of the screen,
+          // where half of "Female students · Male students" read as something else)
           const clear = ls => { const w = Math.max(24 * k, ...ls.map(l => this.width(l, capFont))), h = 24 * k + 2 + ls.length * lh;
-            return !marks.some(b => hit([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], b)); };
+            return cx - w / 2 >= 1 && cx + w / 2 <= W - 1 && !marks.some(b => hit([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], b)); };
           const cap = ways.find(ls => ls.every(l => this.width(l, capFont) <= roomW) && 24 * k + 2 + ls.length * lh <= roomH && clear(ls)) || [];
           const capW = Math.max(0, ...cap.map(l => this.width(l, capFont))), capH = cap.length ? 2 + cap.length * lh : 0;
           const iy = cy - capH / 2;
@@ -1329,6 +1331,18 @@ export class MapView {
       taken.push(box);
     }
   }
+
+  // Where a room's name goes, in screen pixels: [x, y] of its middle and the width and height it may
+  // fill, or null for none. Here the plan seen flat from above: the room's label box, to scale. (The
+  // model the homepage and the slideshow show, app/model.js, tilts the plan and raises its walls: it
+  // answers with the floor its walls leave showing.)
+  labelSpot(r) {
+    const [x, y] = this.toScreen(r.lx, r.ly), s = this.cam.s;
+    return [x, y, r.lw * s, r.lh * s];
+  }
+  // Whether anything stops a name going in this box, [x0, y0, x1, y1] on the screen, besides the
+  // other names (the model's walls and edges do).
+  labelClear() { return true; }
 
   // (true when the number is drawn with the icon)
   iconLabel(r, cx, cy, bw, bh, icon, num, col) {

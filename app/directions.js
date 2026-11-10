@@ -7,7 +7,7 @@
 // Everything is measured in metres in the drawn frame (app/floors.js), where the sheets'
 // stretch is undone, so an angle here is a real angle.
 
-import { t, floorName, placeName, shortName, buildingName, nameIn } from './i18n.js';
+import { t, floorName, placeName, shortName, nameIn } from './i18n.js';
 import { inside, nearestOnRing } from './floors.js';
 
 const TURN = 40;        // degrees: less than this is walking on, not a turn
@@ -362,7 +362,7 @@ export function walkway(p) { return !!p && /walkway/i.test((p.label && p.label.e
 
 // A seam: where two sheets of one level meet at grade with nothing built there, the road south of
 // the pool deck from L1 onto Toh Tuck's (BRIDGE-11): a bridge with no deck or crossing of its own.
-// Not a place, not a floor change you would notice: "Carry on to Toh Tuck Level 1".
+// Not a place, not a floor change you would notice: "Carry on".
 export function seam(p) { return !!p && p.type === 'bridge' && !p.area; }
 
 const PLACE_NOUN = /\b(house|library|office|room|rooms|theatre|theater|canteen|cafe|pool|gymnasium|gym|centre|center|lab|studio|hall|lobby|entrance|area|zone|park|bay|field|garden|court|deck|bridge|toilets?|lounge|space|kitchen|store|storage|workroom|wing|counter|desk|reception|clinic|gallery|platform|stage|playground|walkway|point|lots|department|courtyard|academy|makerspace|closet)$/i;
@@ -383,8 +383,9 @@ function connectorStep(s, campus, lang, deck) {
   const from = campus.byId[s.fromFloor], to = campus.byId[s.toFloor];
   const p = from.portalById.get(s.id);
   const at = p ? [p.x, p.y] : null;
-  // across the bridge the building changes: say which ("to Lakeside Level 2")
-  const floor = from.building !== to.building && to.building !== 'tohtuck' ? `${buildingName(to.building, lang)} ${floorName(to, lang)}` : floorName(to, lang);
+  // (a bridge, the walkway or a seam stays on its level, so says no floor: "Cross the Linkway Bridge";
+  // it said "to Toh Tuck Level 2" while the TT wing was a building of its own, until 10 Nov 2026)
+  const floor = floorName(to, lang);
   const stair = nameIn(s.label, lang) || s.id;
   let kind, text, dist = null, focus = at ? [at] : [];
   if (s.type === 'bridge' && seam(p)) { kind = 'onward'; text = t(lang, 'seam', { floor }); }

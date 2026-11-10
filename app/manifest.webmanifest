@@ -1,7 +1,7 @@
 {
   "name": "CIS Map",
   "short_name": "CIS Map",
-  "description": "Walking directions anywhere on the CIS Lakeside campus, in English and Chinese.",
+  "description": "Walking directions anywhere on the CIS Lakeside campus, in 16 languages.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",

@@ -1,80 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#DA291C">
-  <title>CIS MAP</title>
-  <link rel="stylesheet" href="https://assets.web.digistorm.io/fonts/cis-sg-04-129/font.css">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1F24" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Walking directions to any room on the CIS Lakeside campus, in 16 languages.">
+  <!-- kept out of search engines until the school says otherwise, as the app is -->
+  <meta name="robots" content="noindex">
+  <title>CIS Map</title>
+  <link rel="icon" href="app/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="app/icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="app/icons/icon-180.png">
+  <!-- the app's own styles: its colours (light and dark), its font, the lockup and the bar -->
+  <link rel="stylesheet" href="app/app.css">
+  <!-- in a language other than English, the words wait (a moment, 2 s at most) for their own, so
+       English doesn't flash up first -->
+  <script>
+    try {
+      var l = localStorage.getItem('cismap.lang') || navigator.language || 'en';
+      if (!/^en\b/i.test(l)) {
+        document.documentElement.classList.add('wait');
+        setTimeout(function () { document.documentElement.classList.remove('wait'); }, 2000);
+      }
+    } catch (e) { /* storage blocked: English, then the language */ }
+  </script>
+  <style>
+    /* The homepage at the site's root (the first prototype that was here is in archive/prototype/): what the
+       map is, the way into it, and the map itself as a model, a route walking across it. */
+    :root {
+      --hero-in: #F2F4F6; --hero-out: #DFE3E7;   /* the ground the model stands on, lit in the middle */
+      --open-shadow: 0 8px 22px rgba(218, 41, 28, 0.26);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --hero-in: #1D2127; --hero-out: #111418; --open-shadow: 0 8px 22px rgba(0, 0, 0, 0.45); }
+    }
+
+    /* (the app's page is one screen that never scrolls; this one scrolls on a small phone) */
+    html, body { height: auto; overflow: visible; }
+    body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--surface); }
+    .wait .words, .wait .lang-pick span { visibility: hidden; }
+
+    .bar { position: sticky; top: 0; flex: none; height: calc(var(--bar-h) + var(--safe-t)); }
+    /* the language list: the phone's own picker, under a button that looks like the app's */
+    .lang-pick { position: relative; display: flex; align-items: center; gap: 7px; padding: 0 12px 0 10px; cursor: pointer; }
+    .lang-pick span { font-size: 14px; font-weight: 600; white-space: nowrap; }
+    .lang-pick select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+    .lang-pick:has(select:focus-visible) { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+
+    .hero { position: relative; flex: 1; display: flex; flex-direction: column; }
+    .words { position: relative; z-index: 2; padding: 32px calc(20px + var(--safe-r)) 8px calc(20px + var(--safe-l)); max-width: 620px; }
+    h1 {
+      font-size: clamp(34px, 9.4vw, 44px); line-height: 1.04; font-weight: 800; letter-spacing: -0.025em;
+      color: var(--ink); text-wrap: balance;
+    }
+    /* Chinese and Korean headings break at their spaces ("在 Lakeside / 找到任何房间", not "找 / 到"),
+       Japanese at its phrases where the browser can */
+    :is(:lang(zh-Hans), :lang(zh-Hant), :lang(ko)) h1 { word-break: keep-all; }
+    :lang(ja) h1 { word-break: auto-phrase; }
+    /* Hindi, Tamil and Thai: no tightening (it pulls their joined letters apart, as in the app), and room
+       for the marks above and below a line */
+    :is(:lang(hi), :lang(ta), :lang(th)) h1 { letter-spacing: normal; line-height: 1.24; }
+    .lead { margin-top: 16px; font-size: 19px; line-height: 1.38; font-weight: 500; color: var(--ink); text-wrap: pretty; max-width: 30em; }
+    .open {
+      margin-top: 26px; display: flex; align-items: center; justify-content: center; gap: 10px;
+      height: 54px; padding: 0 28px; border-radius: 27px; max-width: 420px;
+      background: var(--red); color: #fff; font-size: 17px; font-weight: 700; text-decoration: none;
+      box-shadow: var(--open-shadow); transition: background-color 0.15s;
+    }
+    .open:hover { background: #B21F15; }
+    .open svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+    /* on a computer: a code to carry on on a phone (a phone is already there) */
+    .scan { display: none; }
+
+    .stage {
+      position: relative; flex: 1; min-height: 340px; overflow: hidden;
+      background: radial-gradient(90% 80% at 50% 55%, var(--hero-in) 0%, var(--hero-out) 100%);
+    }
+    /* the words' ground fading into the model's, above it */
+    .stage::before {
+      content: ""; position: absolute; inset: 0 0 auto; height: 40px; z-index: 1; pointer-events: none;
+      background: linear-gradient(180deg, var(--surface), transparent);
+    }
+    .stage canvas { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s; }
+    .stage.on canvas { opacity: 1; }
+
+    /* a computer, or a tablet on its side: the words on the left, on a fade over the model */
+    @media (min-width: 900px) and (min-height: 520px) {
+      .hero { display: block; }
+      .stage { position: absolute; inset: 0; min-height: 0; background: radial-gradient(70% 80% at 70% 52%, var(--hero-in) 0%, var(--hero-out) 100%); }
+      .stage::before {
+        inset: 0 auto 0 0; width: 62%; height: auto;
+        background: linear-gradient(90deg, var(--surface) 0%, var(--surface) 52%, color-mix(in srgb, var(--surface) 80%, transparent) 70%, transparent 100%);
+      }
+      .words {
+        min-height: 100%; display: flex; flex-direction: column; justify-content: center;
+        padding: 56px 32px 72px calc(clamp(32px, 6vw, 96px) + var(--safe-l)); max-width: calc(clamp(32px, 6vw, 96px) + min(540px, 46vw));
+      }
+      .hero { min-height: 600px; }
+      h1 { font-size: clamp(44px, 4.6vw, 64px); }
+      .lead { font-size: clamp(19px, 1.6vw, 22px); margin-top: 20px; }
+      .open { align-self: flex-start; margin-top: 32px; }
+    }
+    @media (min-width: 900px) and (min-height: 520px) and (hover: hover) and (pointer: fine) {
+      .scan { display: flex; align-items: center; gap: 24px; margin-top: 40px; }
+      .scan .code { width: 200px; height: 200px; padding: 12px; border-radius: 18px; background: #fff; flex: none;
+        box-shadow: 0 0 0 1px var(--line), 0 6px 20px rgba(20, 24, 30, 0.08); }
+      .scan .code svg { width: 100%; height: 100%; display: block; }
+      .scan p { font-size: 16px; line-height: 1.4; color: var(--ink-2); max-width: 10em; }
+    }
+    @media (prefers-reduced-motion: reduce) { .stage canvas, .open { transition: none; } }
+  </style>
 </head>
 <body>
-  <div id="app">
+  <header class="bar">
+    <a class="brand" href="./" id="brand" aria-label="CIS Map">
+      <svg class="brand-cis" viewBox="0 0 150 66" aria-hidden="true"><path d="M41.3132 63.9641C38.1367 65.3203 34.6712 66 30.9134 66C22.2888 66 14.9336 62.9068 8.85082 56.7171C2.76804 50.5243 0 41.4208 0 32.591C0 22.9965 2.2402 16.0831 8.66544 9.51268C19.9795 -2.05793 34.4827 0.147947 34.8566 0.204589L34.8251 0.956663H34.423C25.7041 0.956663 19.7407 8.37356 20.3 32.7263C20.5953 45.5839 22.4177 53.5578 26.2508 58.3534C29.2199 62.0005 32.8269 63.6809 37.1407 63.6809C38.3127 63.6809 39.7108 63.6368 41.087 63.2152L41.3132 63.9641Z"/><path d="M49.7053 10.9381C49.7053 15.6362 45.8973 19.3557 40.6503 18.6445C37.6969 18.2449 35.2116 16.0894 34.445 13.207C33.0248 7.86062 36.8108 3.09958 41.7877 3.09958C46.045 3.09958 49.7053 6.58303 49.7053 10.9381Z"/><path d="M85.5579 65.6161V64.8641L82.4191 63.9861C81.863 63.8382 81.8755 63.6242 81.8724 63.2592L81.8315 2.31919C81.8284 2.10521 81.9572 1.95416 82.3657 1.83773C82.7741 1.7213 85.5045 0.972377 85.5045 0.972377V0.22345H64.3247V0.96923C64.3247 0.96923 66.9514 1.69613 67.4635 1.83773C67.9756 1.98248 68.007 2.14612 68.007 2.56463C68.007 2.56463 68.0133 63.2781 68.0133 63.5078C68.0133 63.7375 67.9159 63.8634 67.4792 63.9861L64.3436 64.8641V65.6161H85.5579Z"/><path d="M134.647 18.6603C138.949 18.6603 142.43 15.1768 142.43 10.8658C142.43 6.55471 138.952 3.07126 134.647 3.07126C130.343 3.07126 126.865 6.55471 126.865 10.8658C126.865 15.1768 130.343 18.6603 134.647 18.6603Z"/><path d="M113.958 48.5072C109.656 48.5072 106.175 51.9907 106.175 56.3017C106.175 60.6128 109.653 64.0962 113.958 64.0962C118.262 64.0962 121.74 60.6128 121.74 56.3017C121.74 51.9907 118.262 48.5072 113.958 48.5072Z"/><path d="M147.385 45.886C147.385 21.5679 113.678 27.0904 113.678 10.8784C113.678 9.6228 113.848 8.42074 114.259 7.3414C116.748 0.833918 125.661 0.884266 127.512 0.922027L127.547 0.242328C125.592 0.132192 123.208 0.040936 120.713 0.450014C116.047 1.21467 112.654 2.94224 109.66 5.60125C109.6 5.65474 109.537 5.70509 109.477 5.76173C109.468 5.77117 109.455 5.78061 109.446 5.79005C105.836 9.05009 103.8 13.7734 103.8 19.5225C103.8 41.2571 138.188 35.2216 138.188 53.5704C138.188 55.3105 137.767 57.9192 136.394 59.5618C133.114 63.4889 128.86 64.9144 126.268 65.2605L126.535 65.9843C127.729 65.8805 128.807 65.6917 129.793 65.5028C134.732 64.5557 138.999 62.2585 141.802 59.2219C145.387 55.5182 147.378 50.883 147.378 45.8891L147.385 45.886Z"/></svg>
+      <span class="brand-rule" aria-hidden="true"></span>
+      <svg class="brand-map" viewBox="0 0 286 100" aria-hidden="true"><mask id="brand-pin-gap" maskUnits="userSpaceOnUse" x="-10" y="-10" width="306" height="120"><rect x="-10" y="-10" width="306" height="120" fill="#fff"/><path d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z" fill="#000" stroke="#000" stroke-width="7" stroke-linejoin="round"/></mask><g class="brand-letters" mask="url(#brand-pin-gap)" fill-rule="evenodd"><path d="M0 100V0h25l25 57L75 0h25v100H78V41L59 86H41L22 41v59Z"/><path d="M104 100L140 0h25l36 100h-23l-7-20h-37l-7 20Z"/><path d="M207 0h46c21 0 33 14 33 33s-12 33-33 33h-23v34h-23Z M230 20v26h21c8 0 12-6 12-13s-4-13-12-13Z"/></g><path class="brand-pin" d="M152.5 69C148.5 62.75 140 55.875 140 44A12.5 12.5 0 1 1 165 44C165 55.875 156.5 62.75 152.5 69Z"/><circle class="brand-hole" cx="152.5" cy="44" r="5"/></svg>
+      <span class="brand-word" aria-hidden="true"></span>
+    </a>
+    <label class="bar-btn lang-pick">
+        <svg class="lang-ico" viewBox="0 0 24 24" aria-hidden="true">
+          <rect class="back" x="1.9" y="2.4" width="12.6" height="12.6" rx="2.4"/>
+          <text class="back-t" x="8.2" y="11.8">文</text>
+          <rect class="front" x="9.4" y="9" width="13.2" height="13.2" rx="2.6"/>
+          <text class="front-t" x="16" y="19.3">A</text>
+        </svg>
+      <span id="lang-name">English</span>
+      <select id="lang" aria-label="Language"></select>
+    </label>
+  </header>
 
-    <!-- Top Bar -->
-    <header id="topbar">
-      <div id="title-group">
-        <img id="cis-logo" src="assets/img/cis-logo-white.svg" alt="CIS" height="22">
-        <span id="title-sep">|</span>
-        <h1 id="app-title">MAP</h1>
-        <span id="floor-badge">Level 4 Demo</span>
-      </div>
-      <div id="lang-wrap">
-        <button id="btn-lang" aria-label="Language">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-        </button>
-        <div id="lang-dropdown" class="dropdown-hidden">
-          <button class="lang-option active" data-lang="en">English</button>
-          <button class="lang-option" data-lang="zh">中文</button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Canvas Area -->
-    <div id="canvas-wrap">
-      <canvas id="mapcanvas"></canvas>
-      <div id="loading">
-        <div class="spinner"></div>
-        <span id="loading-text">Loading map...</span>
-      </div>
+  <main class="hero">
+    <div class="words">
+      <h1 data-t="homeTitle">Find any room at Lakeside</h1>
+      <p class="lead" data-t="homeLead">Walking directions to any room on all six floors, from wherever you’re standing.</p>
+      <a class="open" id="open" href="app/"><span data-t="homeOpen">Open the map</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.4 1.4 5.6 5.6H4v2h12.2l-5.6 5.6L12 20l8-8z"/></svg></a>
+      <div class="scan" id="scan"><div class="code"><svg id="qr" viewBox="0 0 10 10" role="img" aria-label="QR code for the map"></svg></div><p data-t="homeScan">Or scan this with your phone</p></div>
     </div>
+    <!-- the map as a model (app/model.js): a picture, so a screen reader passes it -->
+    <div class="stage" id="stage" aria-hidden="true"><canvas id="model"></canvas></div>
+  </main>
 
-    <!-- Bottom Controls -->
-    <div id="controls">
-      <div id="route-summary">
-        <div class="summary-pill" id="pill-start" data-target="start">
-          <span class="pill-icon"><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#4285F4" stroke="#fff" stroke-width="1.5"/><circle cx="6" cy="6" r="2" fill="#fff"/></svg></span>
-          <span class="pill-label" id="label-start">From</span>
-          <span class="pill-value placeholder" id="pill-start-value">Tap to select</span>
-        </div>
-        <button id="btn-swap" title="Swap">⇆</button>
-        <div class="summary-pill" id="pill-dest" data-target="dest">
-          <span class="pill-icon"><svg width="10" height="16" viewBox="0 0 10 16"><path d="M5 15C3.5 11.5 0 9 0 5a5 5 0 0 1 10 0c0 4-3.5 6.5-5 10Z" fill="#DA291C"/><circle cx="5" cy="5" r="2" fill="#fff"/></svg></span>
-          <span class="pill-label" id="label-dest">To</span>
-          <span class="pill-value placeholder" id="pill-dest-value">Tap to select</span>
-        </div>
-      </div>
-      <div id="status"></div>
-    </div>
-  </div>
+  <script type="module">
+    import { LANGUAGES, language, langId, systemLang, loadLang, t, nameIn } from './app/i18n.js';
+    import { qr, qrPath } from './app/qr.js';
+    import { titleMap } from './app/model.js';
 
-  <!-- Full-screen location picker -->
-  <div id="location-panel" class="panel-hidden">
-    <div id="panel-header">
-      <button id="panel-back" aria-label="Back">←</button>
-      <input id="panel-search" type="text" placeholder="Search locations..." autocomplete="off">
-    </div>
-    <div id="panel-title">Select starting point</div>
-    <div id="panel-list"></div>
-  </div>
+    const $ = id => document.getElementById(id);
+    // the app's own memory of the language: one chosen here is the app's too, and the other way round
+    const store = {
+      get(k) { try { return localStorage.getItem('cismap.' + k); } catch { return null; } },
+      set(k, v) { try { localStorage.setItem('cismap.' + k, v); } catch { /* private browsing: fine without */ } },
+    };
+    const APP = new URL('app/', location.href).href;
+    // a link's language, else the one chosen before, else the phone's
+    const linked = langId(new URLSearchParams(location.search).get('lang'));
+    let lang = linked || langId(store.get('lang')) || systemLang();
+    let picked = !!linked, view = null;
 
-  <script src="js/shared.js"></script>
-  <script src="js/app.js"></script>
+    function apply() {
+      const l = language(lang), brand = l.brand || '';
+      document.documentElement.lang = l.html;
+      document.documentElement.classList.toggle('brand-local', !!brand);
+      for (const el of document.querySelectorAll('span.brand-word')) el.textContent = brand;
+      document.title = t(lang, 'docTitle');
+      $('brand').setAttribute('aria-label', t(lang, 'docTitle'));
+      for (const el of document.querySelectorAll('[data-t]')) el.textContent = t(lang, el.dataset.t);
+      $('lang-name').textContent = l.name;
+      $('lang').setAttribute('aria-label', l.label);
+      $('lang').value = lang;
+      // a language picked here (or brought by a link) goes into the map with it; else the map asks, as on
+      // any first visit, the phone's own language first
+      $('open').href = picked ? `app/?lang=${encodeURIComponent(lang)}` : 'app/';
+      document.documentElement.classList.remove('wait');
+      if (view) view.setLang(lang);
+    }
+
+    const pick = $('lang');
+    for (const l of LANGUAGES) { const o = new Option(l.name, l.id); o.lang = l.html; pick.add(o); }
+    pick.addEventListener('change', async () => {
+      lang = pick.value; picked = true; store.set('lang', lang);
+      await loadLang(lang);
+      apply();
+    });
+    if (language(lang).file) await Promise.race([loadLang(lang), new Promise(r => setTimeout(r, 1500))]);
+    apply();
+
+    // the code: the app's own QR maker, the app's address
+    const code = qr(APP), { d, n } = qrPath(code, 2), q = $('qr');
+    q.setAttribute('viewBox', `0 0 ${n} ${n}`); q.innerHTML = `<path d="${d}" fill="#3D3935"/>`;
+
+    // the model: Level 3, a route the router finds as the page loads, fitted beside the words on a
+    // computer and below them on a phone
+    const wide = matchMedia('(min-width: 900px) and (min-height: 520px)'), dark = matchMedia('(prefers-color-scheme: dark)');
+    // (on a phone the plan is turned a quarter more, so the route runs down the screen, the way a phone
+    // is tall, and the plan is drawn bigger: about 10 px a metre against 6.6, so the rooms have room for
+    // their names)
+    // (the route's line is what is fitted: the pin and its card stand 45 px above its end, clear of the fade)
+    const box = () => (wide.matches ? [0.6, 0.24, 0.92, 0.8] : [0.14, 0.24, 0.86, 0.88]);
+    const turn = () => (wide.matches ? 0.15 : Math.PI / 2 - 0.15);
+    titleMap($('model'), {
+      from: 'L3:KB-305', to: 'L3:LKS-304', box: box(), turn: turn(), dark: dark.matches,
+      // no names under the words' fade (on the left on a computer, along the top on a phone)
+      inset: (w, h) => (wide.matches ? [0, 0, 0, 0.36 * w] : [34, 0, 0, 0]),
+      toName: (L, place) => (place ? nameIn(place.name, L) : ''),
+    }).then(v => {
+      view = v; v.setLang(lang); v.play();
+      $('stage').classList.add('on');
+      wide.addEventListener('change', () => { v.view.box = box(); v.view.turn = turn(); v.resize(); });
+      dark.addEventListener('change', () => v.setDark(dark.matches));
+    }).catch(e => console.warn('model', e));
+  </script>
 </body>
 </html>

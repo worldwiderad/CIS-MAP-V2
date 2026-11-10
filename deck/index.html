@@ -56,7 +56,7 @@ b, strong { color: var(--ink); font-weight: 700; }
 .cover { display: grid; place-items: center; }
 .cover img { height: 132px; }
 
-/* the title: the map is the whole slide (deck/titlemap.js), the words on a white fade at its left */
+/* the title: the map is the whole slide (app/model.js), the words on a white fade at its left */
 .title { background: radial-gradient(70% 80% at 68% 52%, #F4F6F8 0%, #E9ECEF 62%, #E1E5E9 100%); }
 .title::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, #fff 0%, #fff 34%, rgba(255,255,255,.82) 43%, rgba(255,255,255,0) 58%); }
@@ -68,6 +68,11 @@ b, strong { color: var(--ink); font-weight: 700; }
 .mapbox { --zoom: 1.4; position: absolute; left: 0; top: 0; width: calc(100% / var(--zoom)); height: calc(100% / var(--zoom));
   transform: scale(var(--zoom)); transform-origin: 0 0; z-index: 0; pointer-events: none; }
 .mapbox canvas { position: absolute; inset: 0; }
+
+/* why I built it: the words alone, a little larger, in the middle of the slide's height */
+.turn { display: flex; flex-direction: column; justify-content: center; padding-bottom: 150px; }
+.turn h2 { font-size: 80px; margin-bottom: 36px; }
+.turn .lead { font-size: 38px; max-width: 1240px; }
 
 /* the campus today: words beside the plan on the wall */
 .split { display: grid; grid-template-columns: 1fr 900px; gap: 72px; align-items: center; height: 100%; }
@@ -218,12 +223,32 @@ b, strong { color: var(--ink); font-weight: 700; }
 .notepad { position: fixed; left: 0; right: 0; bottom: 0; max-height: 34vh; overflow: auto; background: rgba(20,22,25,.94);
   color: #EDEBE8; font: 18px/1.5 var(--font); padding: 18px 26px; display: none; z-index: 5; }
 .notepad.on { display: block; }
+.lock { position: fixed; inset: 0; z-index: 50; background: #fff; display: grid; place-content: center; justify-items: center;
+  gap: 18px; padding: 24px; font-family: var(--font); color: var(--ink); }
+.lock[hidden] { display: none; }
+.lock img { height: 52px; margin-bottom: 22px; }
+.lock label { font-size: 15px; font-weight: 600; color: var(--ink-2); }
+.lock-row { display: flex; gap: 10px; }
+.lock input { font: inherit; font-size: 17px; width: 240px; height: 48px; padding: 0 16px; border: 1px solid #D0D0CE; border-radius: 24px;
+  color: var(--ink); background: #fff; }
+.lock input:focus-visible { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+.lock button { font: inherit; font-size: 17px; font-weight: 700; height: 48px; padding: 0 26px; border: 0; border-radius: 24px;
+  background: var(--red); color: #fff; cursor: pointer; }
+.lock button:hover { background: #B21F15; }
+.lock-err { min-height: 22px; font-size: 15px; color: #B21F15; margin: 0; }
 .nav { position: fixed; top: 0; bottom: 0; width: 5vw; z-index: 3; background: transparent; border: 0; cursor: pointer; }
 .nav.prev { left: 0; } .nav.next { right: 0; }
 .nav:focus-visible { outline: 3px solid var(--ink); outline-offset: -6px; }
 </style>
 </head>
 <body>
+<!-- a password before the slides: a curtain, not security (it ships with the page; owner, 10 Nov 2026) -->
+<form class="lock" id="lock" autocomplete="off" hidden>
+  <img src="../app/icons/cis-map-logo.svg" alt="CIS Map">
+  <label for="lock-pw">Password</label>
+  <div class="lock-row"><input id="lock-pw" type="password" autocomplete="off" spellcheck="false"><button type="submit">Open</button></div>
+  <p class="lock-err" id="lock-err" aria-live="polite"></p>
+</form>
 <div class="stage" id="stage">
 
   <!-- the lockup alone, so the next click opens the title with its route drawing -->
@@ -245,12 +270,18 @@ b, strong { color: var(--ink); font-weight: 700; }
   <section class="slide" aria-label="The campus today">
     <div class="split">
       <div>
-        <h2><span class="code big">BT-206-2</span> is a real room</h2>
-        <p class="lead">So are TK-218 and KB-305, among 606 rooms and places on six floors. If you're new here, the map you'll find is the evacuation plan by the stairs, and that was drawn to get people out of the building in a fire.</p>
+        <h2>This school is really confusing</h2>
+        <p class="lead">It has six levels and five wings, with 606 rooms and places between them and hallways that are easy to get lost in. If you're new, all you have to go by is an evacuation plan, if there's one nearby, and those were drawn to get people out in a fire.</p>
       </div>
       <figure class="plate" data-a style="--i:2"><img src="img/build-evac.jpg" alt="Part of the Level 3 evacuation plan: the theatre and Pod A"></figure>
     </div>
-    <aside class="notes">BT-206-2 is a room inside BT-206. The plan on the right is part of the Level 3 evacuation plan, the theatre and Pod A. Ask who here has walked a lost visitor to a room.</aside>
+    <aside class="notes">The five wings are LKS, BT, TK, KB and TT. If you want an example of a confusing code, BT-206-2 is a real room, inside BT-206. The plan on the right is part of the Level 3 evacuation plan, the theatre and Pod A. Ask who here has walked a lost visitor to a room.</aside>
+  </section>
+
+  <section class="slide turn" aria-label="Why I built it">
+    <h2>That's why I built CIS Map</h2>
+    <p class="lead">In April I showed the school one floor of it, 53 places traced from a photo of the evacuation plan, and promised the rest. It took a while, but it now covers all six levels and 606 places, and I'd like to walk you through it.</p>
+    <aside class="notes">Then straight into the search on the next slide.</aside>
   </section>
 
   <section class="slide" aria-label="Live: search">
@@ -315,7 +346,7 @@ b, strong { color: var(--ink); font-weight: 700; }
     <h2>The small things</h2>
     <ul class="qol">
       <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm-2 6h3v5h4.2l2.6 5.2-1.8.9-2-4.1H11a1 1 0 0 1-1-1zm-1 2v2.3a4.5 4.5 0 1 0 5.9 5.7h2.1A6.5 6.5 0 1 1 9 10z"/></svg></span><div><h3>Step-free</h3><p>Switch it on and the route sticks to lifts and ramps. If a room can only be reached by stairs, the app says so.</p></div></li>
-      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM5.3 9h3.4c.8 0 1.3.6 1.3 1.3V15H8.8v5H5.2v-5H4v-4.7C4 9.6 4.5 9 5.3 9zM17 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM15.6 9h2.8c.7 0 1.2.4 1.4 1l1.7 5.5H19V20h-4v-4.5h-2.5L14.2 10c.2-.6.7-1 1.4-1z"/></svg></span><div><h3>Toilets by who they're for</h3><p>Ask for a girls', boys', staff or accessible toilet and you get the nearest one, as the signs say.</p></div></li>
+      <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM5.3 9h3.4c.8 0 1.3.6 1.3 1.3V15H8.8v5H5.2v-5H4v-4.7C4 9.6 4.5 9 5.3 9zM17 4.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM15.6 9h2.8c.7 0 1.2.4 1.4 1l1.7 5.5H19V20h-4v-4.5h-2.5L14.2 10c.2-.6.7-1 1.4-1z"/></svg></span><div><h3>Toilets by who they're for</h3><p>Female or male, students or adults, or accessible: ask and you get the nearest one, as the signs say.</p></div></li>
       <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6v-2h6V5h-6zM10 7l5 5-5 5-1.4-1.4 2.6-2.6H3v-2h8.2L8.6 8.4z"/></svg></span><div><h3>Which side are you on?</h3><p>The libraries and the gym have more than one door, so a trip from one starts by asking which side you're at.</p></div></li>
       <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1 8v7h2v-7zm0-4v2h2V6z"/></svg></span><div><h3>Why the long way</h3><p>When a route goes round a staff-only area or the other school section, a line under it says so.</p></div></li>
       <li><span class="ico"><svg viewBox="0 0 24 24"><path d="M15 4l5 5-5 5-1.4-1.4L16.2 10H12a5 5 0 0 0-5 5v3H5v-3a7 7 0 0 1 7-7h4.2l-2.6-2.6zM3 20h14v2H3z"/></svg></span><div><h3>Share a route</h3><p>Send a trip as a link, or show it as a QR code for a parent or a visitor to scan.</p></div></li>
@@ -342,8 +373,8 @@ b, strong { color: var(--ink); font-weight: 700; }
       <div class="node step" data-a style="--i:3; left:330px; top:550px"><h4>Reading the signs</h4><span class="tool">tools/tourkit</span><p>7,970 lines of text read off the photos, which name 44 of the 47 toilets by whom they're for.</p></div>
 
       <div class="node dat" data-a style="--i:5; left:670px; top:40px; height:230px"><img src="img/build-map.jpg" alt=""><div><h4>Floor data</h4><span class="tool">data/*_evac/navmesh_data.json</span><p>606 places with their walls, doors and stairs, in campus metres</p></div></div>
-      <div class="node dat" data-a style="--i:5; left:670px; top:296px; height:220px"><svg class="mini" id="graph-mini" viewBox="0 0 1800 900" aria-hidden="true"></svg><div><h4>Routing graph</h4><span class="tool">routing/build.mjs</span><p><span id="g-nodes">3,626</span> points, <span id="g-edges">12,862</span> corridor links, 103 stairs, lifts and bridges, 10 gates</p></div></div>
-      <div class="node step" data-a style="--i:5; left:670px; top:542px; height:118px"><h4>Checks</h4><p>483 automatic checks after every change, and 10,000 test trips with no route through a wall</p></div>
+      <div class="node dat" data-a style="--i:5; left:670px; top:296px; height:220px"><svg class="mini" id="graph-mini" viewBox="0 0 1800 900" aria-hidden="true"></svg><div><h4>Routing graph</h4><span class="tool">routing/build.mjs</span><p><span id="g-nodes">3,633</span> points, <span id="g-edges">12,886</span> corridor links, 103 stairs, lifts and bridges, 10 gates</p></div></div>
+      <div class="node step" data-a style="--i:5; left:670px; top:542px; height:118px"><h4>Checks</h4><p>494 automatic checks after every change, and 10,000 test trips with no route through a wall</p></div>
 
       <div class="node bundle" data-a style="--i:7; left:1020px; top:210px">
         <svg viewBox="0 0 188 104" aria-hidden="true"><g fill="#fff" stroke="#9BA4AF" stroke-width="2"><path d="M8 14h40l12 12v66H8z"/><path d="M72 8h40l12 12v72H72z"/><path d="M136 14h40l12 12v66h-52z"/></g><g fill="#6B6662" font-size="12" font-weight="700" text-anchor="middle" font-family="Hanken Grotesk, sans-serif"><text x="34" y="64">floors</text><text x="98" y="58">graph</text><text x="162" y="64">app</text></g></svg>
@@ -362,7 +393,7 @@ b, strong { color: var(--ink); font-weight: 700; }
       <div class="eng-count" id="eng-count"><b>0</b> points settled</div>
     </div>
     <ol class="eng-cards">
-      <li class="c1"><h4>The graph</h4><p><span class="gv-points">3,626</span> points where corridors meet, doors open and stairs land, joined by <span class="gv-links">12,862</span> links, and 103 stairs, lifts and bridges between floors. <span class="tool">routing/build.mjs</span></p></li>
+      <li class="c1"><h4>The graph</h4><p><span class="gv-points">3,633</span> points where corridors meet, doors open and stairs land, joined by <span class="gv-links">12,886</span> links, and 103 stairs, lifts and bridges between floors. <span class="tool">routing/build.mjs</span></p></li>
       <li class="c2"><h4>Prices</h4><p>A link costs its walking distance, up to four times as much against a wall and back to normal 1.2 m out, so routes keep to the middle of a corridor. Floor a trip should avoid costs more, and a closed gate can't be used. Stairs cost their climb, 5 s a metre up and 3 down, and 10 s more a flight, so a trip on one floor never goes down and back up to save a few seconds. A lift costs 60 s of waiting.</p></li>
       <li class="c3"><h4>Dijkstra's search</h4><p>From KB-305 outwards, the cheapest point not yet settled comes off a binary heap and its neighbours' prices drop where it offers a cheaper way. When the library comes off the heap, the route is found: here after <span class="gv-settled">365</span> points. <span class="tool">routing/engine.mjs</span></p></li>
       <li class="c4"><h4>The line</h4><p>The chain of links zig-zags through the graph (grey). The app straightens it where the floor allows and rounds its corners, so the line drawn (red) keeps to the corridor. <span class="tool">app/map.js smoothLine</span></p></li>
@@ -396,9 +427,9 @@ b, strong { color: var(--ink); font-weight: 700; }
           <li><span class="who">Admissions</span><span class="what">The link in the welcome email to new families<span class="why">So a family can find the classroom before they find a parking space.</span></span></li>
         </ul>
       </div>
-      <div class="tryit"><div class="qr"><svg id="qr" viewBox="0 0 10 10" role="img" aria-label="QR code for the app"></svg></div><p>Try it now</p><p class="url" id="url"></p></div>
+      <div class="tryit"><div class="qr"><svg id="qr" viewBox="0 0 10 10" role="img" aria-label="QR code for the app, starting in the Board Room"></svg></div><p>Try it now</p><p class="url" id="url"></p></div>
     </div>
-    <aside class="notes">Optional extra: a list of who teaches where would let families search for a teacher's name or a subject. Then questions, with the code left up.</aside>
+    <aside class="notes">Optional extra: a list of who teaches where would let families search for a teacher's name or a subject. Then questions, with the code left up. It opens the map with this room, the Board Room, as the start, so anyone who scans it only has to pick where to go.</aside>
   </section>
 
   <div class="chrome" aria-hidden="true"><img src="../app/icons/cis-map-logo.svg" alt=""><span>Radek Green</span><span class="n" id="n"></span></div>
@@ -410,7 +441,7 @@ b, strong { color: var(--ink); font-weight: 700; }
 
 <script type="module">
 import { qr, qrPath } from '../app/qr.js';
-import { titleMap } from './titlemap.js';
+import { titleMap } from '../app/model.js';
 const APP_URL = 'https://worldwiderad.github.io/CIS-MAP-V2/app/';
 const stage = document.getElementById('stage'), slides = [...stage.querySelectorAll('.slide')];
 const TITLE = 1, BUILD = slides.findIndex(s => s.getAttribute('aria-label') === 'How it is made');
@@ -438,7 +469,7 @@ for (const ph of stage.querySelectorAll('.iphone')) {
   </div></div>`;
 }
 // A clicker sends Page Down and Page Up (some send the arrows). Once a demo or a tap put the keyboard focus inside a
-// phone, its key presses went to the app and the slides stopped moving on slides 4 to 6. The app is on the same site,
+// phone, its key presses went to the app and the slides stopped moving on the three phone slides (5 to 7). The app is on the same site,
 // so they are heard here as well and passed on, except an arrow while typing in the app's search box (it moves the cursor).
 for (const f of stage.querySelectorAll('.iphone iframe')) f.addEventListener('load', () => {
   try {
@@ -512,6 +543,9 @@ const tick = () => { const d = new Date(), t = `${d.getHours() % 12 || 12}:${Str
 tick(); setInterval(tick, 10000);
 
 let at = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+// (behind the password, below, until it is given: no key or swipe turns a slide)
+let locked = true;
+try { locked = sessionStorage.getItem('cismap.deck') !== 'open'; } catch { /* storage blocked: it asks each time */ }
 function show(i) {
   at = Math.max(0, Math.min(slides.length - 1, i));
   slides.forEach((s, k) => s.classList.toggle('on', k === at));
@@ -532,6 +566,7 @@ addEventListener('hashchange', () => { const n = parseInt(location.hash.slice(1)
 document.getElementById('prev').onclick = () => show(at - 1);
 document.getElementById('next').onclick = () => show(at + 1);
 addEventListener('keydown', e => {
+  if (locked) return;
   if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(at + 1); }
   else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(at - 1); }
   else if (e.key === 'Home') show(0); else if (e.key === 'End') show(slides.length - 1);
@@ -540,11 +575,12 @@ addEventListener('keydown', e => {
 });
 let tx = null;
 addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) show(at + (dx < 0 ? 1 : -1)); tx = null; });
+addEventListener('touchend', e => { if (tx == null || locked) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) show(at + (dx < 0 ? 1 : -1)); tx = null; });
 
 // the title's map: Level 3 as the app draws it, made a model, and a route the app works out as the slide loads;
 // it waits, drawn, behind the opening slide, and the route draws itself when the title comes up
-titleMap(document.getElementById('titlemap'), { from: 'L3:KB-305', to: 'L3:LKS-304', toName: 'Secondary Library', stageScale: () => scale })
+titleMap(document.getElementById('titlemap'), { from: 'L3:KB-305', to: 'L3:LKS-304', toName: 'Secondary Library', stageScale: () => scale,
+  inset: w => [0, 0, 0, 0.36 * w] })   // (no names under the white the title's words sit on)
   .then(v => { title = v; if (at === TITLE) v.play(); })
   .catch(e => console.error('title map', e));
 
@@ -640,11 +676,24 @@ fetch('engine.json').then(r => r.json()).then(G => {
   document.getElementById('eng-time').innerHTML = `Timed just now, in this browser: <b>${ms < 1 ? ms.toFixed(2) : ms.toFixed(1)} ms</b> for this route, and <b>${far.toFixed(1)} ms</b> from the Main Entrance to TK-508 on Level 5.`;
 })().catch(e => console.warn('timing', e));
 
-// the last slide's code: the app's own QR maker (app/qr.js)
-const code = qr(APP_URL), { d, n } = qrPath(code, 2);
+// the last slide's code: the app's own QR maker (app/qr.js). It starts the map in the room the meeting
+// is in, the Board Room (LKS-405, Level 4; owner, 10 Nov 2026), as a door label's code would: whoever
+// scans it is asked only where to. The address under it is the app's, plain
+const HERE = 'L4:LKS-405';
+const code = qr(`${APP_URL}?here=${HERE}`), { d, n } = qrPath(code, 2);
 const q = document.getElementById('qr'); q.setAttribute('viewBox', `0 0 ${n} ${n}`); q.innerHTML = `<path d="${d}" fill="#3D3935"/>`;
 document.getElementById('url').textContent = APP_URL.replace('https://', '').replace(/\/$/, '');
-show(at);
+// The password: "boardroom", here in the page for anyone who reads it, so a curtain rather than security. Once
+// given, this tab keeps the slides open, so a reload in the middle of the talk doesn't ask again.
+const PASSWORD = 'boardroom', lock = document.getElementById('lock'), pw = document.getElementById('lock-pw');
+lock.addEventListener('submit', e => {
+  e.preventDefault();
+  if (pw.value.trim().toLowerCase() !== PASSWORD) { document.getElementById('lock-err').textContent = 'That isn\'t the password.'; pw.select(); return; }
+  locked = false; lock.hidden = true;
+  try { sessionStorage.setItem('cismap.deck', 'open'); } catch { /* fine without */ }
+  show(at);
+});
+if (locked) { lock.hidden = false; pw.focus(); } else show(at);
 </script>
 </body>
 </html>
