@@ -1597,6 +1597,8 @@
   "liftsStepFreeOnly": true,
   "_lifts": "A lift is mostly the wait. Only a step-free trip takes a lift (owner, 5 Nov 2026: \"just step free\"); a step-free trip uses only lifts and ramps.",
   "landingSeconds": 2,
+  "flightPriceSeconds": 10,
+  "_flight": "Each flight of stairs is priced 10 s more than it takes, never shown in the time. Priced by its time alone, a trip on one level went down two floors and back up to save a few seconds (KB-305 to BT-301 by L1, found in the review of 10 Nov 2026; the owner had turned the same thing down for BT-414 to the Roof Garden). On every eighth pair of places (72,105 trips) it took the trips going two levels past both ends from 425 to 1, changed 3% of routes and left the mean time at 119.6 s",
   "_landing": "A stair landing printed on two sheets at one level (Stairs 12 at L1 and TT_L1) is the same spot: a couple of seconds, no flight.",
   "bridges": {
    "BRIDGE-1": {

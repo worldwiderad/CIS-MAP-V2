@@ -373,6 +373,19 @@ class Floor {
       this.rooms.push(room);
       roomById.set(s.id, room);
     }
+    // A room the routing walks through, with walkable floor under it (L1's Reception, the way into the admin suite), is
+    // floor to the route's drawing too. As a room it was not, and the line across it was left as the engine's, kinked,
+    // with a hook at Head of IT's door (review, 10 Nov). Judged on a grid of points inside it.
+    for (const r of this.rooms) {
+      if (r.kind === 'stair') { r.through = false; continue; }
+      const b = r.bbox, pts = [];
+      for (let i = 1; i < 10; i++) for (let j = 1; j < 10; j++) {
+        const x = b.x0 + (b.x1 - b.x0) * i / 10, y = b.y0 + (b.y1 - b.y0) * j / 10;
+        if (inside(r.ring, x, y)) pts.push([x, y]);
+      }
+      // (Reception is 97% walkable floor, a thin wall or two inside it; the next room on the campus is 26%)
+      r.through = pts.length >= 8 && pts.filter(([x, y]) => this.inWalk(x, y)).length >= 0.8 * pts.length;
+    }
     // Each room as drawn: grown into the gap round it to meet its walls (tools/app/footprints.py rooms_grown),
     // so every wall is the same band; its traced outline stays for taps, labels and routes.
     for (const r of this.rooms) {
@@ -553,8 +566,9 @@ class Floor {
 
   // Open floor at (x, y), in metres: inside the walkable area (rings even-odd) and in no room.
   walkable(x, y) {
-    if (!this.mine(x, y)) return false;
-    return this.inWalk(x, y) && !this.roomAt(x, y);
+    if (!this.mine(x, y) || !this.inWalk(x, y)) return false;
+    const r = this.roomAt(x, y);
+    return !r || r.through;
   }
 
   // Inside the walkable rings, even-odd: a ray's crossings with all their edges (the parity of each ring's

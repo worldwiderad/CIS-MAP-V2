@@ -77,6 +77,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    between characters; Hindi, Tamil and Thai none (spacing pulls their joined letters apart) */
 :is(:lang(hi), :lang(ta), :lang(th)) :is(.trip-title, .end-k, .steps-floor, .results-head, .idle-head) { letter-spacing: normal; text-transform: none; }
 :focus-visible { outline: 2.5px solid var(--blue); outline-offset: 2px; }
+/* inside a box that clips its corners (the From and To fields, the floor buttons, a search result), the ring
+   goes inside: outside it was cut off, From's entirely (review, 10 Nov) */
+.end:focus-visible, .levels button:focus-visible, .result:focus-visible { outline-offset: -3px; }
 svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 [hidden] { display: none !important; }
 
@@ -473,7 +476,7 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 .side-btn { display: flex; align-items: center; gap: 14px; justify-content: flex-start; text-align: left;
   min-height: 58px; padding: 0 16px; border-radius: 14px; font-size: 17px; font-weight: 600; }
 .side-n { flex: none; display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
-  background: var(--blue); color: #fff; font-size: 15px; font-weight: 700; }
+  background: var(--blue); color: var(--ring); font-size: 15px; font-weight: 700; }
 /* the question has the whole sheet (owner, 2 Nov 2026): its heading as large as a place card's */
 .sheet.siding .card-title { font-size: 21px; }
 .sheet.siding .card-sub { font-size: 16px; margin-top: 2px; }
@@ -651,6 +654,8 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
     --logo-cis: #FFFFFF; --logo-rule: rgba(255, 255, 255, 0.4); --logo-ink: #ECEEF1;
     color-scheme: dark;
   }
+  /* (white on the lighter red was 2.04:1; on the deeper one it is 6.8:1, review 10 Nov) */
+  .btn-primary:hover { background: #B21F15; }
   .k-room { background: #3A3832; color: #D9D1C0; }
   .k-special { background: #4A4129; color: #F1D58A; }
   .k-library { background: #3E3652; color: #CDBFF0; }

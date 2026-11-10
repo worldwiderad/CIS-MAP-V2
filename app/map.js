@@ -941,7 +941,7 @@ export class MapView {
       ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fillStyle = C.startHalo; ctx.fill();
       ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.fillStyle = C.blue; ctx.fill();
       ctx.lineWidth = 2.5; ctx.strokeStyle = C.markerRing; ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.font = `700 12px ${this.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = C.markerRing; ctx.font = `700 12px ${this.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(String(sd.n), x, y + 0.5);
     }
     ctx.restore();
@@ -1424,7 +1424,7 @@ function thaiWords(text) {
     }
     return out;
   }
-  return text.split(/(?<=\s)/);
+  return text.match(/\S*\s|\S+$/g) || [''];   // (each piece with its space, as a split after it would: not with a lookbehind, which iOS before 16.4 cannot parse, and the file with it)
 }
 
 function boxOf(ring) {

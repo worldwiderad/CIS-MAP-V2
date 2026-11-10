@@ -246,7 +246,9 @@ measured either side, and where both walls are within 3.5 m the stretch shifts b
 difference, unless that takes it off the floor), then every corner becomes a circular arc of up to
 3 m. Guards, from the route-line test (3 Nov). A stretch that doubles back across open floor (within
 2 m) is drawn straight across first (`unhook`: the engine's network leaves some doors the wrong way and
-turns back, as L2's BT-210 does). A stretch that strays at most 0.4 m from straight is straightened where
+turns back, as L2's BT-210 does). A room is not floor to any of this, except one the routes walk through,
+with walkable floor under 80% of it or more (`room.through`: L1's Reception, the way into the admin suite;
+the next room on the campus is 26%). Across Reception the line was the engine's own, kinked (10 Nov). A stretch that strays at most 0.4 m from straight is straightened where
 that comes no nearer a wall than the line did (or than 0.3 m), not only where 0.7 m clears both sides: the
 engine's line zig-zags round tight corners. A last look at each zig-zag on its own catches the ones whose
 furthest point the splitting kept. Every arc stays on the floor: where a full one would clip a wall's
@@ -284,9 +286,11 @@ on (`Floor.walkable`); a second turn the same way says "again". The one the step
 so the next one in reach is named instead, unless the corridor ends there (6 Nov: "walk towards Meeting
 Room 2", then a bare "Bear right" beside Meeting Room 3; 1,252 of 19,948 test trips gained a landmark).
 A merged jog is said where its bigger bend is. Leaving a room, left and right
-are judged against the way you face coming out of its door, and a start that turns carries the
-turn (`dir`) for its arrow; arriving, the side the room is on against the way you were walking
-(a room behind that way, its last turn unsaid, by the last 3 m instead), straight ahead for a room
+are judged against the way you face coming out of its door, square to the door's own wall (`Floor.doors`
+`ix, iy`; from the room's middle to its door, as it was, ran along the wall for a door by a corner: 10 Nov),
+and a start that turns carries the turn (`dir`) for its arrow; arriving, the side the room is on against the
+way you were walking (a room behind that way, or a walk whose last metres turn more than 60° from its main
+heading, by the last 3 m instead), straight ahead for a room
 you walk into (a library, the canteen), and the place by its sign ("the Secondary Library
 (LKS-304)"; "the" only before a word for a place, so "Maintenance"). A floor walked nearly
 straight to its goal (the path under 1.25 times the straight line) is one step: "head for
@@ -333,7 +337,11 @@ characters are read as Simplified (圖書館). A search that is only a kind (`to
 near (and the next, or a number, when two share it). A number with no room (`exactOnly` on a labels openSpace: L3
 TK-306 and L2 TK-206, the bridge landings where their cells were; 3 Nov) is in the floor's `portalById` but
 not its `portals`, so it is never drawn, tapped, named in directions or used to tell places apart, and in
-`Places.exactOnly`, not `list`: only its whole code or number finds it (`306`, `TK-306`, `L3:TK-306`; not `30`). Other names for a place (a subject, a teacher, a club) come from
+`Places.exactOnly`, not `list`: only its whole code or number finds it (`306`, `TK-306`, `L3:TK-306`; not `30`).
+A kind with other words is the kind near a place ("toilet near library", "library toilet"), unless the
+whole of what was typed is a place's own name (`ask`: "main office", "red dot cafe", "canteen kitchen" are
+those places; 10 Nov). Toilets, stairs and lifts keep their lists ("gym toilet" is the toilets nearest the
+gym), and the place a list is near comes first when it is of that kind ("stairs 8"). Other names for a place (a subject, a teacher, a club) come from
 `data/directory_evac.json` when the school fills it (`"aliases": {"L3:KB-305": ["Biology",
 "Mr Chen"]}`); it is empty for now, and the map and routing never read it. With the other end of the trip known, each result shows its walking
 time, distance and floor change ("1 min · 45 m · ↓1"; "via L5" for a place on your own floor that
@@ -451,7 +459,11 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
 * **Back** closes what is open before it leaves the app: the search, the share card and step by
   step each open on a history entry of their own (one at a time); one opened while a Back is on
   its way waits for it. A route on the map has an entry too, under those: Back from it takes the
-  destination away (the start stays, the door you scanned, say) before it leaves.
+  destination away (the start stays, the door you scanned, say) before it leaves. In a frame (the
+  slideshow's three phones, which share the tab's history) the entries are kept in the page (`hist`),
+  so one phone's Back cannot land in another's (10 Nov).
+* **On a wide screen** a clicked step shows its stretch of the route; Escape, or a second click on it,
+  goes back to the whole route (there is no step bar there).
 * **A wide screen with no trip yet** shows the kinds of place and the popular places in the
   panel, a click from being the destination.
 * **A short phone** (640 px tall or less): the open sheet scrolls as one, so the steps get the
@@ -604,7 +616,10 @@ page in 10 s: open after 4.0 s, with only the page and `sw.js` asked of the serv
 ## Browsers
 
 Safari 14.1 and Chrome 87 or later (iOS 14.5, Android from 2020): `inset`, flex `gap` and `||=`
-set the floor. Checked by reading, not on old devices.
+set the floor. Checked by reading, not on old devices. Two newer things crept in and were taken out on
+10 November: a regular expression with a lookbehind in map.js (iOS before 16.4 cannot parse it, and then
+nothing starts) and `Object.hasOwn` in search.js (Safari before 15.4). The door-label page (qrsheet.js)
+uses a top-level `await`, so it needs Safari 15; it is for whoever prints the labels, on a computer.
 
 ## Known limits
 

@@ -185,7 +185,11 @@ function walkSteps(pts, floor, start, end, next, lang, ends, stepFree) {
   while (r0 < runs.length - 1 && runs[r0].len < 3) r0++;
   const lead = runs.slice(0, r0 + 1);
   const leadLen = lead.reduce((a, r) => a + r.len, 0);
-  const facing = start && start.room ? Math.atan2(start.y - start.room.ly, start.x - start.room.lx) : null;
+  // (out through the door's own wall, where the floor has the door: floors.js doors. From the room's middle
+  // to its door was a fair guess while doors sat mid-wall; with the CAD's doors, often by a corner, it ran
+  // along the wall, and "Leave TK-411 and go straight on" was said where you turn right at once, review 10 Nov)
+  const sd = start && start.room ? (floor.doors || []).find(d => d.x === start.x && d.y === start.y) : null;
+  const facing = sd ? Math.atan2(-sd.iy, -sd.ix) : start && start.room ? Math.atan2(start.y - start.room.ly, start.x - start.room.lx) : null;
   // (at a side of a big place, "Leave the Secondary Library by the atrium side": the place, and the side)
   const sideOf = start && start.side && start.entranceOf ? floor.portalById.get(start.entranceOf) || null : null;
   const what = sideOf ? refName({ ...sideOf, code: '' }, lang) : start ? refName(start, lang) : '';
@@ -304,7 +308,9 @@ function arrival(end, pts, lang, hdg, floor) {
   if (end.room) {
     const to = Math.atan2(end.room.ly - end.y, end.room.lx - end.x);
     let d = angle(to, hdg);
-    if (Math.abs(d) > BACK) d = angle(to, approach(pts));
+    // (judged by the last few metres when the walk ends on a turn the main heading leaves out: "on your left"
+    // was said for a room on the right, at the end of a passage turned into at its last metres, review 10 Nov)
+    if (Math.abs(d) > BACK || Math.abs(angle(approach(pts), hdg)) > 60) d = angle(to, approach(pts));
     if (Math.abs(d) < 30) { text = t(lang, 'arriveAhead', { place: name }); ahead = true; }
     else if (Math.abs(d) <= BACK) { dir = side(d); text = t(lang, 'arriveSide', { place: name, dir: t(lang, dir) }); }
   } else if (end.area && inside(end.area.ring, end.x, end.y) && pts.some(([x, y]) => !inside(end.area.ring, x, y))) {

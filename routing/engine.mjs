@@ -205,7 +205,11 @@ export class Router {
           p = priceCache[i];
           if (p < 0) p = priceCache[i] = this.edgePrice(g.edges[i], R.mult);
         } else if (kind === 1) {
-          p = this.linkSeconds(g.links[i], fwd === 1, R.stepFree) * t.walkSpeed;
+          const l = g.links[i];
+          p = this.linkSeconds(l, fwd === 1, R.stepFree) * t.walkSpeed;
+          // a flight of stairs is priced a little over its time (zones travel flightPriceSeconds; never in the time
+          // shown), so a trip on one level does not go down two floors and back up to save six seconds
+          if (l.kind === 'stair' && Math.abs(l.rise) >= 0.05 && t.flightPriceSeconds) p += t.flightPriceSeconds * t.walkSpeed;
         } else p = 0;
         if (p === Infinity) continue;
         const nd = d + p;

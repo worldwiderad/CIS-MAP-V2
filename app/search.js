@@ -36,6 +36,9 @@ export const CHIPS = [
 export const TOILETS = ['girls', 'boys', 'women', 'men', 'adults', 'female', 'male', 'accessible'];
 // their names, in each language's words (i18n.js: capGirls "Girls", toiletGirls "Girls' Toilet")
 const cap = k => k[0].toUpperCase() + k.slice(1);
+// a word that is one of a table's own keys, not a name every object has ("constructor"); not Object.hasOwn,
+// which Safari before 15.4 lacks
+const hasKey = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const toiletOne = (k, lang) => t(lang, 'toilet' + cap(k));
 const toiletList = (ks, lang) => ks.map(k => t(lang, 'cap' + cap(k))).join(t(lang, 'listSep'));
 // a name made in whichever language asks for it (i18n.js nameIn), English and Chinese made now
@@ -81,6 +84,12 @@ const SYNONYMS = {
   design: ['makerspace', 'steam'], robotics: ['steam', 'makerspace'], engineering: ['steam'], maker: ['makerspace'],
   acting: ['drama', 'theatre'], painting: ['arts'], cooking: ['baking', 'bakery'], culinary: ['baking', 'bakery'],
   computer: ['it'], ict: ['it'], wifi: ['it'],
+  // (what the people at the launch would type for their own rooms, and found nothing, 10 Nov: the Head of
+  // Technology's office is "Head of IT"; IT support and the helpdesk are the IT office on L1; design technology,
+  // DT and computer science are taught where design is; a first-aider is the nurse; the board room)
+  technology: ['it', 'steam', 'makerspace'], tech: ['it', 'steam', 'makerspace'], itoffice: ['it'], helpdesk: ['it'],
+  dt: ['makerspace', 'steam'], compsci: ['steam', 'makerspace'], computing: ['steam', 'makerspace'],
+  firstaid: ['nurse'], boardroom: ['board'],
   // sport, by where it is played
   pe: ['gymnasium'], sport: ['gymnasium', 'field', 'courts', 'pool'], football: ['field'], soccer: ['field'],
   rugby: ['field'], athletics: ['field'], badminton: ['gymnasium'], volleyball: ['gymnasium'],
@@ -97,6 +106,9 @@ const PHRASES = [
   [/\bsick\s+bay\b/g, 'sickbay'], [/\bcar\s+park(s|ing)?\b/g, 'carpark'],
   [/\bsenior\s+kindergarten\b/g, 'sk'], [/\bjunior\s+kindergarten\b/g, 'jk'], [/\bpre[\s-]?k(indergarten)?\b/g, 'pre k'],
   [/\bcollege\s+counsel+(ing|ling|or|ors|lor|lors)\b/g, 'university'], [/\bstaff\s+room\b/g, 'staffroom'],
+  [/\bfirst[\s-]*aid\b/g, 'firstaid'], [/\bboard\s+room\b/g, 'boardroom'], [/\bhelp\s*desk\b/g, 'helpdesk'],
+  [/\bcomputer\s+science\b/g, 'compsci'], [/\bvisual\s+arts?\b/g, 'arts'],
+  [/\b(it|i\.t\.)\s+(office|support|help|department|dept|team)\b/g, 'itoffice'],
 ];
 const phrased = q => PHRASES.reduce((s, [re, w]) => s.replace(re, w), q.toLowerCase());
 const ZH_SYNONYMS = {
@@ -137,7 +149,7 @@ const ZH_NEAR = /附近的?|旁边的?|最近的?|靠近|离|在|的/g;
 const STOP = new Set(['the', 'a', 'an', 'of', 'to', 'and', 'at', 'in', 'near', 'nearest', 'closest', 'nearby', 'where', 'is', 'my', 'go', 'find']);
 // A back room named after the place it serves comes after the place: "Library Workroom",
 // "Canteen Kitchen", "Junior Library Office".
-const SERVICE = /\b(workroom|work room|office|store|storage|kitchen|prep|pantry|plant|server|equipment)\b/i;
+const SERVICE = /\b(workroom|work room|office|store|storage|kitchen|prep|pantry|plant|server|equipment|closet)\b/i;
 const ZH_SERVICE = /工作室|办公室|储藏|储物|仓库|厨房|准备室|机房|设备/;
 
 // Traditional characters typed on a Traditional keyboard, as the Simplified the names are written in
@@ -146,7 +158,10 @@ const T2S = Object.fromEntries([...'圖图書书館馆間间電电廁厕樓楼�
 const simplified = q => q.replace(/[\u3400-\u9fff]/g, c => T2S[c] || c);
 
 const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9㐀-鿿]/g, '');
-const words = s => (s || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+// (letters with dots between them are one word: "I.T. Applications" is the IT office, and "it" found only the
+// Head of IT and an IT closet, 10 Nov)
+const words = s => (s || '').toLowerCase().replace(/\b(?:[a-z]\.){2,}/g, m => m.replace(/\./g, '') + ' ')
+  .split(/[^a-z0-9]+/).filter(Boolean);
 const CJK = /[㐀-鿿]/;
 // toilets -> toilet, libraries -> library, arts -> art; "class", "bus" stay
 const stem = w => w.length > 4 && w.endsWith('ies') ? w.slice(0, -3) + 'y'
@@ -359,7 +374,7 @@ export class Places {
     for (let w of s.split(/[^\p{L}\p{M}\p{N}-]+/u).filter(Boolean)) {
       if (CJK.test(w)) { w = w.replace(ZH_NEAR, ''); if (w) rest.push(w); continue; }
       if (!kind && this.kindOf(w)) { kind = this.kindOf(w); continue; }
-      if (Object.hasOwn(WHO, w)) { toilet = toilet || WHO[w]; continue; }
+      if (hasKey(WHO, w)) { toilet = toilet || WHO[w]; continue; }
       // "staff", "female", "student": said by the toilets' own words, not a place to be near
       if (STOP.has(w) || NEAR_WORDS.has(w) || toiletWords.has(w)) continue;
       rest.push(w);
@@ -373,6 +388,13 @@ export class Places {
     if (kind && text) {
       const best = this.scored(text, 1)[0];
       if (!best || best[0] < 600) return null;
+      // A place's own name, typed whole ("main office", "canteen kitchen"), is that place, not the kind
+      // near something: "main office" listed "Offices near Main Lift" with the Main Office last (review,
+      // 10 Nov). Not for stairs and lifts, which a plain search lists once a floor ("stairs 8" is the
+      // chip's list, with Stairs 8 first: main.js renderResults), nor toilets, whose list names the
+      // nearest for each of whom ("gym toilet" is the toilets nearest the gym, not the Junior Gym's alone).
+      const whole = this.scored(q, 1)[0];
+      if (whole && whole[0] >= 760 && !['stair', 'lift', 'toilet'].includes(kind)) return null;
       anchor = best[1];
     }
     return { kind, toilet, level, building, anchor, text: kind ? '' : text };
@@ -424,7 +446,7 @@ export class Places {
     const bare = /\d/.test(q) ? q.replace(/\b(?:room|rm|classroom|class|no\.?|number)\b|#/gi, ' ').trim() || q : q;
     const ql = q.toLowerCase(), qn = norm(bare), toks = words(q).filter(w => !STOP.has(w));
     const kind = this.kindOf(q), zh = CJK.test(q);
-    const whoK = [...new Set(toks.map(w => Object.hasOwn(WHO, w) && WHO[w]).filter(Boolean))];
+    const whoK = [...new Set(toks.map(w => hasKey(WHO, w) && WHO[w]).filter(Boolean))];
     // the whole id a door label prints ("L4:KB-405", "l4 kb405"): that place, first
     const m = /^([a-z]{1,2}_?l?\d)\s*[:\s]\s*(.+)$/i.exec(q);
     const exact = this.find(q) || (m && this.list.concat(this.exactOnly).find(p => p.floor.id.toLowerCase() === m[1].toLowerCase().replace(/^tt(?!_)/, 'tt_')
@@ -605,7 +627,9 @@ function nameScore(p, ql, toks) {
   const n = toks.length;
   let s = sum === 3 * n ? 800 : sum >= 2 * n ? (p.enN.startsWith(ql) ? 740 : 700) : 420 + 20 * (sum - n);
   // matched only in a note in brackets ("Toilets (Pool)" for "pool"): after the pools themselves
-  if (toks.every(tk => !p.enCoreW.some(w => stem(w) === stem(tk) || w.startsWith(tk)))) s -= 60;
+  // (a word's other words count as its own here: "swimming" is the pool's name, and it came after the
+  // three "(Swimming Complex)" toilets, 10 Nov)
+  if (toks.every(tk => ![tk, ...synonyms(tk)].some(a => p.enCoreW.some(w => stem(w) === stem(a) || w.startsWith(a))))) s -= 60;
   s -= 4 * Math.max(0, p.enCore - n);
   if (SERVICE.test(p.enN) && !toks.some(t => SERVICE.test(t))) s -= 60;
   return s;
@@ -615,7 +639,7 @@ function nameScore(p, ql, toks) {
 const synCache = new Map();
 function synonyms(tk) {
   // (own words only: "constructor" typed found Object's, and the search threw, 6 Nov)
-  if (Object.hasOwn(SYNONYMS, tk)) return SYNONYMS[tk];
+  if (hasKey(SYNONYMS, tk)) return SYNONYMS[tk];
   if (!synCache.has(tk)) {
     // (a slip, not another word that starts the same: "nurse" is not a nursery)
     const k = tk.length >= 5 ? Object.keys(SYNONYMS).find(w => w.length >= 5 && w[0] === tk[0] && Math.abs(w.length - tk.length) <= 1 && near(w, tk)) : null;
@@ -632,7 +656,7 @@ function zhScore(z, q) {
   // a name's bracketed qualifier says which one, not what it is: 校医室（小学） is as much 校医室
   // as BT-505's, and the nearer comes first (医务室 once put the kindergarten's first, 140 m away)
   const bare = z.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
-  for (const a of [q, ...((Object.hasOwn(ZH_SYNONYMS, q) && ZH_SYNONYMS[q]) || [])]) {
+  for (const a of [q, ...((hasKey(ZH_SYNONYMS, q) && ZH_SYNONYMS[q]) || [])]) {
     if (z === a || bare === a) s = Math.max(s, 860);
     else if (z.endsWith(a)) s = Math.max(s, 790);
     else if (z.startsWith(a)) s = Math.max(s, 730);

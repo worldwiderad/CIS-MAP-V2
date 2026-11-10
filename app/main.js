@@ -41,6 +41,18 @@ const session = {
   get(k) { try { return sessionStorage.getItem('cismap.' + k); } catch { return null; } },
   set(k, v) { try { if (v == null) sessionStorage.removeItem('cismap.' + k); else sessionStorage.setItem('cismap.' + k, v); } catch { /* fine without */ } },
 };
+// The browser's history, for what Back closes (below). In a frame, as in the slideshow's three phones,
+// every frame shares the tab's one history, so a Back in one phone landed in another and stopped its
+// demo: there the app keeps its entries to itself.
+const hist = window.parent === window ? history : (() => {
+  const stack = [null];
+  return {
+    get state() { return stack[stack.length - 1]; },
+    pushState(s) { stack.push(s); },
+    replaceState(s, _, url) { stack[stack.length - 1] = s; if (url) history.replaceState(null, '', url); },
+    back() { if (stack.length > 1) { stack.pop(); setTimeout(onBack); } },
+  };
+})();
 
 const state = {
   lang: 'en',
@@ -119,7 +131,7 @@ const STEP_ICON = {
 // ---- start ----------------------------------------------------------------------------------
 
 async function boot() {
-  if (history.state && history.state.layer) history.replaceState(null, '');
+  if (hist.state && hist.state.layer) hist.replaceState(null, '');
   const params = new URLSearchParams(location.search);
   // the language: a link's, else the one chosen on an earlier visit; neither, and the visit opens
   // on the language page, the phone's own language highlighted
@@ -338,7 +350,7 @@ function writeLink() {
   // Chinese always; English when this phone's saved language is Chinese (an English link stays so)
   const saved = store.get('lang');
   if (state.lang !== 'en' || (saved && saved !== 'en')) q.push(`lang=${state.lang}`);
-  history.replaceState(history.state, '', q.length ? `?${q.join('&')}` : location.pathname);
+  hist.replaceState(hist.state, '', q.length ? `?${q.join('&')}` : location.pathname);
 }
 
 // The trip's link for someone else: never "you are here".
@@ -383,7 +395,7 @@ function compute({ fit = true } = {}) {
     return;
   }
   state.route = null; state.steps = []; state.current = -1; state.note = null;
-  if (state.layer === 'steps') { state.layer = null; history.replaceState({ trip: true }, ''); }
+  if (state.layer === 'steps') { state.layer = null; hist.replaceState({ trip: true }, ''); }
   map.setFocus(null); map.setPassed(0); map.setMarks({ near: null });
   notice(null);
   if (state.from && state.to) {
@@ -726,7 +738,9 @@ function renderSteps() {
     li.innerHTML = `<span class="step-ico">${(STEP_ICON[s.kind] || STEP_ICON.depart)(s)}</span>`
       + `<span class="step-text">${whole(esc(s.text))}</span>`
       + `<span class="step-dist">${s.dist ? esc(fmtDist(s.dist, L)) : ''}</span>`;
-    const go = () => focusStep(i);
+    // (on a wide screen the list stays beside the map, with no step bar: the step shown, clicked again, is
+    // the whole route again, as Escape is. A clicked step had no way back but the browser's, review 10 Nov)
+    const go = () => (i === state.current && WIDE.matches && !SHORT.matches ? closeLayer('steps') : focusStep(i));
     li.addEventListener('click', go);
     // on a laptop or a kiosk, pointing at a step shows its stretch of the route
     li.addEventListener('mouseenter', () => { if (s.floor === state.floor.id) map.setFocus(stepFocus(s)); });
@@ -791,6 +805,10 @@ function subtitle(p, L, short = false) {
 
 function notice(key, kind, vars) {
   state.notice = key ? { key, kind, vars } : null;
+  // "Pick on the map" waits only while its notice says so: once anything else takes the notice away (a
+  // search, Back, the trip's ×), a later tap on a room is just a tap. It stayed armed, and replaced the
+  // destination without a word (review, 10 Nov)
+  if (state.mapPick && !(key === 'pickFromNotice' || key === 'pickToNotice')) state.mapPick = null;
   showNotice();
 }
 
@@ -834,8 +852,8 @@ function onMapTap(id, floor) {
 let afterBack = null, opener = null, backing = false;
 function openLayer(name) {
   if (state.layer && state.layer !== name) hideLayer(state.layer);
-  if (history.state && history.state.layer) history.replaceState({ layer: name }, '');
-  else history.pushState({ layer: name }, '');
+  if (hist.state && hist.state.layer) hist.replaceState({ layer: name }, '');
+  else hist.pushState({ layer: name }, '');
   state.layer = name;
 }
 
@@ -843,7 +861,7 @@ function openLayer(name) {
 function closeLayer(name, then) {
   if (backing) return;   // a second tap while the first is on its way back
   if (state.layer !== name) { if (then) then(); return; }
-  if (history.state && history.state.layer === name) { afterBack = then || null; backing = true; history.back(); }
+  if (hist.state && hist.state.layer === name) { afterBack = then || null; backing = true; hist.back(); }
   else { state.layer = null; hideLayer(name); if (then) then(); }
 }
 
@@ -902,7 +920,7 @@ function onBack() {
   state.layer = null; afterBack = null; backing = false;
   if (name) hideLayer(name);
   if (then) then();
-  else if (!name && state.to && !(history.state && history.state.trip)) clearTrip();
+  else if (!name && state.to && !(hist.state && hist.state.trip)) clearTrip();
   else writeLink();
 }
 
@@ -911,7 +929,7 @@ function onBack() {
 // scanned, say) before it leaves the app (a destination picked on the map, then Back twice, once
 // left the app with it still set).
 function tripEntry() {
-  if ((state.route || state.to) && !state.layer && !(history.state && (history.state.trip || history.state.layer))) history.pushState({ trip: true }, '');
+  if ((state.route || state.to) && !state.layer && !(hist.state && (hist.state.trip || hist.state.layer))) hist.pushState({ trip: true }, '');
 }
 
 function clearTrip() {
@@ -933,7 +951,7 @@ function endTrip() {
     compute({ fit: false });
     if (keepHere) focusPlace(state.from); else map.showFloor();
   };
-  if (history.state && history.state.trip && !state.layer) { afterBack = clear; backing = true; history.back(); }
+  if (hist.state && hist.state.trip && !state.layer) { afterBack = clear; backing = true; hist.back(); }
   else clear();
 }
 
@@ -941,6 +959,7 @@ function openPicker(which) {
   if (backing) { settled(() => openPicker(which)); return; }
   state.pickerFor = which; state.chip = null; state.toilet = null; state.active = -1;
   dismissLinkNotice();
+  if (state.mapPick) notice(null);
   opener = document.activeElement;
   openLayer('picker');
   behind(true, 'picker');
@@ -1123,6 +1142,12 @@ function renderResults() {
   if (sortByDist && dist.size) {
     const secs = p => (dist.has(p.key) ? dist.get(p.key).seconds : 1e9);
     list = [...list].sort((a, b) => secs(a) - secs(b));
+  }
+  // the place a kind is near, when it is of that kind itself ("stairs 8", "french office": Stairs 8 and the
+  // French Office), first: it was last, with no distance from itself (review, 10 Nov)
+  if (chip && near) {
+    const i = list.findIndex(p => p.key === near.key);
+    if (i > 0) list = [list[i], ...list.slice(0, i), ...list.slice(i + 1)];
   }
   // a kind typed as a word ("canteen"): the places that carry the word first, then the rest of the
   // kind. Not for toilets: 卫生间, 洗手间, toilet and loo are one thing (sorting by the word once put
@@ -1730,7 +1755,7 @@ function wire() {
   $('step-done').addEventListener('click', () => closeLayer('steps'));
   $('notice-x').addEventListener('click', () => { state.mapPick = null; notice(null); });
   $('summary').addEventListener('click', toggleSheet);
-  addEventListener('popstate', onBack);
+  if (hist === history) addEventListener('popstate', onBack);
   $('card-close').addEventListener('click', () => { if (state.sides) { cancelSides(); return; } state.pick = null; setMarks(); render(); });
   $('card-back').addEventListener('click', () => { state.pick = null; setMarks(); render(); fitRouteOn(state.floor); });
   $('card-to').addEventListener('click', () => {
@@ -1772,6 +1797,7 @@ function wire() {
     else if (gateMode) return;
     else if (!$('share').hidden) closeShare();
     else if (!$('picker').hidden) closePicker();
+    else if (state.layer === 'steps') closeLayer('steps');
   });
 }
 

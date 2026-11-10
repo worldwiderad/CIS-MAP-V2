@@ -261,7 +261,7 @@ b, strong { color: var(--ink); font-weight: 700; }
         <div class="chips" data-a style="--i:2"><span>KB 305</span><span>library</span><span>girls toilet</span><span>libary</span></div>
         <p class="hint" data-a style="--i:3">The real app, running inside the slide.</p>
       </div>
-      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="search" data-src="../app/?lang=en" data-title="CIS Map, live"></div></div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="search" data-src="../app/?from=L1:MAIN-ENTRANCE&amp;lang=en&amp;stepfree=0" data-title="CIS Map, live"></div></div>
     </div>
     <aside class="notes">Search "305" and pick KB-305. Then "girls toilet". Then the typo, "libary". The clicker keeps working after you tap the phone.</aside>
   </section>
@@ -278,7 +278,7 @@ b, strong { color: var(--ink); font-weight: 700; }
           <li><span class="ico red"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span>Arrive at the Secondary Library (LKS-304), straight ahead</li>
         </ol>
       </div>
-      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="steps" data-src="../app/?from=L3:KB-305&amp;to=L3:LKS-304&amp;lang=en" data-title="CIS Map, a route from KB-305 to the Secondary Library"></div></div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="steps" data-src="../app/?from=L3:KB-305&amp;to=L3:LKS-304&amp;lang=en&amp;stepfree=0" data-title="CIS Map, a route from KB-305 to the Secondary Library"></div></div>
     </div>
     <aside class="notes">Open the steps, tap one to see it on the map, and switch floors with the level buttons.</aside>
   </section>
@@ -295,7 +295,7 @@ b, strong { color: var(--ink); font-weight: 700; }
           <span>Tiếng Việt<small>Vietnamese</small></span><span>ไทย<small>Thai</small></span><span>Deutsch<small>German</small></span><span>Filipino</span>
         </div>
       </div>
-      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="langs" data-src="../app/?from=L1:MAIN-ENTRANCE&amp;to=L3:KB-305&amp;lang=ko" data-title="CIS Map in Korean"></div></div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-demo="langs" data-src="../app/?from=L1:MAIN-ENTRANCE&amp;to=L3:KB-305&amp;lang=ko&amp;stepfree=0" data-title="CIS Map in Korean"></div></div>
     </div>
     <aside class="notes">A longer trip this time, from the Main Entrance up to KB-305, in Korean and then other languages. The translations were made with AI, so they should be checked by native speakers in the community before launch.</aside>
   </section>
@@ -343,13 +343,13 @@ b, strong { color: var(--ink); font-weight: 700; }
 
       <div class="node dat" data-a style="--i:5; left:670px; top:40px; height:230px"><img src="img/build-map.jpg" alt=""><div><h4>Floor data</h4><span class="tool">data/*_evac/navmesh_data.json</span><p>606 places with their walls, doors and stairs, in campus metres</p></div></div>
       <div class="node dat" data-a style="--i:5; left:670px; top:296px; height:220px"><svg class="mini" id="graph-mini" viewBox="0 0 1800 900" aria-hidden="true"></svg><div><h4>Routing graph</h4><span class="tool">routing/build.mjs</span><p><span id="g-nodes">3,626</span> points, <span id="g-edges">12,862</span> corridor links, 103 stairs, lifts and bridges, 10 gates</p></div></div>
-      <div class="node step" data-a style="--i:5; left:670px; top:542px; height:118px"><h4>Checks</h4><p>473 automatic checks after every change, and 15,000 test trips with no route through a wall</p></div>
+      <div class="node step" data-a style="--i:5; left:670px; top:542px; height:118px"><h4>Checks</h4><p>483 automatic checks after every change, and 10,000 test trips with no route through a wall</p></div>
 
       <div class="node bundle" data-a style="--i:7; left:1020px; top:210px">
         <svg viewBox="0 0 188 104" aria-hidden="true"><g fill="#fff" stroke="#9BA4AF" stroke-width="2"><path d="M8 14h40l12 12v66H8z"/><path d="M72 8h40l12 12v72H72z"/><path d="M136 14h40l12 12v66h-52z"/></g><g fill="#6B6662" font-size="12" font-weight="700" text-anchor="middle" font-family="Hanken Grotesk, sans-serif"><text x="34" y="64">floors</text><text x="98" y="58">graph</text><text x="162" y="64">app</text></g></svg>
         <h4>About 3 MB</h4><p>Static files: the map data, the app and its 16 languages. The phone keeps a copy (a service worker), so after the first visit it works offline. No server, no accounts, no tracking.</p></div>
 
-      <div class="node phone1" data-a style="--i:9; left:1280px; top:40px"><svg id="graph" viewBox="0 0 1800 900" role="img" aria-label="The route search on Level 3, from KB-305 to the Secondary Library"></svg><div><h4>Route search</h4><span class="tool">routing/engine.mjs</span><p>Dijkstra's shortest path: a corridor costs its length, a little more near the walls; stairs cost the time they take; a closed gate is never used.</p></div></div>
+      <div class="node phone1" data-a style="--i:9; left:1280px; top:40px"><svg id="graph" viewBox="0 0 1800 900" role="img" aria-label="The route search on Level 3, from KB-305 to the Secondary Library"></svg><div><h4>Route search</h4><span class="tool">routing/engine.mjs</span><p>Dijkstra's shortest path: a corridor costs its length, up to four times as much against a wall; stairs cost their time and a little more; a closed gate is never used.</p></div></div>
       <div class="node phone2" data-a style="--i:9; left:1280px; top:416px"><ol class="steps"><li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li></ol><h4>Directions</h4><span class="tool">app/directions.js</span><p>The line is straightened and its corners rounded, then written as steps by the landmarks you pass, in any of 16 languages.</p></div>
     </div>
     <aside class="notes">Left to right: the evacuation plans were traced, fitted to the architect's drawings, corrected against them, and the tour photos filled in the signs. That became the floor data and a routing graph, checked automatically after every change. The phone downloads about 3 MB once, then works out every route itself with Dijkstra's algorithm. The panel on the right is that search running on the real graph, from KB-305 to the library.</aside>
@@ -358,12 +358,12 @@ b, strong { color: var(--ink); font-weight: 700; }
   <section class="slide engine" aria-label="Inside the route search">
     <h2>Inside the route search</h2>
     <div class="eng-panel" id="eng-panel"><svg id="eng" viewBox="0 0 1800 900" role="img" aria-label="The routing graph round KB-305 on Level 3: the search spreading from KB-305, the chain of links it finds to the Secondary Library, and the line the app draws"></svg>
-      <div class="eng-note n2" id="eng-wall">×3 within 1.2 m of a wall</div>
+      <div class="eng-note n2" id="eng-wall">up to ×4 against a wall</div>
       <div class="eng-count" id="eng-count"><b>0</b> points settled</div>
     </div>
     <ol class="eng-cards">
       <li class="c1"><h4>The graph</h4><p><span class="gv-points">3,626</span> points where corridors meet, doors open and stairs land, joined by <span class="gv-links">12,862</span> links, and 103 stairs, lifts and bridges between floors. <span class="tool">routing/build.mjs</span></p></li>
-      <li class="c2"><h4>Prices</h4><p>A link costs its walking distance, three times as much within 1.2 m of a wall, so routes keep to the middle of a corridor. Floor a trip should avoid costs more, and a closed gate can't be used. Stairs cost their climb: 5 s a metre up, 3 down, and a lift 60 s of waiting.</p></li>
+      <li class="c2"><h4>Prices</h4><p>A link costs its walking distance, up to four times as much against a wall and back to normal 1.2 m out, so routes keep to the middle of a corridor. Floor a trip should avoid costs more, and a closed gate can't be used. Stairs cost their climb, 5 s a metre up and 3 down, and 10 s more a flight, so a trip on one floor never goes down and back up to save a few seconds. A lift costs 60 s of waiting.</p></li>
       <li class="c3"><h4>Dijkstra's search</h4><p>From KB-305 outwards, the cheapest point not yet settled comes off a binary heap and its neighbours' prices drop where it offers a cheaper way. When the library comes off the heap, the route is found: here after <span class="gv-settled">365</span> points. <span class="tool">routing/engine.mjs</span></p></li>
       <li class="c4"><h4>The line</h4><p>The chain of links zig-zags through the graph (grey). The app straightens it where the floor allows and rounds its corners, so the line drawn (red) keeps to the corridor. <span class="tool">app/map.js smoothLine</span></p></li>
       <li class="c5"><h4>The steps</h4><ol class="steps"><li><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Leave KB-305 and turn left</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right by KB-310</li><li><span class="ico"><svg viewBox="0 0 24 24"><path transform="matrix(-1 0 0 1 24 0)" d="M18 20h-2v-6a2 2 0 0 0-2-2H9.8l2.6 2.6L11 16l-5-5 5-5 1.4 1.4L9.8 10H14a4 4 0 0 1 4 4z"/></svg></span>Turn right at the lift, then left</li><li><span class="ico red"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span>Arrive at the Secondary Library (LKS-304)</li></ol></li>
@@ -390,9 +390,9 @@ b, strong { color: var(--ink); font-weight: 700; }
       <div>
         <h2>What I'm asking for</h2>
         <ul class="asks">
+          <li><span class="who">School</span><span class="what">A pilot first, with one grade or one orientation day<span class="why">Students will find the mistakes I haven't, and I'd like to fix them before launch.</span></span></li>
           <li><span class="who">Technology</span><span class="what">A web address on cis.edu.sg<span class="why">Then the link, and the codes printed on the door labels, never have to change.</span></span></li>
           <li><span class="who">Facilities</span><span class="what">Putting up the door labels<span class="why">Where they go is your call, and the sheets are ready to print.</span></span></li>
-          <li><span class="who">Secondary</span><span class="what">A pilot with one grade, or one orientation day<span class="why">Students will find the mistakes I haven't, and I'd like to fix them before launch.</span></span></li>
           <li><span class="who">Admissions</span><span class="what">The link in the welcome email to new families<span class="why">So a family can find the classroom before they find a parking space.</span></span></li>
         </ul>
       </div>
