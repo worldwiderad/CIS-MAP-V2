@@ -1588,22 +1588,34 @@ function renderMini() {
 
 // It moves like a sheet: it follows the finger, giving a little past the ends, and let go it
 // glides to the nearest stop, or on to the next when flicked. A tap on the handle moves it a stop.
+// A drag that starts anywhere on the sheet's fixed parts moves it too, as a phone's sheets do: the
+// trip's header, From and To, Step-free, the buttons, a place's card (owner, 10 Nov 2026: the handle
+// alone was hard to hit). There a tap stays a tap, a drag sideways is left alone, and the step list
+// and a place's sides keep their scrolling.
+const SHEET_HANDLE = '.grip, .mini';
+const SHEET_DRAG = `${SHEET_HANDLE}, .trip-head, .trip, .opts, .go, .notice, .card-head, .card-actions`;
 function sheetDrag() {
   const sh = $('sheet');
-  let y0 = null, h0 = 0, id = null, moved = false, trail = [], stops = null, before = null;
+  let x0 = 0, y0 = null, h0 = 0, id = null, moved = false, trail = [], stops = null, before = null, handle = null, dragEnd = 0;
   const down = e => {
-    if (WIDE.matches || e.button > 0) return;
-    y0 = e.clientY; id = e.pointerId; moved = false; trail = [[performance.now(), e.clientY]];
+    if (WIDE.matches || e.button > 0 || y0 !== null) return;
+    const at = e.target.closest(SHEET_DRAG);
+    if (!at || !sh.contains(at)) return;
+    handle = at.matches(SHEET_HANDLE) ? at : null;
+    x0 = e.clientX; y0 = e.clientY; id = e.pointerId; moved = false; trail = [[performance.now(), e.clientY]];
     h0 = sh.getBoundingClientRect().height;
-    try { e.currentTarget.setPointerCapture(id); } catch { /* the touch's own events still come */ }
+    // the handle holds the finger at once; elsewhere only once it is a drag, so a tap reaches its button
+    if (handle) try { handle.setPointerCapture(id); } catch { /* the touch's own events still come */ }
   };
   const move = e => {
     if (e.pointerId !== id || y0 === null) return;
     trail.push([performance.now(), e.clientY]);
     if (trail.length > 6) trail.shift();
-    const dy = e.clientY - y0;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    if (!moved && !handle && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { y0 = null; id = null; return; }
     if (!moved && Math.abs(dy) > 5) {
       moved = true;
+      if (!handle) try { sh.setPointerCapture(id); } catch { /* as above */ }
       stops = { min: sheetHeight('min'), mid: sheetHeight('mid'), open: sheetHeight('open') };
       before = sheetMode();
       // while dragged it holds everything it can show, so the finger uncovers it
@@ -1622,7 +1634,8 @@ function sheetDrag() {
   const end = () => {
     if (y0 === null) return;
     y0 = null; id = null;
-    if (!moved) { if (sheetMode() === 'min') setSheet('mid'); else toggleSheet(); return; }
+    if (!moved) { if (handle) { if (sheetMode() === 'min') setSheet('mid'); else toggleSheet(); } return; }
+    dragEnd = performance.now();
     const h = sh.getBoundingClientRect().height;
     const [t1, p1] = trail[0], [t2, p2] = trail[trail.length - 1];
     const v = t2 > t1 ? (p1 - p2) / (t2 - t1) : 0;   // px per ms; growing is positive
@@ -1631,15 +1644,17 @@ function sheetDrag() {
     setSheet(m, h, before);
   };
   const up = e => { if (e.pointerId === id) end(); };
+  sh.addEventListener('pointerdown', down);
+  sh.addEventListener('pointermove', move);
+  sh.addEventListener('pointerup', up);
+  sh.addEventListener('pointercancel', up);
+  sh.addEventListener('lostpointercapture', up);
+  sh.addEventListener('touchend', end);
+  sh.addEventListener('touchcancel', end);
+  // (a drag that ends over a button is not a tap on it: the click a mouse sends straight after is dropped)
+  sh.addEventListener('click', e => { if (e.detail > 0 && performance.now() - dragEnd < 350) { e.stopPropagation(); e.preventDefault(); } }, true);
+  // the keyboard's Enter or Space on the handle (a click with no pointer behind it)
   for (const el of [$('grip'), $('mini')]) {
-    el.addEventListener('pointerdown', down);
-    el.addEventListener('pointermove', move);
-    el.addEventListener('pointerup', up);
-    el.addEventListener('pointercancel', up);
-    el.addEventListener('lostpointercapture', up);
-    el.addEventListener('touchend', end);
-    el.addEventListener('touchcancel', end);
-    // the keyboard's Enter or Space (a click with no pointer behind it)
     el.addEventListener('click', e => { if (e.detail === 0) { if (sheetMode() === 'min') setSheet('mid'); else toggleSheet(); } });
   }
 }

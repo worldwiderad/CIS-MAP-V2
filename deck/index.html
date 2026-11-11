@@ -69,11 +69,6 @@ b, strong { color: var(--ink); font-weight: 700; }
   transform: scale(var(--zoom)); transform-origin: 0 0; z-index: 0; pointer-events: none; }
 .mapbox canvas { position: absolute; inset: 0; }
 
-/* why I built it: the words alone, a little larger, in the middle of the slide's height */
-.turn { display: flex; flex-direction: column; justify-content: center; padding-bottom: 150px; }
-.turn h2 { font-size: 80px; margin-bottom: 36px; }
-.turn .lead { font-size: 38px; max-width: 1240px; }
-
 /* the campus today: words beside the plan on the wall */
 .split { display: grid; grid-template-columns: 1fr 900px; gap: 72px; align-items: center; height: 100%; }
 .plate { margin: 0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 0 var(--line), 0 18px 50px rgba(20,24,30,.12); background: #fff; }
@@ -96,7 +91,8 @@ b, strong { color: var(--ink); font-weight: 700; }
 .ios-bar .island { position: absolute; left: 50%; top: 11px; width: 124px; height: 36px; margin-left: -62px; border-radius: 20px; background: #000; }
 .ios-bar .icons { display: flex; gap: 7px; align-items: center; }
 .ios-bar svg { display: block; fill: currentColor; }
-.iphone iframe { position: absolute; left: 0; top: 60px; width: 402px; height: 716px; border: 0; background: #fff; }
+.iphone iframe, .iphone .shot { position: absolute; left: 0; top: 60px; width: 402px; height: 716px; border: 0; background: #fff; }
+.iphone .shot { display: block; object-fit: cover; }
 .safari { position: absolute; left: 0; right: 0; bottom: 0; height: 98px; background: #fff; display: flex; align-items: flex-start;
   justify-content: center; gap: 10px; padding-top: 12px; z-index: 2; }
 .safari .pill { height: 48px; border-radius: 24px; background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center;
@@ -278,10 +274,16 @@ b, strong { color: var(--ink); font-weight: 700; }
     <aside class="notes">The five wings are LKS, BT, TK, KB and TT. If you want an example of a confusing code, BT-206-2 is a real room, inside BT-206. The plan on the right is part of the Level 3 evacuation plan, the theatre and Pod A. Ask who here has walked a lost visitor to a room.</aside>
   </section>
 
-  <section class="slide turn" aria-label="Why I built it">
-    <h2>That's why I built CIS Map</h2>
-    <p class="lead">In April I showed the school one floor of it, 53 places traced from a photo of the evacuation plan, and promised the rest. It took a while, but it now covers all six levels and 606 places, and I'd like to walk you through it.</p>
-    <aside class="notes">Then straight into the search on the next slide.</aside>
+  <section class="slide" aria-label="Why I built it">
+    <div class="demo">
+      <div>
+        <h2>That's why I built CIS Map</h2>
+        <p class="lead">In April I showed the school one floor of it, 53 places traced from a photo of the evacuation plan, and promised the rest. It took a while, but it now covers all six levels and 606 places, and I'd like to walk you through it.</p>
+        <p class="hint" data-a style="--i:3">The April version, running on a photo of the Level 4 plan.</p>
+      </div>
+      <div class="iphone-box" data-a style="--i:2"><div class="iphone" data-img="img/april-prototype.jpg" data-title="The April version of CIS Map: a route drawn over a photo of the Level 4 evacuation plan"></div></div>
+    </div>
+    <aside class="notes">The phone shows the April version as it ran then: a photo of the Level 4 evacuation plan with the route drawn over it, glare and all, and the plan's old room codes. Then straight into the search on the next slide.</aside>
   </section>
 
   <section class="slide" aria-label="Live: search">
@@ -317,7 +319,7 @@ b, strong { color: var(--ink); font-weight: 700; }
   <section class="slide" aria-label="Sixteen languages">
     <div class="demo">
       <div>
-        <h2>Sixteen languages, Tamil and Thai included</h2>
+        <h2>Sixteen languages</h2>
         <p class="lead">A family who doesn't read English gets the room names, the search and the directions in their own language. The 文A button changes it at any time.</p>
         <div class="langs" data-a style="--i:2">
           <span>English</span><span>简体中文<small>Chinese (Simplified)</small></span><span>繁體中文<small>Chinese (Traditional)</small></span><span>한국어<small>Korean</small></span>
@@ -464,7 +466,8 @@ const ICON = {
 for (const ph of stage.querySelectorAll('.iphone')) {
   ph.innerHTML = `<i class="vu"></i><i class="vd"></i><div class="bezel"><div class="screen">
     <div class="ios-bar"><span class="clock"></span><span class="island"></span><span class="icons">${ICON.signal}${ICON.wifi}${ICON.battery}</span></div>
-    <iframe title="${ph.dataset.title}" data-src="${ph.dataset.src}" loading="lazy"></iframe>
+    ${ph.dataset.img ? `<img class="shot" src="${ph.dataset.img}" alt="${ph.dataset.title}">`   // (a picture of a screen: the April version's)
+      : `<iframe title="${ph.dataset.title}" data-src="${ph.dataset.src}" loading="lazy"></iframe>`}
     <div class="safari"><span class="pill arrows">${ICON.back}${ICON.fwd}</span><span class="pill url"><span>${host}</span>${ICON.reload}</span><span class="pill more">${ICON.more}</span></div>
   </div></div>`;
 }

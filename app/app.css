@@ -286,7 +286,9 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 /* open, the sheet may rise to just under the bar (owner, 1 Nov: at 64% the steps showed three at a
    time); a short trip stops at its own height */
 .sheet.open { max-height: calc(100% - var(--bar-h) - var(--safe-t) - 8px); }
-.grip { display: flex; justify-content: center; padding: 10px 0 8px; width: 100%; touch-action: none; }
+/* the handle: the pill where it always was, the strip to catch a finger 29 px tall (it was 23, and hard to hit; owner,
+   10 Nov 2026), and the trip's header row under it drags the sheet too */
+.grip { display: flex; justify-content: center; padding: 10px 0 14px; width: 100%; touch-action: none; }
 .grip span { width: 40px; height: 5px; border-radius: 3px; background: var(--grip); }
 .sheet { overflow: hidden; transition: height 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
@@ -304,7 +306,9 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
 
 .trip { display: flex; align-items: center; gap: 8px; }
 /* "Directions" and the × back to the plain map, over the trip */
-.trip-head { display: flex; align-items: center; justify-content: space-between; margin: -6px -6px 4px 2px; }
+.trip-head { display: flex; align-items: center; justify-content: space-between; margin: -12px -6px 4px 2px; }
+/* on a phone the sheet's fixed parts drag it (main.js SHEET_DRAG): the browser leaves their swipes to it */
+.sheet :is(.trip-head, .trip, .opts, .go, .notice, .card-head, .card-actions) { touch-action: none; }
 .trip-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
 :is(:lang(zh), :lang(ja), :lang(ko)) .trip-title { letter-spacing: 0.02em; }
 .trip-end { width: 36px; height: 36px; }
@@ -691,6 +695,8 @@ svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
   /* (open, the phone's sheet stops under the bar: the panel stopped 56 px short of the window's foot, 6 Nov) */
   .sheet.open { max-height: none; }
   .grip { display: none; }
+  /* (a side panel is not dragged: its swipes scroll it again, on an iPad too) */
+  .sheet :is(.trip-head, .trip, .opts, .go, .notice, .card-head, .card-actions) { touch-action: auto; }
   .go, .stepbar { display: none !important; }
   .swap .ico-qr { display: block; }
   .swap .ico-share { display: none; }
